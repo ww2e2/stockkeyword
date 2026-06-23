@@ -1126,6 +1126,13 @@ function htmlPage(pathname, origin, options = {}) {
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="${escapeHtml(seo.title)}" />
   <meta name="twitter:description" content="${escapeHtml(seo.description)}" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5J443L4F10"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5J443L4F10');
+  </script>
   ${structuredDataScripts}
   <style>
     :root {
