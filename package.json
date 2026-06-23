@@ -1,0 +1,17 @@
+{
+  "name": "miricanvas-tag-saas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "verify:template-types": "node src/verify-template-types.js",
+    "apply:template-types": "node src/apply-template-types.js"
+  }
+}

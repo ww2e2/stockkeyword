@@ -1,0 +1,912 @@
+{
+  "generatedAt": "2026-06-20T13:32:10.830Z",
+  "keyword": "6월",
+  "templateApiUrl": "https://api.miricanvas.com/template/api/p/template-pages/search",
+  "totalTargets": 41,
+  "verifiedCount": 41,
+  "failedCount": 0,
+  "verified": {
+    "logoProfile": [
+      "logo",
+      "social_media_square"
+    ],
+    "printMemoPadHorizontal": "ricecake_memo_paper_hor_rect",
+    "printMemoPadVertical": "ricecake_memo_paper_ver_rect",
+    "printMemoPadSquare": [
+      "instagram_feed",
+      "ricecake_memo_paper_square",
+      "social_media_square"
+    ],
+    "wallpaperPc": "wallpaper_pc",
+    "wallpaperMobile": "wallpaper_mobile",
+    "printBannerGeneral": [
+      "banner",
+      "web_post_ver"
+    ],
+    "bookCover": "book_cover",
+    "detailPage": "detail_page",
+    "socialSquare": "social_media_square",
+    "printStickerSquare": "print_sticker_square",
+    "printPostcardFoldHorizontal": "post_card_fold_hor",
+    "printPostcardFoldVertical": "post_card_fold_ver",
+    "printPostcardHorizontal": "post_card_152_102",
+    "printPostcardVertical": "post_card_102_152",
+    "youtubeShorts": "youtube_video_shorts",
+    "youtubeThumbnail": "youtube_thumb",
+    "youtubeVideo": "youtube_video_full",
+    "youtubeChannelArt": "youtube_cover",
+    "eventPopup": "groobee_big",
+    "instagramVideoPost": "instagram_video_post",
+    "instagramReels": "instagram_video_reels",
+    "instagramFeedPost": "instagram_feed",
+    "instagramVideoStory": "instagram_video_story",
+    "infographic": "infographic_hor",
+    "printBusinessCardHorizontal": "business_card_hor",
+    "printBusinessCardVertical": [
+      "business_card_ver",
+      "digital_name_card_ver"
+    ],
+    "printPosterHorizontal": [
+      "poster_hor_print",
+      "web_post_hor_poster"
+    ],
+    "printPosterVertical": [
+      "placard_poster_ver",
+      "poster_ver_print",
+      "web_post_ver_poster"
+    ],
+    "printPlacardHorizontalPoster": [
+      "poster_hor_print",
+      "web_post_hor_poster",
+      "placard_poster_hor",
+      "real_print_hor",
+      "web_flyer_single_hor"
+    ],
+    "printPlacardHorizontal": [
+      "placard_hor",
+      "web_banner_hor"
+    ],
+    "printPlacardVerticalPoster": [
+      "placard_poster_ver",
+      "poster_ver_print",
+      "web_flyer_single",
+      "web_post_ver_poster"
+    ],
+    "printPlacardVertical": [
+      "placard_ver",
+      "web_banner_ver"
+    ],
+    "cardnews": "card_news",
+    "facebookPostHorizontal": "facebook_video_horizontal",
+    "facebookPostSquare": "facebook_video_square",
+    "facebookStory": "facebook_story",
+    "printPhoneCaseClear": "phone_case_clear",
+    "printPhoneCaseHard": "phone_case_hard",
+    "presentation": "presentation",
+    "tiktokVideo": "tiktok_video"
+  },
+  "results": [
+    {
+      "label": "로고/프로필",
+      "displayLabel": "로고/프로필",
+      "value": "logoProfile",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "로고/프로필",
+      "candidates": [
+        "logo_profile",
+        [
+          "logo",
+          "social_media_square"
+        ],
+        "logo",
+        "social_media_square"
+      ],
+      "verifiedApiValue": [
+        "logo",
+        "social_media_square"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=logo&templateTypeIdList=social_media_square"
+    },
+    {
+      "label": "메모지 가로형",
+      "displayLabel": "메모지 가로형",
+      "value": "printMemoPadHorizontal",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "메모지 가로형",
+      "candidates": [
+        "print_memo_pad_horizontal",
+        "ricecake_memo_paper_hor_rect",
+        "print_memo_pad_hor",
+        "print_memo_pad_hor_poster",
+        "print_memo_pad_post_hor_poster",
+        "print_memo_pad_poster_hor",
+        "print_memo_pad_post_horizontal"
+      ],
+      "verifiedApiValue": "ricecake_memo_paper_hor_rect",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=ricecake_memo_paper_hor_rect"
+    },
+    {
+      "label": "메모지 세로형",
+      "displayLabel": "메모지 세로형",
+      "value": "printMemoPadVertical",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "메모지 세로형",
+      "candidates": [
+        "print_memo_pad_vertical",
+        "ricecake_memo_paper_ver_rect",
+        "print_memo_pad_ver",
+        "print_memo_pad_ver_poster",
+        "print_memo_pad_post_ver_poster",
+        "print_memo_pad_poster_ver",
+        "print_memo_pad_post_vertical"
+      ],
+      "verifiedApiValue": "ricecake_memo_paper_ver_rect",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=ricecake_memo_paper_ver_rect"
+    },
+    {
+      "label": "메모지 정비율",
+      "displayLabel": "메모지 정비율",
+      "value": "printMemoPadSquare",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "메모지 정비율",
+      "candidates": [
+        "print_memo_pad_square",
+        [
+          "instagram_feed",
+          "ricecake_memo_paper_square",
+          "social_media_square"
+        ],
+        "instagram_feed",
+        "ricecake_memo_paper_square",
+        "social_media_square"
+      ],
+      "verifiedApiValue": [
+        "instagram_feed",
+        "ricecake_memo_paper_square",
+        "social_media_square"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=instagram_feed&templateTypeIdList=ricecake_memo_paper_square&templateTypeIdList=social_media_square"
+    },
+    {
+      "label": "배경화면 (16:9) PC",
+      "displayLabel": "배경화면 (16:9) PC",
+      "value": "wallpaperPc",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "배경화면 (16:9) PC",
+      "candidates": [
+        "wallpaper_pc"
+      ],
+      "verifiedApiValue": "wallpaper_pc",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=wallpaper_pc"
+    },
+    {
+      "label": "배경화면 (9:19) 모바일",
+      "displayLabel": "배경화면 (9:19) 모바일",
+      "value": "wallpaperMobile",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "배경화면 (9:19) 모바일",
+      "candidates": [
+        "wallpaper_mobile"
+      ],
+      "verifiedApiValue": "wallpaper_mobile",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=wallpaper_mobile"
+    },
+    {
+      "label": "배너 일반 배너",
+      "displayLabel": "배너 일반 배너",
+      "value": "printBannerGeneral",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "배너 일반 배너",
+      "candidates": [
+        "print_banner_general",
+        [
+          "banner",
+          "web_post_ver"
+        ],
+        "banner",
+        "web_post_ver"
+      ],
+      "verifiedApiValue": [
+        "banner",
+        "web_post_ver"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=banner&templateTypeIdList=web_post_ver"
+    },
+    {
+      "label": "북커버",
+      "displayLabel": "북커버",
+      "value": "bookCover",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "북커버",
+      "candidates": [
+        "book_cover"
+      ],
+      "verifiedApiValue": "book_cover",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=book_cover"
+    },
+    {
+      "label": "상세페이지",
+      "displayLabel": "상세페이지",
+      "value": "detailPage",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "상세페이지",
+      "candidates": [
+        "detail_page"
+      ],
+      "verifiedApiValue": "detail_page",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=detail_page"
+    },
+    {
+      "label": "소셜 미디어 정사각형",
+      "displayLabel": "소셜 미디어 정사각형",
+      "value": "socialSquare",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "소셜 미디어 정사각형",
+      "candidates": [
+        "social_square",
+        "social_media_square"
+      ],
+      "verifiedApiValue": "social_media_square",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=social_media_square"
+    },
+    {
+      "label": "스티커(정사각형)",
+      "displayLabel": "스티커(정사각형)",
+      "value": "printStickerSquare",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "스티커(정사각형)",
+      "candidates": [
+        "print_sticker_square"
+      ],
+      "verifiedApiValue": "print_sticker_square",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=print_sticker_square"
+    },
+    {
+      "label": "엽서카드 2단 가로형",
+      "displayLabel": "엽서카드 2단 가로형",
+      "value": "printPostcardFoldHorizontal",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "엽서카드 2단 가로형",
+      "candidates": [
+        "print_postcard_fold_horizontal",
+        "post_card_fold_hor",
+        "print_postcard_fold_hor",
+        "print_postcard_fold_hor_poster",
+        "print_postcard_fold_post_hor_poster",
+        "print_postcard_fold_poster_hor",
+        "print_postcard_fold_post_horizontal"
+      ],
+      "verifiedApiValue": "post_card_fold_hor",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=post_card_fold_hor"
+    },
+    {
+      "label": "엽서카드 2단 세로형",
+      "displayLabel": "엽서카드 2단 세로형",
+      "value": "printPostcardFoldVertical",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "엽서카드 2단 세로형",
+      "candidates": [
+        "print_postcard_fold_vertical",
+        "post_card_fold_ver",
+        "print_postcard_fold_ver",
+        "print_postcard_fold_ver_poster",
+        "print_postcard_fold_post_ver_poster",
+        "print_postcard_fold_poster_ver",
+        "print_postcard_fold_post_vertical"
+      ],
+      "verifiedApiValue": "post_card_fold_ver",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=post_card_fold_ver"
+    },
+    {
+      "label": "엽서카드 가로형",
+      "displayLabel": "엽서카드 가로형",
+      "value": "printPostcardHorizontal",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "엽서카드 가로형",
+      "candidates": [
+        "print_postcard_horizontal",
+        "post_card_152_102",
+        "print_postcard_hor",
+        "print_postcard_hor_poster",
+        "print_postcard_post_hor_poster",
+        "print_postcard_poster_hor",
+        "print_postcard_post_horizontal"
+      ],
+      "verifiedApiValue": "post_card_152_102",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=post_card_152_102"
+    },
+    {
+      "label": "엽서카드 세로형",
+      "displayLabel": "엽서카드 세로형",
+      "value": "printPostcardVertical",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "엽서카드 세로형",
+      "candidates": [
+        "print_postcard_vertical",
+        "post_card_102_152",
+        "print_postcard_ver",
+        "print_postcard_ver_poster",
+        "print_postcard_post_ver_poster",
+        "print_postcard_poster_ver",
+        "print_postcard_post_vertical"
+      ],
+      "verifiedApiValue": "post_card_102_152",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=post_card_102_152"
+    },
+    {
+      "label": "유튜브 쇼츠",
+      "displayLabel": "유튜브 쇼츠",
+      "value": "youtubeShorts",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "유튜브 쇼츠",
+      "candidates": [
+        "youtube_shorts",
+        "youtube_video_shorts"
+      ],
+      "verifiedApiValue": "youtube_video_shorts",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=youtube_video_shorts"
+    },
+    {
+      "label": "유튜브 썸네일",
+      "displayLabel": "유튜브 썸네일",
+      "value": "youtubeThumbnail",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "유튜브 썸네일",
+      "candidates": [
+        "youtube_thumbnail",
+        "youtube_thumb"
+      ],
+      "verifiedApiValue": "youtube_thumb",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=youtube_thumb"
+    },
+    {
+      "label": "유튜브 영상",
+      "displayLabel": "유튜브 영상",
+      "value": "youtubeVideo",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "유튜브 영상",
+      "candidates": [
+        "youtube_video",
+        "youtube_video_full"
+      ],
+      "verifiedApiValue": "youtube_video_full",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=youtube_video_full"
+    },
+    {
+      "label": "유튜브 채널아트",
+      "displayLabel": "유튜브 채널아트",
+      "value": "youtubeChannelArt",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "유튜브 채널아트",
+      "candidates": [
+        "youtube_channel_art",
+        "youtube_cover"
+      ],
+      "verifiedApiValue": "youtube_cover",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=youtube_cover"
+    },
+    {
+      "label": "이벤트 팝업",
+      "displayLabel": "이벤트 팝업",
+      "value": "eventPopup",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "이벤트 팝업",
+      "candidates": [
+        "event_popup",
+        "groobee_big"
+      ],
+      "verifiedApiValue": "groobee_big",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=groobee_big"
+    },
+    {
+      "label": "인스타그램 게시물",
+      "displayLabel": "인스타그램 게시물",
+      "value": "instagramVideoPost",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "인스타그램 게시물",
+      "candidates": [
+        "instagram_video_post"
+      ],
+      "verifiedApiValue": "instagram_video_post",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=instagram_video_post"
+    },
+    {
+      "label": "인스타그램 릴스",
+      "displayLabel": "인스타그램 릴스",
+      "value": "instagramReels",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "인스타그램 릴스",
+      "candidates": [
+        "instagram_reels",
+        "instagram_video_reels"
+      ],
+      "verifiedApiValue": "instagram_video_reels",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=instagram_video_reels"
+    },
+    {
+      "label": "인스타그램 새 피드 게시물",
+      "displayLabel": "인스타그램 새 피드 게시물",
+      "value": "instagramFeedPost",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "인스타그램 새 피드 게시물",
+      "candidates": [
+        "instagram_feed_post",
+        "instagram_feed"
+      ],
+      "verifiedApiValue": "instagram_feed",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=instagram_feed"
+    },
+    {
+      "label": "인스타그램 스토리",
+      "displayLabel": "인스타그램 스토리",
+      "value": "instagramVideoStory",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "인스타그램 스토리",
+      "candidates": [
+        "instagram_video_story"
+      ],
+      "verifiedApiValue": "instagram_video_story",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=instagram_video_story"
+    },
+    {
+      "label": "인포그래픽",
+      "displayLabel": "인포그래픽",
+      "value": "infographic",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "인포그래픽",
+      "candidates": [
+        "infographic",
+        "infographic_hor"
+      ],
+      "verifiedApiValue": "infographic_hor",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=infographic_hor"
+    },
+    {
+      "label": "일반 명함 가로형",
+      "displayLabel": "일반 명함 가로형",
+      "value": "printBusinessCardHorizontal",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "일반 명함 가로형",
+      "candidates": [
+        "print_business_card_horizontal",
+        "business_card_hor",
+        "print_business_card_hor",
+        "print_business_card_hor_poster",
+        "print_business_card_post_hor_poster",
+        "print_business_card_poster_hor",
+        "print_business_card_post_horizontal"
+      ],
+      "verifiedApiValue": "business_card_hor",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=business_card_hor"
+    },
+    {
+      "label": "일반 명함 세로형",
+      "displayLabel": "일반 명함 세로형",
+      "value": "printBusinessCardVertical",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "일반 명함 세로형",
+      "candidates": [
+        "print_business_card_vertical",
+        [
+          "business_card_ver",
+          "digital_name_card_ver"
+        ],
+        "business_card_ver",
+        "digital_name_card_ver",
+        "print_business_card_ver",
+        "print_business_card_ver_poster",
+        "print_business_card_post_ver_poster",
+        "print_business_card_poster_ver",
+        "print_business_card_post_vertical"
+      ],
+      "verifiedApiValue": [
+        "business_card_ver",
+        "digital_name_card_ver"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=business_card_ver&templateTypeIdList=digital_name_card_ver"
+    },
+    {
+      "label": "일반 포스터 가로형",
+      "displayLabel": "일반 포스터 가로형",
+      "value": "printPosterHorizontal",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "일반 포스터 가로형",
+      "candidates": [
+        "print_poster_horizontal",
+        [
+          "poster_hor_print",
+          "web_post_hor_poster"
+        ],
+        "poster_hor_print",
+        "web_post_hor_poster",
+        "print_poster_hor",
+        "print_post_horizontal",
+        "print_post_hor",
+        "print_hor_poster",
+        "print_post_hor_poster"
+      ],
+      "verifiedApiValue": [
+        "poster_hor_print",
+        "web_post_hor_poster"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=poster_hor_print&templateTypeIdList=web_post_hor_poster"
+    },
+    {
+      "label": "일반 포스터 세로형",
+      "displayLabel": "일반 포스터 세로형",
+      "value": "printPosterVertical",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "일반 포스터 세로형",
+      "candidates": [
+        "print_poster_vertical",
+        [
+          "placard_poster_ver",
+          "poster_ver_print",
+          "web_post_ver_poster"
+        ],
+        "placard_poster_ver",
+        "poster_ver_print",
+        "web_post_ver_poster",
+        "print_poster_ver",
+        "print_post_vertical",
+        "print_post_ver",
+        "print_ver_poster",
+        "print_post_ver_poster"
+      ],
+      "verifiedApiValue": [
+        "placard_poster_ver",
+        "poster_ver_print",
+        "web_post_ver_poster"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=placard_poster_ver&templateTypeIdList=poster_ver_print&templateTypeIdList=web_post_ver_poster"
+    },
+    {
+      "label": "일반 현수막 가로 포스터형",
+      "displayLabel": "일반 현수막 가로 포스터형",
+      "value": "printPlacardHorizontalPoster",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "일반 현수막 가로 포스터형",
+      "candidates": [
+        "print_placard_horizontal_poster",
+        [
+          "poster_hor_print",
+          "web_post_hor_poster",
+          "placard_poster_hor",
+          "real_print_hor",
+          "web_flyer_single_hor"
+        ],
+        "poster_hor_print",
+        "web_post_hor_poster",
+        "placard_poster_hor",
+        "real_print_hor",
+        "web_flyer_single_hor",
+        "print_placard_horizontal_post",
+        "print_placard_hor_poster",
+        "print_placard_hor_post",
+        "print_placard_post_hor_poster",
+        "print_placard_poster_hor",
+        "print_placard_post_horizontal"
+      ],
+      "verifiedApiValue": [
+        "poster_hor_print",
+        "web_post_hor_poster",
+        "placard_poster_hor",
+        "real_print_hor",
+        "web_flyer_single_hor"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=poster_hor_print&templateTypeIdList=web_post_hor_poster&templateTypeIdList=placard_poster_hor&templateTypeIdList=real_print_hor&templateTypeIdList=web_flyer_single_hor"
+    },
+    {
+      "label": "일반 현수막 가로형",
+      "displayLabel": "일반 현수막 가로형",
+      "value": "printPlacardHorizontal",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "일반 현수막 가로형",
+      "candidates": [
+        "print_placard_horizontal",
+        [
+          "placard_hor",
+          "web_banner_hor"
+        ],
+        "placard_hor",
+        "web_banner_hor",
+        "print_placard_hor",
+        "print_placard_hor_poster",
+        "print_placard_post_hor_poster",
+        "print_placard_poster_hor",
+        "print_placard_post_horizontal"
+      ],
+      "verifiedApiValue": [
+        "placard_hor",
+        "web_banner_hor"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=placard_hor&templateTypeIdList=web_banner_hor"
+    },
+    {
+      "label": "일반 현수막 세로 포스터형",
+      "displayLabel": "일반 현수막 세로 포스터형",
+      "value": "printPlacardVerticalPoster",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "일반 현수막 세로 포스터형",
+      "candidates": [
+        "print_placard_vertical_poster",
+        [
+          "placard_poster_ver",
+          "poster_ver_print",
+          "web_flyer_single",
+          "web_post_ver_poster"
+        ],
+        "placard_poster_ver",
+        "poster_ver_print",
+        "web_flyer_single",
+        "web_post_ver_poster",
+        "print_placard_vertical_post",
+        "print_placard_ver_poster",
+        "print_placard_ver_post",
+        "print_placard_post_ver_poster",
+        "print_placard_poster_ver",
+        "print_placard_post_vertical"
+      ],
+      "verifiedApiValue": [
+        "placard_poster_ver",
+        "poster_ver_print",
+        "web_flyer_single",
+        "web_post_ver_poster"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=placard_poster_ver&templateTypeIdList=poster_ver_print&templateTypeIdList=web_flyer_single&templateTypeIdList=web_post_ver_poster"
+    },
+    {
+      "label": "일반 현수막 세로형",
+      "displayLabel": "일반 현수막 세로형",
+      "value": "printPlacardVertical",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "일반 현수막 세로형",
+      "candidates": [
+        "print_placard_vertical",
+        [
+          "placard_ver",
+          "web_banner_ver"
+        ],
+        "placard_ver",
+        "web_banner_ver",
+        "print_placard_ver",
+        "print_placard_ver_poster",
+        "print_placard_post_ver_poster",
+        "print_placard_poster_ver",
+        "print_placard_post_vertical"
+      ],
+      "verifiedApiValue": [
+        "placard_ver",
+        "web_banner_ver"
+      ],
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=placard_ver&templateTypeIdList=web_banner_ver"
+    },
+    {
+      "label": "카드뉴스",
+      "displayLabel": "카드뉴스",
+      "value": "cardnews",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "카드뉴스",
+      "candidates": [
+        "card_news"
+      ],
+      "verifiedApiValue": "card_news",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=card_news"
+    },
+    {
+      "label": "페이스북 게시물 (가로형)",
+      "displayLabel": "페이스북 게시물 (가로형)",
+      "value": "facebookPostHorizontal",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "페이스북 게시물 (가로형)",
+      "candidates": [
+        "facebook_post_horizontal",
+        "facebook_video_horizontal",
+        "facebook_post_hor",
+        "facebook_post_hor_poster",
+        "facebook_post_poster_hor"
+      ],
+      "verifiedApiValue": "facebook_video_horizontal",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=facebook_video_horizontal"
+    },
+    {
+      "label": "페이스북 게시물 (정사각형)",
+      "displayLabel": "페이스북 게시물 (정사각형)",
+      "value": "facebookPostSquare",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "페이스북 게시물 (정사각형)",
+      "candidates": [
+        "facebook_post_square",
+        "facebook_video_square"
+      ],
+      "verifiedApiValue": "facebook_video_square",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=facebook_video_square"
+    },
+    {
+      "label": "페이스북 스토리",
+      "displayLabel": "페이스북 스토리",
+      "value": "facebookStory",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "페이스북 스토리",
+      "candidates": [
+        "facebook_story"
+      ],
+      "verifiedApiValue": "facebook_story",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=facebook_story"
+    },
+    {
+      "label": "폰 케이스 투명 폰케이스",
+      "displayLabel": "폰 케이스 투명 폰케이스",
+      "value": "printPhoneCaseClear",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "폰 케이스 투명 폰케이스",
+      "candidates": [
+        "print_phone_case_clear",
+        "phone_case_clear"
+      ],
+      "verifiedApiValue": "phone_case_clear",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=phone_case_clear"
+    },
+    {
+      "label": "폰 케이스 하드 폰케이스",
+      "displayLabel": "폰 케이스 하드 폰케이스",
+      "value": "printPhoneCaseHard",
+      "group": "인쇄",
+      "purpose": "PRINT",
+      "tier": "PREMIUM",
+      "path": "폰 케이스 하드 폰케이스",
+      "candidates": [
+        "print_phone_case_hard",
+        "phone_case_hard"
+      ],
+      "verifiedApiValue": "phone_case_hard",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=PRINT&keyword=6%EC%9B%94&templateTypeIdList=phone_case_hard"
+    },
+    {
+      "label": "프레젠테이션",
+      "displayLabel": "프레젠테이션",
+      "value": "presentation",
+      "group": "웹",
+      "purpose": "WEB",
+      "tier": "PREMIUM",
+      "path": "프레젠테이션",
+      "candidates": [
+        "presentation"
+      ],
+      "verifiedApiValue": "presentation",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=WEB&keyword=6%EC%9B%94&templateTypeIdList=presentation"
+    },
+    {
+      "label": "TikTok",
+      "displayLabel": "TikTok",
+      "value": "tiktokVideo",
+      "group": "동영상",
+      "purpose": "VIDEO",
+      "tier": "PREMIUM",
+      "path": "TikTok",
+      "candidates": [
+        "tiktok_video"
+      ],
+      "verifiedApiValue": "tiktok_video",
+      "status": 200,
+      "url": "https://api.miricanvas.com/template/api/p/template-pages/search?color=&tier=PREMIUM&strictLanguage=true&categoryList=TEMPLATE&categoryList=CREATOR&status=ACTIVE&isPageSearch=false&includeTemplateV2=true&language=ko&page=1&pageSize=1&domain=production&purpose=VIDEO&keyword=6%EC%9B%94&templateTypeIdList=tiktok_video"
+    }
+  ],
+  "failed": []
+}
