@@ -1120,6 +1120,7 @@ function htmlPage(pathname, origin, options = {}) {
   <!-- End Google Tag Manager -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="google-adsense-account" content="ca-pub-3386559853644133" />
   <title>${escapeHtml(seo.title)}</title>
   <meta name="description" content="${escapeHtml(seo.description)}" />
   <meta name="robots" content="${isNotFoundPage ? 'noindex' : 'index,follow'}" />
