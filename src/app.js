@@ -48,6 +48,7 @@ const TEMPLATE_PURPOSE_BY_GROUP = {
 };
 
 const DEFAULT_TEMPLATE_TIER = 'PREMIUM';
+const ADS_TXT_CONTENT = 'google.com, pub-3386559853644133, DIRECT, f08c47fec0942fa0';
 
 function debugLog(...args) {
   if (!DEBUG) return;
@@ -2708,6 +2709,12 @@ export async function requestHandler(req, res) {
     if (req.method === 'GET' && requestUrl.pathname === '/robots.txt') {
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end(buildRobotsTxt(requestUrl.origin));
+      return;
+    }
+
+    if (req.method === 'GET' && requestUrl.pathname === '/ads.txt') {
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end(ADS_TXT_CONTENT);
       return;
     }
 
