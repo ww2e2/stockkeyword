@@ -1,4 +1,5 @@
 import http from 'http';
+import { readFile } from 'fs/promises';
 import dotenv from 'dotenv';
 import { TEMPLATE_TYPE_MAP } from './templateTypeMap.js';
 
@@ -49,6 +50,15 @@ const TEMPLATE_PURPOSE_BY_GROUP = {
 
 const DEFAULT_TEMPLATE_TIER = 'PREMIUM';
 const ADS_TXT_CONTENT = 'google.com, pub-3386559853644133, DIRECT, f08c47fec0942fa0';
+const FAVICON_FILE_MAP = new Map([
+  ['/favicon.ico', { file: 'favicon.ico', contentType: 'image/x-icon' }],
+  ['/favicon-16x16.png', { file: 'favicon-16x16.png', contentType: 'image/png' }],
+  ['/favicon-32x32.png', { file: 'favicon-32x32.png', contentType: 'image/png' }],
+  ['/apple-touch-icon.png', { file: 'apple-touch-icon.png', contentType: 'image/png' }],
+  ['/android-chrome-192x192.png', { file: 'android-chrome-192x192.png', contentType: 'image/png' }],
+  ['/android-chrome-512x512.png', { file: 'android-chrome-512x512.png', contentType: 'image/png' }],
+  ['/site.webmanifest', { file: 'site.webmanifest', contentType: 'application/manifest+json; charset=utf-8' }],
+]);
 
 function debugLog(...args) {
   if (!DEBUG) return;
@@ -152,6 +162,21 @@ function buildSitemapXml(origin) {
     urlset,
     '</urlset>',
   ].join('\n');
+}
+
+async function serveFaviconAsset(reqPath, res) {
+  const asset = FAVICON_FILE_MAP.get(reqPath);
+  if (!asset) {
+    return false;
+  }
+
+  const fileBuffer = await readFile(new URL(`../favicon_io/${asset.file}`, import.meta.url));
+  res.writeHead(200, {
+    'Content-Type': asset.contentType,
+    'Cache-Control': 'public, max-age=86400',
+  });
+  res.end(fileBuffer);
+  return true;
 }
 
 function parseJsonObject(raw, label) {
@@ -1122,6 +1147,10 @@ function htmlPage(pathname, origin, options = {}) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="google-adsense-account" content="ca-pub-3386559853644133" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <title>${escapeHtml(seo.title)}</title>
   <meta name="description" content="${escapeHtml(seo.description)}" />
   <meta name="robots" content="${isNotFoundPage ? 'noindex' : 'index,follow'}" />
@@ -2715,6 +2744,10 @@ export async function requestHandler(req, res) {
     if (req.method === 'GET' && requestUrl.pathname === '/ads.txt') {
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end(ADS_TXT_CONTENT);
+      return;
+    }
+
+    if (req.method === 'GET' && await serveFaviconAsset(requestUrl.pathname, res)) {
       return;
     }
 
