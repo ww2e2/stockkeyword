@@ -205,7 +205,7 @@ function parseSingleKeyword(input) {
   }
 
   if (keywords.length > 1) {
-    throw new Error('템플릿 트렌드 분석기는 키워드 1개만 입력할 수 있습니다.');
+    throw new Error('템플릿 분석은 키워드 1개만 입력할 수 있습니다.');
   }
 
   return keywords[0];
@@ -600,38 +600,38 @@ async function readJsonBody(req) {
 const HOME_FAQ_ITEMS = [
   {
     question: '이 서비스는 무엇인가요?',
-    answer: '이 서비스는 스톡 작가와 디지털 크리에이터를 위한 분석 도구입니다. 스톡 이미지, 스톡 콘텐츠, 템플릿 데이터에서 키워드 분석, 메타태그 분석, 디자인 트렌드 파악을 돕도록 설계되어 있습니다.',
+    answer: '이 서비스는 스톡 작가와 디지털 크리에이터를 위한 분석 도구입니다. 스톡 이미지, 스톡 콘텐츠, 템플릿 데이터에서 키워드 분석과 템플릿 분석을 할 수 있도록 설계되어 있습니다.',
   },
   {
     question: '어떤 플랫폼을 분석하나요?',
-    answer: '현재는 미리캔버스 기반 분석 기능을 제공하고 있습니다. 요소 메타태그 추출기와 템플릿 트렌드 분석기가 미리캔버스 응답 데이터를 바탕으로 동작하며, 향후 다양한 스톡 플랫폼 분석 기능으로 확장할 예정입니다.',
+    answer: '현재는 미리캔버스 기반 분석 기능을 제공하고 있습니다. 키워드 분석과 템플릿 분석 기능이 미리캔버스 응답 데이터를 바탕으로 동작하며, 향후 다양한 스톡 플랫폼 분석 기능으로 확장할 예정입니다.',
   },
   {
-    question: '템플릿 트렌드 분석은 무엇인가요?',
-    answer: '템플릿 트렌드 분석은 상위 템플릿 데이터를 기준으로 제목 키워드, 페이지 수, 제목 패턴을 파악하는 기능입니다. 콘텐츠 제작 방향을 잡거나 디자인 트렌드를 참고할 때 활용할 수 있습니다.',
+    question: '템플릿 분석은 무엇인가요?',
+    answer: '템플릿 분석은 상위 템플릿 데이터를 기준으로 제목 키워드, 페이지 수, 제목 패턴을 파악하는 기능입니다. 콘텐츠 제작 방향을 잡거나 참고 흐름을 확인할 때 활용할 수 있습니다.',
   },
   {
-    question: '메타태그 추출기는 어떻게 활용하나요?',
-    answer: '메타태그 추출기는 특정 키워드와 관련된 인기 요소를 분석해 자주 사용되는 메타태그 패턴을 정리합니다. 스톡 이미지 업로드 전 태그 후보를 정리하거나 키워드 전략을 세울 때 유용합니다.',
+    question: '키워드 분석은 어떻게 활용하나요?',
+    answer: '키워드 분석은 특정 키워드와 관련된 인기 요소를 분석해 자주 사용되는 태그와 키워드 패턴을 정리합니다. 스톡 이미지 업로드 전 키워드 전략을 세우거나 태그 후보를 정리할 때 유용합니다.',
   },
   {
     question: '스톡 작가에게 어떤 도움이 되나요?',
-    answer: '스톡 작가는 반복적으로 발생하는 키워드 조사, 메타태그 정리, 제목 패턴 확인 시간을 줄일 수 있습니다. 이를 통해 스톡 콘텐츠 기획, 디자인 트렌드 파악, 콘텐츠 제작 효율 개선에 도움을 받을 수 있습니다.',
+    answer: '스톡 작가는 반복적으로 발생하는 키워드 조사와 제목 패턴 확인 시간을 줄일 수 있습니다. 이를 통해 스톡 콘텐츠 기획과 콘텐츠 제작 효율 개선에 도움을 받을 수 있습니다.',
   },
 ];
 
 const MIRICANVAS_FAQ_ITEMS = [
   {
     question: '미리캔버스 분석 도구는 무엇인가요?',
-    answer: '미리캔버스에서 스톡 콘텐츠를 제작하는 크리에이터를 위해 만든 분석 도구 묶음입니다. 현재는 요소 메타태그 분석과 템플릿 트렌드 분석 기능을 제공합니다.',
+    answer: '미리캔버스에서 스톡 콘텐츠를 제작하는 크리에이터를 위해 만든 분석 도구 묶음입니다. 현재는 키워드 분석과 템플릿 분석 기능을 제공합니다.',
   },
   {
-    question: '요소 메타태그 추출기는 어떤 용도인가요?',
-    answer: '업로드된 요소의 메타태그와 키워드 패턴을 빠르게 확인하는 용도입니다. 자주 쓰이는 메타태그를 정리해 업로드 전략이나 키워드 설계에 활용할 수 있습니다.',
+    question: '키워드 분석은 어떤 용도인가요?',
+    answer: '업로드된 요소의 키워드와 태그 패턴을 빠르게 확인하는 용도입니다. 자주 쓰이는 키워드를 정리해 업로드 전략이나 키워드 설계에 활용할 수 있습니다.',
   },
   {
-    question: '템플릿 트렌드 분석기는 어떤 용도인가요?',
-    answer: '인기 템플릿의 제목 키워드와 트렌드를 분석하는 도구입니다. 제목 패턴과 페이지 수 흐름을 참고해 콘텐츠 기획이나 템플릿 제작 방향을 잡는 데 도움이 됩니다.',
+    question: '템플릿 분석은 어떤 용도인가요?',
+    answer: '인기 템플릿의 제목 키워드와 흐름을 분석하는 도구입니다. 제목 패턴과 페이지 수 흐름을 참고해 콘텐츠 기획이나 템플릿 제작 방향을 잡는 데 도움이 됩니다.',
   },
   {
     question: '스톡 작가에게 어떤 도움이 되나요?',
@@ -644,7 +644,7 @@ const PLATFORM_CARDS = [
     key: 'miricanvas',
     path: '/miricanvas',
     label: '미리캔버스',
-    description: '미리캔버스 기반 메타태그 분석과 템플릿 트렌드 분석을 제공하는 현재 운영 중인 플랫폼입니다.',
+    description: '미리캔버스 기반 키워드 분석과 템플릿 분석을 제공하는 현재 운영 중인 플랫폼입니다.',
     status: '사용 가능',
     available: true,
     buttonLabel: '플랫폼 보기',
@@ -653,7 +653,7 @@ const PLATFORM_CARDS = [
     key: 'canva',
     path: '/canva',
     label: '캔바',
-    description: '향후 키워드 분석, 트렌드 분석, 카테고리 분석을 지원할 예정인 준비중 플랫폼입니다.',
+    description: '향후 키워드 분석, 템플릿 분석, 카테고리 분석을 지원할 예정인 준비중 플랫폼입니다.',
     status: '준비중',
     available: false,
     buttonLabel: '준비중 안내 보기',
@@ -692,12 +692,12 @@ const STATIC_PAGE_CONTENT = {
   },
   '/about': {
     title: '서비스 소개 | 스톡 크리에이터 분석 도구',
-    description: '스톡 작가와 디지털 크리에이터를 위한 키워드 분석, 메타태그 분석, 템플릿 분석 서비스 소개 페이지입니다.',
+    description: '스톡 작가와 디지털 크리에이터를 위한 키워드 분석, 템플릿 분석 서비스 소개 페이지입니다.',
     content: `
       <section class="page-card stack">
         <h2>서비스 소개</h2>
-        <p>스톡 크리에이터 분석 도구는 스톡 작가, 디지털 크리에이터, 템플릿 제작자, 디자인 실무자가 더 빠르게 키워드 분석과 메타태그 분석을 수행할 수 있도록 돕는 데이터 기반 서비스입니다. 스톡 이미지나 스톡 콘텐츠를 업로드할 때는 어떤 키워드가 자주 쓰이는지, 어떤 제목 패턴이 반복되는지, 어떤 형식의 템플릿이 많이 보이는지 파악하는 작업이 중요합니다. 하지만 실제 제작 과정에서는 이 조사 작업이 많은 시간을 차지하기 때문에, 본 서비스는 그 과정을 단순화하는 데 초점을 맞추고 있습니다.</p>
-        <p>현재 제공 중인 핵심 기능은 미리캔버스 기반 분석입니다. 요소 메타태그 추출기는 특정 키워드에 대해 미리캔버스 요소 데이터를 분석해 자주 사용되는 메타태그와 키워드 패턴을 보여주고, 템플릿 트렌드 분석기는 미리캔버스 템플릿 데이터를 바탕으로 제목 키워드, 페이지 수, 상위 제목 흐름을 정리합니다. 이는 단순 검색 결과 모음이 아니라, 스톡 콘텐츠 제작 관점에서 빠르게 참고할 수 있는 실무형 요약 정보에 가깝습니다.</p>
+        <p>스톡 크리에이터 분석 도구는 스톡 작가, 디지털 크리에이터, 템플릿 제작자, 디자인 실무자가 더 빠르게 키워드 분석과 템플릿 분석을 수행할 수 있도록 돕는 데이터 기반 서비스입니다. 스톡 이미지나 스톡 콘텐츠를 업로드할 때는 어떤 키워드가 자주 쓰이는지, 어떤 제목 패턴이 반복되는지, 어떤 형식의 템플릿이 많이 보이는지 파악하는 작업이 중요합니다. 하지만 실제 제작 과정에서는 이 조사 작업이 많은 시간을 차지하기 때문에, 본 서비스는 그 과정을 단순화하는 데 초점을 맞추고 있습니다.</p>
+        <p>현재 제공 중인 핵심 기능은 미리캔버스 기반 분석입니다. 키워드 분석은 특정 키워드에 대해 미리캔버스 요소 데이터를 분석해 자주 사용되는 태그와 키워드 패턴을 보여주고, 템플릿 분석은 미리캔버스 템플릿 데이터를 바탕으로 제목 키워드, 페이지 수, 상위 제목 흐름을 정리합니다. 이는 단순 검색 결과 모음이 아니라, 스톡 콘텐츠 제작 관점에서 빠르게 참고할 수 있는 실무형 요약 정보에 가깝습니다.</p>
         <p>서비스의 장기적인 방향은 특정 플랫폼 전용 도구에 머무르지 않는 것입니다. 앞으로는 스톡 이미지, 디자인 템플릿, 디지털 다운로드 상품, 콘텐츠 제작 흐름을 다루는 다양한 플랫폼의 분석 기능을 순차적으로 지원하는 것을 목표로 하고 있습니다. 즉, 현재는 미리캔버스 기반 기능을 제공하지만, 서비스 전체 포지셔닝은 스톡 크리에이터를 위한 분석 플랫폼입니다. 제작자는 이 도구를 통해 디자인 트렌드, 키워드 흐름, 메타태그 패턴을 더 체계적으로 파악하고, 콘텐츠 제작 전략을 빠르게 세울 수 있습니다.</p>
       </section>
     `,
@@ -720,7 +720,7 @@ const STATIC_PAGE_CONTENT = {
     content: `
       <section class="page-card stack">
         <h2>이용약관</h2>
-        <p>본 서비스는 스톡 작가와 디지털 크리에이터를 위한 키워드 분석, 메타태그 분석, 템플릿 분석 기능을 제공하는 온라인 SaaS형 도구입니다. 사용자는 본 서비스를 합법적이고 정상적인 범위에서 이용해야 하며, 서비스 운영을 방해하거나 외부 분석 대상 플랫폼에 과도한 부하를 주는 방식의 자동화 사용은 제한될 수 있습니다.</p>
+        <p>본 서비스는 스톡 작가와 디지털 크리에이터를 위한 키워드 분석, 템플릿 분석 기능을 제공하는 온라인 SaaS형 도구입니다. 사용자는 본 서비스를 합법적이고 정상적인 범위에서 이용해야 하며, 서비스 운영을 방해하거나 외부 분석 대상 플랫폼에 과도한 부하를 주는 방식의 자동화 사용은 제한될 수 있습니다.</p>
         <p>본 서비스가 제공하는 분석 결과는 외부 플랫폼 응답 데이터를 가공한 참고 정보입니다. 따라서 특정 검색 노출, 판매 성과, 승인 결과, 업로드 성과를 보장하지 않으며, 사용자는 결과를 자신의 제작 및 업로드 전략에 맞게 판단하여 활용해야 합니다. 운영자는 데이터 구조 변경, 외부 API 정책 변경, 서비스 점검, 기능 개선 등의 사유로 제공 화면이나 결과 형식을 수정할 수 있습니다.</p>
         <p>사용자는 본 서비스에서 생성된 결과를 내부 참고 자료로 활용할 수 있으나, 서비스 자체를 재판매하거나 무단 복제하여 별도 상업 서비스로 제공해서는 안 됩니다. 무료 제공 범위 내에서 운영되는 현재 서비스 특성상, 서비스 중단, 일시 장애, 외부 플랫폼 응답 오류, 데이터 누락으로 인해 발생하는 간접적 손해에 대해서는 책임을 지지 않습니다. 다만 운영자는 가능한 범위에서 안정적인 서비스 제공과 오류 개선을 위해 지속적으로 노력합니다.</p>
       </section>
@@ -760,28 +760,28 @@ function buildPageSeo(pathname) {
   if (pathname === '/') {
     return {
       title: '스톡 작가를 위한 분석 도구 | 미리캔버스, 캔바, 어도비 스톡',
-      description: '스톡 크리에이터를 위한 분석 플랫폼입니다. 현재는 미리캔버스 기반 메타태그 분석과 템플릿 트렌드 분석을 제공하며, 캔바와 어도비 스톡으로 확장할 예정입니다.',
+      description: '스톡 작가를 위한 분석 도구입니다. 현재는 미리캔버스 기반 키워드 분석과 템플릿 분석을 제공하며, 캔바와 어도비 스톡으로 확장할 예정입니다.',
     };
   }
 
   if (pathname === '/miricanvas') {
     return {
       title: '미리캔버스 분석 도구 | 스톡 크리에이터 분석 플랫폼',
-      description: '미리캔버스 스톡 작가를 위한 메타태그 분석 및 템플릿 트렌드 분석 도구 모음입니다.',
+      description: '미리캔버스 스톡 작가를 위한 키워드 분석 및 템플릿 분석 도구 모음입니다.',
     };
   }
 
   if (pathname === '/miricanvas/tag') {
     return {
-      title: '요소 메타태그 추출기 | 미리캔버스 분석 도구 | 스톡 크리에이터 분석 플랫폼',
-      description: '미리캔버스 업로드 요소의 메타태그와 키워드 패턴을 분석하는 도구입니다. 스톡 콘텐츠 메타태그 전략 수립에 활용할 수 있습니다.',
+      title: '키워드 분석 | 미리캔버스 분석 도구 | 스톡 크리에이터 분석 플랫폼',
+      description: '미리캔버스 업로드 요소의 키워드와 태그 패턴을 분석하는 도구입니다. 스톡 콘텐츠 키워드 전략 수립에 활용할 수 있습니다.',
     };
   }
 
   if (pathname === '/miricanvas/template') {
     return {
-      title: '템플릿 트렌드 분석기 | 미리캔버스 분석 도구 | 스톡 크리에이터 분석 플랫폼',
-      description: '미리캔버스 스톡 작가를 위한 메타태그 분석 및 템플릿 트렌드 분석 도구입니다.',
+      title: '템플릿 분석 | 미리캔버스 분석 도구 | 스톡 크리에이터 분석 플랫폼',
+      description: '미리캔버스 스톡 작가를 위한 템플릿 분석 도구입니다.',
     };
   }
 
@@ -798,7 +798,7 @@ function buildStructuredData(pathname, origin, canonicalUrl) {
       '@type': 'WebSite',
       name: '스톡 크리에이터 분석 도구',
       url: `${origin}/`,
-      description: '스톡 작가와 디지털 크리에이터를 위한 키워드 분석, 메타태그 분석, 템플릿 분석 도구',
+      description: '스톡 작가와 디지털 크리에이터를 위한 키워드 분석, 템플릿 분석 도구',
       inLanguage: 'ko-KR',
     },
     {
@@ -864,7 +864,7 @@ function buildBreadcrumbItems(pathname) {
     return [
       { label: '홈', href: '/' },
       { label: '미리캔버스', href: '/miricanvas' },
-      { label: '요소 메타태그 추출기', href: '/miricanvas/tag' },
+      { label: '키워드 분석', href: '/miricanvas/tag' },
     ];
   }
 
@@ -872,7 +872,7 @@ function buildBreadcrumbItems(pathname) {
     return [
       { label: '홈', href: '/' },
       { label: '미리캔버스', href: '/miricanvas' },
-      { label: '템플릿 트렌드 분석기', href: '/miricanvas/template' },
+      { label: '템플릿 분석', href: '/miricanvas/template' },
     ];
   }
 
@@ -916,7 +916,7 @@ function htmlPage(pathname, origin, options = {}) {
     ? '스톡 작가를 위한 분석 도구'
     : isMiricanvasPage
       ? '미리캔버스 분석 도구'
-    : staticPage?.title?.split(' | ')[0] || (isTemplatePage ? '템플릿 트렌드 분석기' : '요소 메타태그 추출기');
+    : staticPage?.title?.split(' | ')[0] || (isTemplatePage ? '템플릿 분석' : '키워드 분석');
   const heroDesc = isNotFoundPage
     ? '요청하신 페이지가 삭제되었거나 주소가 변경되었을 수 있습니다.'
     : isHomePage
@@ -925,7 +925,7 @@ function htmlPage(pathname, origin, options = {}) {
       ? '미리캔버스에서 스톡 콘텐츠를 제작하는 크리에이터를 위한 분석 도구입니다.'
     : staticPage?.description || (isTemplatePage
       ? '상위 템플릿 데이터를 분석하여 제목 키워드, 페이지 수, 제목 패턴을 확인할 수 있는 템플릿 분석 도구입니다.'
-      : '플랫폼 내 인기 요소를 분석하여 자주 사용되는 키워드와 메타태그 패턴을 확인할 수 있는 메타태그 분석 도구입니다.');
+      : '플랫폼 내 인기 요소를 분석하여 자주 사용되는 키워드와 태그 패턴을 확인할 수 있는 키워드 분석 도구입니다.');
   const structuredDataScripts = buildStructuredData(isNotFoundPage ? '__404__' : pathname, origin, canonicalUrl);
   const breadcrumbItems = isNotFoundPage ? [] : buildBreadcrumbItems(pathname);
   const breadcrumbHtml = breadcrumbItems.length > 0
@@ -956,7 +956,7 @@ function htmlPage(pathname, origin, options = {}) {
         <div class="selected-type" id="selectedTemplateTypeText">선택됨: 웹 > 프레젠테이션</div>
 
         <div class="actions">
-          <button class="primary" id="templateRunBtn">트렌드 분석</button>
+          <button class="primary" id="templateRunBtn">템플릿 분석</button>
         </div>
         <div class="status" id="status">대기 중</div>
       </section>
@@ -971,7 +971,7 @@ function htmlPage(pathname, origin, options = {}) {
 빙수
 아이스크림"></textarea>
         <div class="actions">
-          <button class="primary" id="runBtn">메타태그 추출</button>
+          <button class="primary" id="runBtn">키워드 분석</button>
         </div>
         <div class="status" id="status">대기 중</div>
       </section>
@@ -982,8 +982,8 @@ function htmlPage(pathname, origin, options = {}) {
       <section class="page-card stack">
         <div class="eyebrow">Platform Vision</div>
         <h2>플랫폼 중심으로 확장되는 스톡 작가를 위한 분석 도구</h2>
-        <p>스톡 작가와 디지털 크리에이터가 키워드 흐름, 메타태그 패턴, 템플릿 트렌드를 더 빠르게 파악할 수 있도록 돕는 서비스입니다.</p>
-        <p>플랫폼별 특성에 맞춰 키워드 분석, 메타태그 분석, 트렌드 분석, 콘텐츠 전략 수립을 지원하는 구조로 발전시키는 것이 목표입니다. 지금은 미리캔버스가 사용 가능한 상태이며, 나머지 플랫폼은 준비중 페이지에서 향후 제공 방향을 안내합니다.</p>
+        <p>스톡 작가와 디지털 크리에이터가 키워드 흐름과 템플릿 흐름을 더 빠르게 파악할 수 있도록 돕는 서비스입니다.</p>
+        <p>플랫폼별 특성에 맞춰 키워드 분석, 템플릿 분석, 콘텐츠 전략 수립을 지원하는 구조로 발전시키는 것이 목표입니다. 지금은 미리캔버스가 사용 가능한 상태이며, 나머지 플랫폼은 준비중 페이지에서 향후 제공 방향을 안내합니다.</p>
       </section>
 
       <section class="platform-grid">
@@ -997,8 +997,8 @@ function htmlPage(pathname, origin, options = {}) {
           <h2>미리캔버스</h2>
           <p>미리캔버스 스톡 콘텐츠 제작자를 위한 분석 도구입니다.</p>
           <ul class="feature-list feature-checklist">
-            <li>요소 메타태그 분석</li>
-            <li>템플릿 트렌드 분석</li>
+            <li>키워드 분석</li>
+            <li>템플릿 분석</li>
           </ul>
           <a class="cta-link" href="/miricanvas">분석 시작</a>
         </article>
@@ -1042,20 +1042,20 @@ function htmlPage(pathname, origin, options = {}) {
       <section class="page-card stack">
         <div class="eyebrow">Miricanvas Platform</div>
         <h2>미리캔버스에서 스톡 콘텐츠를 제작하는 크리에이터를 위한 분석 도구</h2>
-        <p>미리캔버스 분석 도구는 스톡 작가와 디지털 크리에이터가 요소 메타태그 흐름과 인기 템플릿 제목 패턴을 빠르게 파악할 수 있도록 설계되어 있습니다.</p>
+        <p>미리캔버스 분석 도구는 스톡 작가와 디지털 크리에이터가 키워드 흐름과 인기 템플릿 제목 패턴을 빠르게 파악할 수 있도록 설계되어 있습니다.</p>
       </section>
 
       <section class="home-grid">
         <article class="feature-card">
-          <div class="eyebrow">MetaTag Analysis</div>
-          <h2>요소 메타태그 추출기</h2>
-          <p>업로드된 요소의 메타태그와 키워드 패턴을 분석합니다.</p>
-          <a class="cta-link" href="/miricanvas/tag">메타태그 분석 시작</a>
+          <div class="eyebrow">Keyword Analysis</div>
+          <h2>키워드 분석</h2>
+          <p>업로드된 요소의 키워드와 태그 패턴을 분석합니다.</p>
+          <a class="cta-link" href="/miricanvas/tag">키워드 분석 시작</a>
         </article>
         <article class="feature-card">
-          <div class="eyebrow">Template Trend</div>
-          <h2>템플릿 트렌드 분석기</h2>
-          <p>인기 템플릿의 제목 키워드와 트렌드를 분석합니다.</p>
+          <div class="eyebrow">Template Analysis</div>
+          <h2>템플릿 분석</h2>
+          <p>인기 템플릿의 제목 키워드와 흐름을 분석합니다.</p>
           <a class="cta-link" href="/miricanvas/template">템플릿 분석 시작</a>
         </article>
       </section>
@@ -1081,8 +1081,8 @@ function htmlPage(pathname, origin, options = {}) {
         <p>요청하신 페이지가 삭제되었거나 주소가 변경되었을 수 있습니다.</p>
         <div class="actions">
           <a class="cta-link" href="/">홈으로 이동</a>
-          <a class="ghost-link" href="/miricanvas/tag">요소 메타태그 추출기</a>
-          <a class="ghost-link" href="/miricanvas/template">템플릿 트렌드 분석기</a>
+          <a class="ghost-link" href="/miricanvas/tag">키워드 분석</a>
+          <a class="ghost-link" href="/miricanvas/template">템플릿 분석</a>
         </div>
       </section>
     </div>
@@ -2014,7 +2014,7 @@ function htmlPage(pathname, origin, options = {}) {
       }
 
       if (keywords.length > 1) {
-        throw new Error('템플릿 트렌드 분석기는 키워드 1개만 입력할 수 있습니다.');
+        throw new Error('템플릿 분석은 키워드 1개만 입력할 수 있습니다.');
       }
 
       return keywords[0];
@@ -2583,7 +2583,7 @@ function htmlPage(pathname, origin, options = {}) {
         templateKeywordEl.value = keyword;
       }
 
-      setStatus('템플릿 트렌드 분석 중...');
+      setStatus('템플릿 분석 중...');
       resultPanelEl.innerHTML = '<div class="result-empty">처리 중...</div>';
       lastTemplateResult = null;
 
@@ -2605,7 +2605,7 @@ function htmlPage(pathname, origin, options = {}) {
         }
 
         renderTemplateResult(data, selectedTab);
-        setStatus('템플릿 트렌드 분석 완료');
+        setStatus('템플릿 분석 완료');
       } catch (error) {
         resultPanelEl.innerHTML = '<div class="result-empty">' + (error?.message || String(error)) + '</div>';
         setStatus('실패');
