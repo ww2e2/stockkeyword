@@ -637,7 +637,7 @@ const HOME_FAQ_ITEMS = [
   },
   {
     question: '키워드 분석은 어떻게 활용하나요?',
-    answer: '키워드 분석은 특정 키워드와 관련된 인기 요소를 분석해 자주 사용되는 태그와 키워드 패턴을 정리합니다. 스톡 이미지 업로드 전 키워드 전략을 세우거나 태그 후보를 정리할 때 유용합니다.',
+    answer: '키워드 분석은 특정 키워드와 관련된 실시간 상위 요소를 분석해 가장 많이 사용되는 키워드를 추천합니다. 스톡 이미지 업로드 전 키워드 전략을 세우거나 상위 노출용 키워드를 정리할 때 유용합니다.',
   },
   {
     question: '스톡 작가에게 어떤 도움이 되나요?',
@@ -652,7 +652,7 @@ const MIRICANVAS_FAQ_ITEMS = [
   },
   {
     question: '키워드 분석은 어떤 용도인가요?',
-    answer: '업로드된 요소의 키워드와 태그 패턴을 빠르게 확인하는 용도입니다. 자주 쓰이는 키워드를 정리해 업로드 전략이나 키워드 설계에 활용할 수 있습니다.',
+    answer: '실시간 상위 요소를 바탕으로 많이 사용되는 키워드를 빠르게 확인하는 용도입니다. 자주 쓰이는 키워드를 정리해 업로드 전략이나 키워드 설계에 활용할 수 있습니다.',
   },
   {
     question: '템플릿 분석은 어떤 용도인가요?',
@@ -799,7 +799,7 @@ function buildPageSeo(pathname) {
   if (pathname === '/miricanvas/tag') {
     return {
       title: '키워드 분석 | 미리캔버스 분석 도구 | 스톡 크리에이터 분석 플랫폼',
-      description: '미리캔버스 업로드 요소의 키워드와 태그 패턴을 분석하는 도구입니다. 스톡 콘텐츠 키워드 전략 수립에 활용할 수 있습니다.',
+      description: '실시간 상위 요소를 분석하여 가장 많이 사용되는 키워드를 추천하는 도구입니다. 스톡 콘텐츠 키워드 전략 수립에 활용할 수 있습니다.',
     };
   }
 
@@ -950,7 +950,7 @@ function htmlPage(pathname, origin, options = {}) {
       ? '미리캔버스에서 스톡 콘텐츠를 제작하는 크리에이터를 위한 분석 도구입니다.'
     : staticPage?.description || (isTemplatePage
       ? '상위 템플릿 데이터를 분석하여 제목 키워드, 페이지 수, 제목 패턴을 확인할 수 있는 템플릿 분석 도구입니다.'
-      : '플랫폼 내 인기 요소를 분석하여 자주 사용되는 키워드와 태그 패턴을 확인할 수 있는 키워드 분석 도구입니다.');
+      : '실시간 상위 요소를 분석하여 가장 많이 사용되는 키워드를 추천하는 키워드 분석 도구입니다.');
   const structuredDataScripts = buildStructuredData(isNotFoundPage ? '__404__' : pathname, origin, canonicalUrl);
   const breadcrumbItems = isNotFoundPage ? [] : buildBreadcrumbItems(pathname);
   const breadcrumbHtml = breadcrumbItems.length > 0
@@ -1074,7 +1074,7 @@ function htmlPage(pathname, origin, options = {}) {
         <article class="feature-card">
           <div class="eyebrow">Keyword Analysis</div>
           <h2>키워드 분석</h2>
-          <p>업로드된 요소의 키워드와 태그 패턴을 분석합니다.</p>
+          <p>실시간 상위 요소를 분석하여 가장 많이 사용되는 키워드를 추천합니다.</p>
           <a class="cta-link" href="/miricanvas/tag">키워드 분석 시작</a>
         </article>
         <article class="feature-card">
