@@ -156,7 +156,7 @@ function buildRobotsTxt(origin) {
 
 function buildSitemapXml(origin) {
   const lastmod = getCollectedDate();
-  const urls = ['/', '/miricanvas', '/miricanvas/tag', '/miricanvas/template', '/canva', '/adobe-stock', '/about', '/privacy', '/terms', '/contact'];
+  const urls = ['/', '/miricanvas', '/miricanvas/tag', '/miricanvas/template', '/miricanvas/rankings', '/canva', '/adobe-stock', '/about', '/privacy', '/terms', '/contact'];
   const urlset = urls.map((path) => {
     const loc = `${origin}${path === '/' ? '/' : path}`;
     return [
@@ -990,6 +990,13 @@ function buildPageSeo(pathname) {
     };
   }
 
+  if (pathname === '/miricanvas/rankings') {
+    return {
+      title: '이번달 인기 검색 순위 | 미리캔버스 분석 도구 | 스톡 크리에이터 분석 플랫폼',
+      description: '이번달 키워드 검색 순위, 템플릿 종류 검색 순위, 템플릿 키워드 검색 순위를 확인할 수 있습니다.',
+    };
+  }
+
   return {
     title: STATIC_PAGE_CONTENT[pathname]?.title || '스톡 크리에이터 분석 도구',
     description: STATIC_PAGE_CONTENT[pathname]?.description || '스톡 작가와 디지털 크리에이터를 위한 분석 도구입니다.',
@@ -1081,6 +1088,14 @@ function buildBreadcrumbItems(pathname) {
     ];
   }
 
+  if (pathname === '/miricanvas/rankings') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '미리캔버스', href: '/miricanvas' },
+      { label: '이번달 인기 검색 순위', href: '/miricanvas/rankings' },
+    ];
+  }
+
   if (pathname === '/canva') {
     return [
       { label: '홈', href: '/' },
@@ -1105,6 +1120,7 @@ function htmlPage(pathname, origin, options = {}) {
   const isMiricanvasPage = pathname === '/miricanvas';
   const isTemplatePage = pathname === '/miricanvas/template';
   const isElementPage = pathname === '/miricanvas/tag';
+  const isRankingsPage = pathname === '/miricanvas/rankings';
   const activeMenu = pathname.startsWith('/miricanvas')
     ? 'miricanvas'
     : pathname === '/canva'
@@ -1121,13 +1137,15 @@ function htmlPage(pathname, origin, options = {}) {
     ? '스톡 작가를 위한 분석 도구'
     : isMiricanvasPage
       ? '미리캔버스 분석 도구'
-    : staticPage?.title?.split(' | ')[0] || (isTemplatePage ? '템플릿 분석' : '키워드 분석');
+    : staticPage?.title?.split(' | ')[0] || (isRankingsPage ? '이번달 인기 검색 순위' : isTemplatePage ? '템플릿 분석' : '키워드 분석');
   const heroDesc = isNotFoundPage
     ? '요청하신 페이지가 삭제되었거나 주소가 변경되었을 수 있습니다.'
     : isHomePage
     ? '스톡 콘텐츠 제작에 필요한 상위 노출 키워드를 분석합니다.'
     : isMiricanvasPage
       ? '미리캔버스에서 스톡 콘텐츠를 제작하는 크리에이터를 위한 분석 도구입니다.'
+    : isRankingsPage
+      ? '이번달 키워드 검색 순위와 템플릿 검색 순위를 확인할 수 있습니다.'
     : staticPage?.description || (isTemplatePage
       ? '상위 템플릿 데이터를 분석하여 제목 키워드, 페이지 수, 제목 패턴을 확인할 수 있는 템플릿 분석 도구입니다.'
       : '실시간 상위 요소를 분석하여 가장 많이 사용되는 키워드를 추천하는 키워드 분석 도구입니다.');
@@ -1267,20 +1285,7 @@ function htmlPage(pathname, origin, options = {}) {
           <div class="eyebrow">Monthly Rankings</div>
           <h2>이번달 인기 검색 순위</h2>
           <p>이번달 사용자 검색 데이터를 기준으로 많이 찾은 키워드와 템플릿을 정리합니다.</p>
-          <div class="compact-ranking-panel" id="rankingPanel">
-            <section class="summary-card">
-              <h3>이번달 키워드 검색 순위 TOP 20</h3>
-              <div class="result-empty">불러오는 중...</div>
-            </section>
-            <section class="summary-card">
-              <h3>이번달 템플릿 종류 검색 순위 TOP 20</h3>
-              <div class="result-empty">불러오는 중...</div>
-            </section>
-            <section class="summary-card">
-              <h3>이번달 템플릿 키워드 검색 순위 TOP 20</h3>
-              <div class="result-empty">불러오는 중...</div>
-            </section>
-          </div>
+          <a class="cta-link" href="/miricanvas/rankings">인기 검색 순위 확인</a>
         </article>
       </section>
 
@@ -1312,12 +1317,38 @@ function htmlPage(pathname, origin, options = {}) {
     </div>
   `;
 
+  const rankingsHtml = `
+    <div class="page-grid">
+      <section class="page-card stack">
+        <div class="eyebrow">Monthly Rankings</div>
+        <h2>이번달 인기 검색 순위</h2>
+        <p>이번달 사용자 검색 데이터를 기준으로 많이 찾은 키워드와 템플릿을 정리합니다.</p>
+        <div class="summary-grid" id="rankingPanel">
+          <section class="summary-card">
+            <h3>이번달 키워드 검색 순위 TOP 20</h3>
+            <div class="result-empty">불러오는 중...</div>
+          </section>
+          <section class="summary-card">
+            <h3>이번달 템플릿 종류 검색 순위 TOP 20</h3>
+            <div class="result-empty">불러오는 중...</div>
+          </section>
+          <section class="summary-card">
+            <h3>이번달 템플릿 키워드 검색 순위 TOP 20</h3>
+            <div class="result-empty">불러오는 중...</div>
+          </section>
+        </div>
+      </section>
+    </div>
+  `;
+
   const contentHtml = isNotFoundPage
     ? notFoundHtml
     : isHomePage
       ? homeHtml
     : isMiricanvasPage
       ? miricanvasHtml
+    : isRankingsPage
+      ? rankingsHtml
     : staticPage
       ? `<div class="page-grid">${staticPage.content}</div>`
       : `
@@ -3193,6 +3224,7 @@ export async function requestHandler(req, res) {
         requestUrl.pathname === '/miricanvas' ||
         requestUrl.pathname === '/miricanvas/tag' ||
         requestUrl.pathname === '/miricanvas/template' ||
+        requestUrl.pathname === '/miricanvas/rankings' ||
         requestUrl.pathname === '/canva' ||
         requestUrl.pathname === '/adobe-stock' ||
         requestUrl.pathname === '/about' ||
