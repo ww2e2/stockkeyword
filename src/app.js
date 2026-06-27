@@ -1230,26 +1230,6 @@ function htmlPage(pathname, origin, options = {}) {
       </section>
 
       <section class="page-card stack">
-        <div class="eyebrow">Monthly Rankings</div>
-        <h2>이번달 인기 검색 순위</h2>
-        <p>이번달 사용자 검색 데이터를 기준으로 많이 찾은 키워드와 템플릿을 정리합니다.</p>
-        <div class="summary-grid" id="rankingPanel">
-          <section class="summary-card">
-            <h2>이번달 키워드 검색 순위 TOP 20</h2>
-            <div class="result-empty">불러오는 중...</div>
-          </section>
-          <section class="summary-card">
-            <h2>이번달 템플릿 종류 검색 순위 TOP 20</h2>
-            <div class="result-empty">불러오는 중...</div>
-          </section>
-          <section class="summary-card">
-            <h2>이번달 템플릿 키워드 검색 순위 TOP 20</h2>
-            <div class="result-empty">불러오는 중...</div>
-          </section>
-        </div>
-      </section>
-
-      <section class="page-card stack">
         <div class="eyebrow">FAQ</div>
         <h2>자주 묻는 질문</h2>
         ${HOME_FAQ_ITEMS.map((item) => `
@@ -1270,7 +1250,7 @@ function htmlPage(pathname, origin, options = {}) {
         <p>미리캔버스 분석 도구는 스톡 작가와 디지털 크리에이터가 상위 노출 키워드와 인기 템플릿 제목 패턴을 빠르게 파악할 수 있도록 설계되어 있습니다.</p>
       </section>
 
-      <section class="home-grid">
+      <section class="miricanvas-tool-grid">
         <article class="feature-card">
           <div class="eyebrow">Keyword Analysis</div>
           <h2>키워드 분석</h2>
@@ -1282,6 +1262,25 @@ function htmlPage(pathname, origin, options = {}) {
           <h2>템플릿 분석</h2>
           <p>인기 템플릿의 제목 키워드와 상위 노출 패턴을 분석합니다.</p>
           <a class="cta-link" href="/miricanvas/template">템플릿 분석 시작</a>
+        </article>
+        <article class="feature-card">
+          <div class="eyebrow">Monthly Rankings</div>
+          <h2>이번달 인기 검색 순위</h2>
+          <p>이번달 사용자 검색 데이터를 기준으로 많이 찾은 키워드와 템플릿을 정리합니다.</p>
+          <div class="compact-ranking-panel" id="rankingPanel">
+            <section class="summary-card">
+              <h3>이번달 키워드 검색 순위 TOP 20</h3>
+              <div class="result-empty">불러오는 중...</div>
+            </section>
+            <section class="summary-card">
+              <h3>이번달 템플릿 종류 검색 순위 TOP 20</h3>
+              <div class="result-empty">불러오는 중...</div>
+            </section>
+            <section class="summary-card">
+              <h3>이번달 템플릿 키워드 검색 순위 TOP 20</h3>
+              <div class="result-empty">불러오는 중...</div>
+            </section>
+          </div>
         </article>
       </section>
 
@@ -1473,6 +1472,12 @@ function htmlPage(pathname, origin, options = {}) {
       margin-top: 20px;
     }
 
+    .miricanvas-tool-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
     .platform-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1527,6 +1532,22 @@ function htmlPage(pathname, origin, options = {}) {
       border-radius: 24px;
       padding: 22px;
       box-shadow: var(--shadow);
+    }
+
+    .compact-ranking-panel {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .compact-ranking-panel .summary-card {
+      padding: 16px;
+      border-radius: 18px;
+    }
+
+    .compact-ranking-panel .summary-card h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
     }
 
     .summary-card h3 {
@@ -2146,6 +2167,10 @@ function htmlPage(pathname, origin, options = {}) {
       }
 
       .platform-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .miricanvas-tool-grid {
         grid-template-columns: 1fr;
       }
 
