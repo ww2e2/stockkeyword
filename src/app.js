@@ -945,6 +945,57 @@ const STATIC_PAGE_CONTENT = {
   },
 };
 
+Object.assign(STATIC_PAGE_CONTENT, {
+  '/about': {
+    title: '서비스 소개 | 스톡 크리에이터 분석 도구',
+    description: '스톡 콘텐츠 제작자를 위한 키워드 분석 및 템플릿 분석 서비스 소개 페이지입니다.',
+    content: `
+      <section class="page-card stack">
+        <h2>서비스 소개</h2>
+        <p>이 서비스는 스톡 콘텐츠 제작에 필요한 키워드와 템플릿 흐름을 조금 더 쉽게 확인할 수 있도록 만든 분석 도구입니다. 복잡한 조사 과정을 줄이고, 제작 전에 참고할 수 있는 정리된 데이터를 빠르게 확인하는 데 초점을 두고 있습니다.</p>
+        <p>현재는 미리캔버스 기반의 키워드 분석과 템플릿 분석 기능을 제공하고 있습니다. 사용자는 입력한 검색어를 바탕으로 많이 사용되는 키워드를 확인하거나, 템플릿 제목 패턴을 참고해 제작 방향을 잡을 수 있습니다.</p>
+        <p>서비스는 운영 과정에서 계속 내용을 다듬고 있으며, 필요한 범위 안에서 기능과 안내 문구가 변경될 수 있습니다. 전반적으로는 스톡 콘텐츠 제작자가 참고용 데이터와 흐름을 편하게 볼 수 있는 실용적인 도구를 지향합니다.</p>
+      </section>
+    `,
+  },
+  '/privacy': {
+    title: '개인정보처리방침 | 스톡 크리에이터 분석 도구',
+    description: '서비스 운영에 필요한 범위의 데이터 처리 방식을 안내하는 개인정보처리방침입니다.',
+    content: `
+      <section class="page-card stack">
+        <h2>개인정보처리방침</h2>
+        <p>본 서비스는 회원가입이나 결제 기능이 없는 간단한 분석 도구이며, 일반적으로 직접적인 개인정보를 폭넓게 수집하지 않습니다. 다만 서비스 제공과 운영을 위해 검색어, 이용 기록, 접속 정보, 로그성 데이터 등이 저장될 수 있습니다.</p>
+        <p>저장되는 데이터는 분석 결과 제공, 서비스 운영, 오류 확인, 품질 개선, 인기 검색 순위 집계 등 기본적인 운영 목적 범위 안에서 활용됩니다. 서비스 운영에 필요한 일부 외부 서비스가 함께 사용될 수 있으며, 이 과정에서 관련 데이터가 처리될 수 있습니다.</p>
+        <p>본 서비스는 수집된 데이터를 운영에 필요한 범위에서 관리하며, 정책이나 운영 방식이 변경되는 경우 본 페이지를 통해 내용을 갱신할 수 있습니다.</p>
+      </section>
+    `,
+  },
+  '/terms': {
+    title: '이용약관 | 스톡 크리에이터 분석 도구',
+    description: '서비스 이용에 관한 기본 안내와 운영 원칙을 정리한 이용약관입니다.',
+    content: `
+      <section class="page-card stack">
+        <h2>이용약관</h2>
+        <p>본 서비스는 키워드 분석, 템플릿 분석, 인기 검색 순위 확인 등 콘텐츠 제작에 참고할 수 있는 정보를 제공하는 온라인 도구입니다. 사용자는 정상적인 범위 안에서 서비스를 이용해야 하며, 운영을 방해하거나 과도한 자동 요청을 발생시키는 방식의 사용은 제한될 수 있습니다.</p>
+        <p>서비스에서 제공하는 결과와 데이터는 참고용 정보입니다. 외부 데이터나 운영 환경의 변화에 따라 결과 형식이나 제공 내용이 달라질 수 있으며, 특정 노출 성과나 결과를 보장하지는 않습니다.</p>
+        <p>운영자는 서비스 제공을 위해 필요한 범위에서 기능, 정책, 안내 문구를 조정할 수 있습니다. 사용자는 본 서비스를 이용함으로써 이러한 기본 운영 원칙에 동의한 것으로 봅니다.</p>
+      </section>
+    `,
+  },
+  '/contact': {
+    title: '문의 | 스톡 크리에이터 분석 도구',
+    description: '서비스 관련 문의와 안내를 위한 기본 페이지입니다.',
+    content: `
+      <section class="page-card stack">
+        <h2>문의</h2>
+        <p>본 페이지는 서비스 관련 문의와 안내를 위한 기본 페이지입니다. 기능 오류, 데이터 이상, 개선 제안, 운영 관련 문의가 있는 경우 추후 정식 문의 채널이 마련되면 이곳을 통해 안내할 예정입니다.</p>
+        <p>현재는 별도의 공식 문의 접수 채널을 정리 중이며, 서비스 내용과 운영 정책은 상황에 따라 조정될 수 있습니다. 필요한 경우 서비스 소개, 개인정보처리방침, 이용약관 페이지를 함께 참고해 주세요.</p>
+        <p>문의 응답 기준과 방식 역시 추후 본 페이지에서 함께 안내될 예정입니다.</p>
+      </section>
+    `,
+  },
+});
+
 function escapeHtml(value) {
   return String(value ?? '')
     .replace(/&/g, '&amp;')
@@ -1260,6 +1311,11 @@ function htmlPage(pathname, origin, options = {}) {
     </div>
   `;
 
+  const normalizedHomeHtml = homeHtml.replace(
+    '</ul>\n          <a class="cta-link" href="/miricanvas">',
+    '            <li>이번달 인기 검색 순위</li>\n          </ul>\n          <a class="cta-link" href="/miricanvas">'
+  );
+
   const miricanvasHtml = `
     <div class="page-grid">
       <section class="page-card stack">
@@ -1344,7 +1400,7 @@ function htmlPage(pathname, origin, options = {}) {
   const contentHtml = isNotFoundPage
     ? notFoundHtml
     : isHomePage
-      ? homeHtml
+      ? normalizedHomeHtml
     : isMiricanvasPage
       ? miricanvasHtml
     : isRankingsPage
