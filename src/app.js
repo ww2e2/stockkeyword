@@ -11,6 +11,8 @@ const MIRICANVAS_API_URL = process.env.MIRICANVAS_API_URL || '';
 const MIRICANVAS_API_METHOD = (process.env.MIRICANVAS_API_METHOD || 'GET').toUpperCase();
 const MIRICANVAS_API_HEADERS_JSON = process.env.MIRICANVAS_API_HEADERS_JSON || '';
 const MIRICANVAS_TEAM_IDX = process.env.MIRICANVAS_TEAM_IDX || '';
+const SUPABASE_URL = process.env.SUPABASE_URL || '';
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const TIME_ZONE = process.env.TIME_ZONE || 'Asia/Seoul';
 const MAX_KEYWORDS_PER_REQUEST = 5;
 const TEMPLATE_API_URL = 'https://api.miricanvas.com/template/api/p/template-pages/search';
@@ -50,6 +52,7 @@ const TEMPLATE_PURPOSE_BY_GROUP = {
 
 const DEFAULT_TEMPLATE_TIER = 'PREMIUM';
 const ADS_TXT_CONTENT = 'google.com, pub-3386559853644133, DIRECT, f08c47fec0942fa0';
+const SEARCH_PLATFORM = 'miricanvas';
 const FAVICON_FILE_MAP = new Map([
   ['/favicon.ico', { file: 'favicon.ico', contentType: 'image/x-icon' }],
   ['/favicon-16x16.png', { file: 'favicon-16x16.png', contentType: 'image/png' }],
@@ -134,6 +137,14 @@ function getCollectedDate() {
   }).format(new Date());
 }
 
+function getCollectedMonth() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+  }).format(new Date());
+}
+
 function buildRobotsTxt(origin) {
   return [
     'User-agent: *',
@@ -177,6 +188,163 @@ async function serveFaviconAsset(reqPath, res) {
   });
   res.end(fileBuffer);
   return true;
+}
+
+function isSupabaseConfigured() {
+  return Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
+}
+
+function buildSupabaseHeaders(extraHeaders = {}) {
+  return {
+    apikey: SUPABASE_SERVICE_ROLE_KEY,
+    Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+    ...extraHeaders,
+  };
+}
+
+async function logSearchEvent(event) {
+  if (!isSupabaseConfigured()) {
+    return;
+  }
+
+  const payload = {
+    source_platform: SEARCH_PLATFORM,
+    search_type: event.searchType,
+    keyword: cleanText(event.keyword),
+    template_type_value: cleanText(event.templateTypeValue),
+    template_type_label: cleanText(event.templateTypeLabel),
+    search_month: getCollectedMonth(),
+  };
+
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/search_logs`, {
+    method: 'POST',
+    headers: buildSupabaseHeaders({
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation',
+    }),
+    body: JSON.stringify([payload]),
+  });
+
+  const text = await response.text().catch(() => '');
+  if (!response.ok) {
+    throw new Error(`Supabase log insert failed: ${response.status} ${response.statusText} ${text}`.trim());
+  }
+
+  debugLog('[supabase:log:success]', JSON.stringify({
+    searchType: payload.search_type,
+    keyword: payload.keyword,
+    templateTypeValue: payload.template_type_value,
+    templateTypeLabel: payload.template_type_label,
+    response: text,
+  }));
+}
+
+async function safeLogSearchEvent(event) {
+  if (!isSupabaseConfigured()) {
+    return;
+  }
+
+  try {
+    await logSearchEvent(event);
+  } catch (error) {
+    console.error('[supabase:log:error]', JSON.stringify({
+      message: error?.message || String(error),
+      searchType: cleanText(event?.searchType),
+      keyword: cleanText(event?.keyword),
+      templateTypeValue: cleanText(event?.templateTypeValue),
+      templateTypeLabel: cleanText(event?.templateTypeLabel),
+      hasSupabaseUrl: Boolean(SUPABASE_URL),
+      hasServiceRoleKey: Boolean(SUPABASE_SERVICE_ROLE_KEY),
+    }));
+  }
+}
+
+async function fetchMonthlySearchLogs(searchMonth = getCollectedMonth()) {
+  if (!isSupabaseConfigured()) {
+    return [];
+  }
+
+  const params = new URLSearchParams();
+  params.set('select', 'search_type,keyword,template_type_value,template_type_label,search_month');
+  params.set('source_platform', `eq.${SEARCH_PLATFORM}`);
+  params.set('search_month', `eq.${searchMonth}`);
+  params.set('order', 'created_at.desc');
+  params.set('limit', '5000');
+
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/search_logs?${params.toString()}`, {
+    headers: buildSupabaseHeaders(),
+  });
+
+  const text = await response.text().catch(() => '');
+  if (!response.ok) {
+    throw new Error(`Supabase monthly logs fetch failed: ${response.status} ${response.statusText} ${text}`.trim());
+  }
+
+  if (!text.trim()) {
+    return [];
+  }
+
+  return JSON.parse(text);
+}
+
+function buildTopRankings(entries, buildItem, limit = 20) {
+  return [...entries.entries()]
+    .sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0]), 'ko'))
+    .slice(0, limit)
+    .map(([value, count], index) => buildItem(value, count, index));
+}
+
+function aggregateMonthlyRankings(logs, searchMonth = getCollectedMonth()) {
+  const keywordCounts = new Map();
+  const templateTypeCounts = new Map();
+  const templateKeywordCounts = new Map();
+
+  for (const log of logs) {
+    const searchType = cleanText(log?.search_type);
+    const keyword = cleanText(log?.keyword);
+    const templateTypeLabel = cleanText(log?.template_type_label);
+    const templateTypeValue = cleanText(log?.template_type_value);
+
+    if (searchType === 'keyword' && keyword) {
+      keywordCounts.set(keyword, (keywordCounts.get(keyword) || 0) + 1);
+    }
+
+    if (searchType === 'template') {
+      if (templateTypeLabel || templateTypeValue) {
+        const templateKey = templateTypeLabel || templateTypeValue;
+        templateTypeCounts.set(templateKey, (templateTypeCounts.get(templateKey) || 0) + 1);
+      }
+
+      if (keyword) {
+        templateKeywordCounts.set(keyword, (templateKeywordCounts.get(keyword) || 0) + 1);
+      }
+    }
+  }
+
+  return {
+    searchMonth,
+    keywordSearchTop20: buildTopRankings(keywordCounts, (keyword, count, index) => ({
+      rank: index + 1,
+      keyword,
+      count,
+    })),
+    templateTypeTop20: buildTopRankings(templateTypeCounts, (label, count, index) => ({
+      rank: index + 1,
+      label,
+      count,
+    })),
+    templateKeywordTop20: buildTopRankings(templateKeywordCounts, (keyword, count, index) => ({
+      rank: index + 1,
+      keyword,
+      count,
+    })),
+  };
+}
+
+async function getMonthlyRankings() {
+  const searchMonth = getCollectedMonth();
+  const logs = await fetchMonthlySearchLogs(searchMonth);
+  return aggregateMonthlyRankings(logs, searchMonth);
 }
 
 function parseJsonObject(raw, label) {
@@ -495,6 +663,11 @@ async function collectTopTags(keyword) {
     debugWarn('[miricanvas:warning] keyword-related matches are missing. Falling back to the full result list.');
   }
 
+  await safeLogSearchEvent({
+    searchType: 'keyword',
+    keyword,
+  });
+
   return {
     keyword,
     listCount: list.length,
@@ -588,6 +761,13 @@ async function collectTemplateTrend(keyword, typeValue) {
       titleKeywordCount: titleTokens.length,
     })
   );
+
+  await safeLogSearchEvent({
+    searchType: 'template',
+    keyword,
+    templateTypeValue: typeConfig.value,
+    templateTypeLabel: typeConfig.label,
+  });
 
   return {
     keyword,
@@ -1050,6 +1230,26 @@ function htmlPage(pathname, origin, options = {}) {
       </section>
 
       <section class="page-card stack">
+        <div class="eyebrow">Monthly Rankings</div>
+        <h2>이번달 인기 검색 순위</h2>
+        <p>이번달 사용자 검색 데이터를 기준으로 많이 찾은 키워드와 템플릿을 정리합니다.</p>
+        <div class="summary-grid" id="rankingPanel">
+          <section class="summary-card">
+            <h2>이번달 키워드 검색 순위 TOP 20</h2>
+            <div class="result-empty">불러오는 중...</div>
+          </section>
+          <section class="summary-card">
+            <h2>이번달 템플릿 종류 검색 순위 TOP 20</h2>
+            <div class="result-empty">불러오는 중...</div>
+          </section>
+          <section class="summary-card">
+            <h2>이번달 템플릿 키워드 검색 순위 TOP 20</h2>
+            <div class="result-empty">불러오는 중...</div>
+          </section>
+        </div>
+      </section>
+
+      <section class="page-card stack">
         <div class="eyebrow">FAQ</div>
         <h2>자주 묻는 질문</h2>
         ${HOME_FAQ_ITEMS.map((item) => `
@@ -1327,6 +1527,50 @@ function htmlPage(pathname, origin, options = {}) {
       border-radius: 24px;
       padding: 22px;
       box-shadow: var(--shadow);
+    }
+
+    .summary-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .rank-list {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .rank-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .rank-order {
+      font-weight: 800;
+      color: var(--accent);
+      min-width: 28px;
+    }
+
+    .rank-label {
+      color: var(--text);
+      line-height: 1.5;
+      word-break: keep-all;
+    }
+
+    .rank-count {
+      color: var(--muted);
+      font-weight: 700;
+      white-space: nowrap;
     }
 
     .feature-card h2,
@@ -1978,6 +2222,7 @@ function htmlPage(pathname, origin, options = {}) {
     const templateTypePanelEl = document.getElementById('templateTypePanel');
     const selectedTemplateTypeTextEl = document.getElementById('selectedTemplateTypeText');
     const templateRunBtn = document.getElementById('templateRunBtn');
+    const rankingPanelEl = document.getElementById('rankingPanel');
 
     function debugLog(...args) {
       if (!DEBUG) return;
@@ -2121,6 +2366,93 @@ function htmlPage(pathname, origin, options = {}) {
         '&tab=' +
         encodeURIComponent(normalizeTemplateTab(tab))
       );
+    }
+
+    function createRankingCard(titleText, items, valueKey) {
+      const card = document.createElement('section');
+      card.className = 'summary-card';
+
+      const heading = document.createElement('h3');
+      heading.textContent = titleText;
+      card.appendChild(heading);
+
+      if (!items.length) {
+        const empty = document.createElement('div');
+        empty.className = 'result-empty';
+        empty.textContent = '이번달 데이터가 아직 없습니다.';
+        card.appendChild(empty);
+        return card;
+      }
+
+      const list = document.createElement('ol');
+      list.className = 'rank-list';
+
+      items.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'rank-item';
+
+        const rank = document.createElement('span');
+        rank.className = 'rank-order';
+        rank.textContent = String(index + 1);
+
+        const label = document.createElement('span');
+        label.className = 'rank-label';
+        label.textContent = item[valueKey] || '-';
+
+        const count = document.createElement('span');
+        count.className = 'rank-count';
+        count.textContent = (item.count || 0) + '회';
+
+        li.appendChild(rank);
+        li.appendChild(label);
+        li.appendChild(count);
+        list.appendChild(li);
+      });
+
+      card.appendChild(list);
+      return card;
+    }
+
+    function renderMonthlyRankings(data) {
+      if (!rankingPanelEl) return;
+      rankingPanelEl.innerHTML = '';
+
+      rankingPanelEl.appendChild(
+        createRankingCard('이번달 키워드 검색 순위 TOP 20', data.keywordSearchTop20 || [], 'keyword')
+      );
+      rankingPanelEl.appendChild(
+        createRankingCard('이번달 템플릿 종류 검색 순위 TOP 20', data.templateTypeTop20 || [], 'label')
+      );
+      rankingPanelEl.appendChild(
+        createRankingCard('이번달 템플릿 키워드 검색 순위 TOP 20', data.templateKeywordTop20 || [], 'keyword')
+      );
+    }
+
+    async function loadMonthlyRankings() {
+      if (!rankingPanelEl) return;
+
+      try {
+        const response = await fetch('/api/monthly-rankings');
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.error || '랭킹 요청 실패');
+        }
+
+        renderMonthlyRankings(data);
+      } catch (error) {
+        rankingPanelEl.innerHTML = '';
+        const card = document.createElement('section');
+        card.className = 'summary-card';
+        const heading = document.createElement('h3');
+        heading.textContent = '이번달 인기 검색 순위';
+        const empty = document.createElement('div');
+        empty.className = 'result-empty';
+        empty.textContent = error?.message || String(error);
+        card.appendChild(heading);
+        card.appendChild(empty);
+        rankingPanelEl.appendChild(card);
+      }
     }
 
     function getEditableTags(item) {
@@ -2769,6 +3101,10 @@ function htmlPage(pathname, origin, options = {}) {
       initializeTemplateTypePanel('presentation');
     }
 
+    if (rankingPanelEl) {
+      loadMonthlyRankings();
+    }
+
     if (CURRENT_PATH === '/miricanvas/tag') {
       loadElementResultPage();
     } else if (CURRENT_PATH === '/miricanvas/template') {
@@ -2859,6 +3195,18 @@ export async function requestHandler(req, res) {
       const result = await collectTopTags(keyword);
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify(result));
+      return;
+    }
+
+    if (req.method === 'GET' && req.url === '/api/monthly-rankings') {
+      try {
+        const result = await getMonthlyRankings();
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify(result));
+      } catch (error) {
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: error?.message || String(error) }));
+      }
       return;
     }
 
