@@ -1738,12 +1738,42 @@ function htmlPage(pathname, origin, options = {}) {
     }
 
     .tag {
-      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px 8px 12px;
       border-radius: 999px;
       background: var(--surface);
       color: var(--accent);
       font-size: 13px;
       border: 1px solid var(--border);
+    }
+
+    .tag-label {
+      line-height: 1;
+    }
+
+    .tag-remove {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      padding: 0;
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .tag-remove:hover {
+      background: rgba(37, 99, 235, 0.12);
     }
 
     .stack {
@@ -2093,21 +2123,52 @@ function htmlPage(pathname, origin, options = {}) {
       );
     }
 
-    function renderTags(tags) {
+    function getEditableTags(item) {
+      if (!Array.isArray(item.editableTopTags)) {
+        item.editableTopTags = [...(item.topTags || [])];
+      }
+
+      return item.editableTopTags;
+    }
+
+    function buildMetaTagString(tags) {
+      return tags.join(', ');
+    }
+
+    function renderTags(tags, onRemove) {
       const wrap = document.createElement('div');
       wrap.className = 'tags';
 
-      for (const tag of tags) {
-        const span = document.createElement('span');
-        span.className = 'tag';
-        span.textContent = tag;
-        wrap.appendChild(span);
+      for (const [index, tag] of tags.entries()) {
+        const chip = document.createElement('span');
+        chip.className = 'tag';
+
+        const label = document.createElement('span');
+        label.className = 'tag-label';
+        label.textContent = tag;
+        chip.appendChild(label);
+
+        if (typeof onRemove === 'function') {
+          const removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.className = 'tag-remove';
+          removeBtn.textContent = 'x';
+          removeBtn.setAttribute('aria-label', tag + ' 삭제');
+          removeBtn.addEventListener('click', () => {
+            onRemove(index);
+          });
+          chip.appendChild(removeBtn);
+        }
+
+        wrap.appendChild(chip);
       }
 
       return wrap;
     }
 
-    function createElementResultCard(item) {
+    function createElementResultCard(item, selectedIndex) {
+      const editableTags = getEditableTags(item);
+      const metaTagString = buildMetaTagString(editableTags);
       const card = document.createElement('section');
       card.className = 'result-card';
 
@@ -2122,7 +2183,7 @@ function htmlPage(pathname, origin, options = {}) {
       copyBtn.className = 'secondary copy-chip';
       copyBtn.textContent = '복사하기';
       copyBtn.addEventListener('click', async () => {
-        await copyText(item.metaTagString || '', item.keyword + ' 복사 완료');
+        await copyText(metaTagString || '', item.keyword + ' 복사 완료');
       });
 
       head.appendChild(title);
@@ -2130,16 +2191,19 @@ function htmlPage(pathname, origin, options = {}) {
 
       const meta = document.createElement('div');
       meta.className = 'meta';
-      meta.textContent = '메타태그: ' + (item.topTags?.length || 0) + '개 / 수집일: ' + item.collectedAt;
+      meta.textContent = '메타태그: ' + editableTags.length + '개 / 수집일: ' + item.collectedAt;
 
       const text = document.createElement('div');
       text.className = 'result-text';
-      text.textContent = item.metaTagString || '(메타태그 없음)';
+      text.textContent = metaTagString || '(메타태그 없음)';
 
       card.appendChild(head);
       card.appendChild(meta);
       card.appendChild(text);
-      card.appendChild(renderTags(item.topTags || []));
+      card.appendChild(renderTags(editableTags, (tagIndex) => {
+        editableTags.splice(tagIndex, 1);
+        renderElementResults(lastResults, selectedIndex);
+      }));
 
       return card;
     }
@@ -2147,6 +2211,10 @@ function htmlPage(pathname, origin, options = {}) {
     function renderElementResults(results, selectedIndex = 0) {
       resultPanelEl.innerHTML = '';
       lastResults = results;
+
+      results.forEach((item) => {
+        getEditableTags(item);
+      });
 
       if (!results.length) {
         resultPanelEl.innerHTML = '<div class="result-empty">결과가 없습니다.</div>';
@@ -2169,7 +2237,7 @@ function htmlPage(pathname, origin, options = {}) {
       });
 
       resultPanelEl.appendChild(tabs);
-      resultPanelEl.appendChild(createElementResultCard(results[selectedIndex]));
+      resultPanelEl.appendChild(createElementResultCard(results[selectedIndex], selectedIndex));
     }
 
     function createMetricBlock(titleText, rows) {
