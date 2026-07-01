@@ -2,6 +2,7 @@
 import { readFile } from 'fs/promises';
 import dotenv from 'dotenv';
 import { TEMPLATE_TYPE_MAP } from './templateTypeMap.js';
+import { handleCrowdpicRequest } from './crowdpicPages.js';
 
 dotenv.config();
 
@@ -1072,7 +1073,9 @@ function buildPageSeo(pathname) {
   };
 }
 
-function buildStructuredData(pathname, origin, canonicalUrl) {
+function buildStructuredData(pathname, origin, canonicalUrl, options = {}) {
+  const seo = options.seo || buildPageSeo(pathname);
+  const faqItems = Array.isArray(options.faqItems) ? options.faqItems : [];
   const items = [
     {
       '@context': 'https://schema.org',
@@ -1121,12 +1124,27 @@ function buildStructuredData(pathname, origin, canonicalUrl) {
     });
   }
 
+  if (faqItems.length > 0) {
+    items.push({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqItems.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    });
+  }
+
   items.push({
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    name: buildPageSeo(pathname).title,
+    name: seo.title,
     url: canonicalUrl,
-    description: buildPageSeo(pathname).description,
+    description: seo.description,
     inLanguage: 'ko-KR',
   });
 
@@ -1141,24 +1159,26 @@ function htmlPage(pathname, origin, options = {}) {
   const isTemplatePage = pathname === '/miricanvas/template';
   const isElementPage = pathname === '/miricanvas/tag';
   const isRankingsPage = pathname === '/miricanvas/rankings';
-  const activeMenu = pathname.startsWith('/miricanvas')
+  const activeMenu = options.activeMenu || (pathname.startsWith('/miricanvas')
     ? 'miricanvas'
-    : pathname === '/canva'
-      ? 'canva'
+    : pathname.startsWith('/crowdpic')
+      ? 'crowdpic'
+      : pathname === '/canva'
+        ? 'canva'
         : pathname === '/adobe-stock'
           ? 'adobe-stock'
-          : 'home';
-  const seo = buildPageSeo(isNotFoundPage ? '__404__' : pathname);
+          : 'home');
+  const seo = options.seo || buildPageSeo(isNotFoundPage ? '__404__' : pathname);
   const canonicalPath = pathname === '/' ? '/' : pathname;
   const canonicalUrl = `${origin}${canonicalPath}`;
-  const heroTitle = isNotFoundPage
+  const heroTitle = options.heroTitle || (isNotFoundPage
     ? '페이지를 찾을 수 없습니다'
     : isHomePage
     ? '스톡 작가를 위한 분석 도구'
     : isMiricanvasPage
       ? '미리캔버스 분석 도구'
-    : staticPage?.title?.split(' | ')[0] || (isRankingsPage ? '이번달 인기 검색 순위' : isTemplatePage ? '템플릿 분석' : '키워드 분석');
-  const heroDesc = isNotFoundPage
+    : staticPage?.title?.split(' | ')[0] || (isRankingsPage ? '이번달 인기 검색 순위' : isTemplatePage ? '템플릿 분석' : '키워드 분석'));
+  const heroDesc = options.heroDesc || (isNotFoundPage
     ? '요청하신 페이지가 삭제되었거나 주소가 변경되었을 수 있습니다.'
     : isHomePage
     ? '스톡 콘텐츠 제작에 필요한 상위 노출 키워드를 분석합니다.'
@@ -1168,9 +1188,9 @@ function htmlPage(pathname, origin, options = {}) {
       ? '이번달 키워드 검색 순위와 템플릿 검색 순위를 확인할 수 있습니다.'
     : staticPage?.description || (isTemplatePage
       ? '상위 템플릿 데이터를 분석하여 제목 키워드, 페이지 수, 제목 패턴을 확인할 수 있는 템플릿 분석 도구입니다.'
-      : '실시간 상위 요소를 분석하여 가장 많이 사용되는 키워드를 추천하는 키워드 분석 도구입니다.');
-  const structuredDataScripts = buildStructuredData(isNotFoundPage ? '__404__' : pathname, origin, canonicalUrl);
-  const breadcrumbItems = isNotFoundPage ? [] : buildBreadcrumbItems(pathname);
+      : '실시간 상위 요소를 분석하여 가장 많이 사용되는 키워드를 추천하는 키워드 분석 도구입니다.'));
+  const structuredDataScripts = buildStructuredData(isNotFoundPage ? '__404__' : pathname, origin, canonicalUrl, { seo, faqItems: options.faqItems });
+  const breadcrumbItems = options.breadcrumbItems || (isNotFoundPage ? [] : buildBreadcrumbItems(pathname));
   const breadcrumbHtml = breadcrumbItems.length > 0
     ? `
       <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -1380,7 +1400,7 @@ function htmlPage(pathname, origin, options = {}) {
     </div>
   `;
 
-  const contentHtml = isNotFoundPage
+  const contentHtml = options.contentHtml || (isNotFoundPage
     ? notFoundHtml
     : isHomePage
       ? normalizedHomeHtml
@@ -1401,7 +1421,7 @@ function htmlPage(pathname, origin, options = {}) {
             </div>
           </section>
         </div>
-      `;
+      `);
 
   return `<!doctype html>
 <html lang="ko">
@@ -3252,6 +3272,10 @@ export async function requestHandler(req, res) {
       return;
     }
 
+    if (await handleCrowdpicRequest(req, res, requestUrl, htmlPage, readJsonBody)) {
+      return;
+    }
+
     if (req.method === 'GET' && requestUrl.pathname === '/sitemap.xml') {
       res.writeHead(200, { 'Content-Type': 'application/xml; charset=utf-8' });
       res.end(buildSitemapXml(requestUrl.origin));
@@ -3370,6 +3394,9 @@ export async function requestHandler(req, res) {
 }
 
 export default requestHandler;
+
+
+
 
 
 
