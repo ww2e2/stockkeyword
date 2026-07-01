@@ -169,7 +169,7 @@ function buildCrowdpicHomeCard() {
 }
 
 function insertCrowdpicHomeCard(html) {
-  if (html.includes('크라우드픽 전용 분석 모듈')) {
+  if (html.includes('\uD06C\uB77C\uC6B0\uB4DC\uD53D \uC804\uC6A9 \uBD84\uC11D \uBAA8\uB4C8') || html.includes('<h2>\uD06C\uB77C\uC6B0\uB4DC\uD53D</h2>')) {
     return html;
   }
 
@@ -554,12 +554,13 @@ export async function requestHandler(req, res) {
     const host = cleanText(req.headers.host) || 'localhost';
     const requestUrl = new URL(req.url, `${protocol}://${host}`);
     const pathname = requestUrl.pathname;
+    const normalizedPathname = pathname !== '/' ? pathname.replace(/\/+$/, '') || '/' : '/';
 
     if (!CROWDPIC_ENABLED) {
       return baseRequestHandler(req, res);
     }
 
-    if (req.method === 'GET' && pathname === '/crowdpic') {
+    if (req.method === 'GET' && normalizedPathname === '/crowdpic') {
       const seo = buildSeo('/crowdpic');
       const html = await renderPage(requestUrl.origin, pathname, seo, buildLandingMain());
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -567,7 +568,7 @@ export async function requestHandler(req, res) {
       return;
     }
 
-    if (req.method === 'GET' && pathname === '/crowdpic/tag') {
+    if (req.method === 'GET' && normalizedPathname === '/crowdpic/tag') {
       const keyword = cleanText(requestUrl.searchParams.get('q'));
       const category = normalizeCategory(requestUrl.searchParams.get('category'));
       let result = null;
@@ -583,7 +584,7 @@ export async function requestHandler(req, res) {
       return;
     }
 
-    if (req.method === 'GET' && pathname === '/crowdpic/rankings') {
+    if (req.method === 'GET' && normalizedPathname === '/crowdpic/rankings') {
       const rankings = await getMonthlyRankings();
       const seo = buildSeo('/crowdpic/rankings');
       const html = await renderPage(requestUrl.origin, pathname, seo, buildRankingMain(rankings));
