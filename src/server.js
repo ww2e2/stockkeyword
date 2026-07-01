@@ -1,6 +1,6 @@
 import http from 'http';
 import { pathToFileURL } from 'url';
-import requestHandler, { requestHandler as namedRequestHandler } from './app.js';
+import requestHandler, { requestHandler as namedRequestHandler } from './crowdpicWrapper.js';
 
 const PORT = Number(process.env.PORT || 3000);
 const DEBUG = String(process.env.DEBUG || 'false').toLowerCase() === 'true';
@@ -26,3 +26,4 @@ if (isMainModule()) {
     }
   });
 }
+

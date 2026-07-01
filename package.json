@@ -12,6 +12,12 @@
   "scripts": {
     "start": "node src/server.js",
     "verify:template-types": "node src/verify-template-types.js",
-    "apply:template-types": "node src/apply-template-types.js"
+    "apply:template-types": "node src/apply-template-types.js",
+    "test:adobe-fetch": "node scripts/test-adobe-fetch.js",
+    "test:adobe-playwright": "node scripts/test-adobe-playwright.js",
+    "test:adobe-official-api": "node scripts/test-adobe-official-api.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
   }
 }

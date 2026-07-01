@@ -1,4 +1,4 @@
-import http from 'http';
+﻿import http from 'http';
 import { readFile } from 'fs/promises';
 import dotenv from 'dotenv';
 import { TEMPLATE_TYPE_MAP } from './templateTypeMap.js';
@@ -16,7 +16,7 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const TIME_ZONE = process.env.TIME_ZONE || 'Asia/Seoul';
 const MAX_KEYWORDS_PER_REQUEST = 5;
 const TEMPLATE_API_URL = 'https://api.miricanvas.com/template/api/p/template-pages/search';
-const TEMPLATE_TYPE_FAILURE_MESSAGE = '해당 템플릿 종류의 분석 결과를 불러오지 못했습니다.';
+const TEMPLATE_TYPE_FAILURE_MESSAGE = '대상 템플릿 종류 분석 결과를 불러오지 못했습니다.';
 
 const MIRICANVAS_TYPES = [
   'ILLUST',
@@ -33,9 +33,9 @@ const MIRICANVAS_TYPES = [
 
 const TEMPLATE_FILTER_TABS = [
   { key: 'all', label: '전체' },
-  { key: '웹', label: '웹' },
-  { key: '동영상', label: '동영상' },
-  { key: '인쇄', label: '인쇄' },
+  { key: 'photo', label: '사진' },
+  { key: 'video', label: '동영상' },
+  { key: 'print', label: '인쇄' },
 ];
 
 const TEMPLATE_RESULT_TABS = [
@@ -45,9 +45,9 @@ const TEMPLATE_RESULT_TABS = [
 ];
 
 const TEMPLATE_PURPOSE_BY_GROUP = {
-  '웹': 'WEB',
-  '동영상': 'VIDEO',
-  '인쇄': 'PRINT',
+  photo: 'WEB',
+  video: 'VIDEO',
+  print: 'PRINT',
 };
 
 const DEFAULT_TEMPLATE_TIER = 'PREMIUM';
@@ -126,6 +126,15 @@ const TEMPLATE_RESULT_TAB_INDEX = new Map(TEMPLATE_RESULT_TABS.map((item) => [it
 
 function cleanText(value) {
   return String(value ?? '').replace(/\uFEFF/g, '').trim();
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function getCollectedDate() {
@@ -386,7 +395,7 @@ function parseKeywordsQuery(rawQuery) {
 
 function validateKeywordsLimit(keywords) {
   if (keywords.length > MAX_KEYWORDS_PER_REQUEST) {
-    throw new Error('한 번에 최대 5개 키워드까지 분석할 수 있습니다.');
+    throw new Error('??踰덉뿉 理쒕? 5媛??ㅼ썙?쒓퉴吏 遺꾩꽍?????덉뒿?덈떎.');
   }
 }
 
@@ -394,11 +403,11 @@ function parseSingleKeyword(input) {
   const keywords = parseKeywordsInput(input);
 
   if (keywords.length === 0) {
-    throw new Error('키워드를 입력하세요.');
+    throw new Error('?ㅼ썙?쒕? ?낅젰?섏꽭??');
   }
 
   if (keywords.length > 1) {
-    throw new Error('템플릿 분석은 키워드 1개만 입력할 수 있습니다.');
+    throw new Error('?쒗뵆由?遺꾩꽍? ?ㅼ썙??1媛쒕쭔 ?낅젰?????덉뒿?덈떎.');
   }
 
   return keywords[0];
@@ -409,7 +418,7 @@ function getTemplateTypeConfig(typeValue) {
   const config = TEMPLATE_TYPE_INDEX.get(value) || TEMPLATE_TYPE_API_INDEX.get(value);
 
   if (!config) {
-    throw new Error('유효한 템플릿 종류를 선택하세요.');
+    throw new Error('?좏슚???쒗뵆由?醫낅쪟瑜??좏깮?섏꽭??');
   }
 
   return config;
@@ -805,23 +814,23 @@ async function readJsonBody(req) {
 const HOME_FAQ_ITEMS = [
   {
     question: '이 서비스는 무엇인가요?',
-    answer: '이 서비스는 스톡 작가와 디지털 크리에이터를 위한 분석 도구입니다. 스톡 이미지, 스톡 콘텐츠, 템플릿 데이터에서 키워드 분석과 템플릿 분석을 할 수 있도록 설계되어 있습니다.',
+    answer: '이 서비스는 스톡 작가와 디지털 크리에이터를 위한 분석 도구입니다. 스톡 콘텐츠와 템플릿 데이터를에서 키워드 분석과 템플릿 분석을 빠르게 확인할 수 있도록 구성되어 있습니다.',
   },
   {
-    question: '어떤 플랫폼을 분석하나요?',
-    answer: '현재는 미리캔버스 기반 분석 기능을 제공하고 있습니다. 키워드 분석과 템플릿 분석 기능이 미리캔버스 응답 데이터를 바탕으로 동작하며, 향후 다양한 스톡 플랫폼 분석 기능으로 확장할 예정입니다.',
+    question: '어떤 플랫폼을 지원하나요?',
+    answer: '현재는 미리캔버스와 크라우드픽 기능을 제공하고 있으며, 이후 캔바와 어도비 스톡까지 확장할 예정입니다. 플랫폼별 특성에 맞는 분석 기능을 같은 구조로 사용할 수 있도록 발전시키고 있습니다.',
   },
   {
-    question: '템플릿 분석은 무엇인가요?',
-    answer: '템플릿 분석은 상위 템플릿 데이터를 기준으로 제목 키워드, 페이지 수, 제목 패턴을 파악하는 기능입니다. 상위권에 자주 노출되는 템플릿 제목 키워드를 참고할 때 활용할 수 있습니다.',
+    question: '키워드 분석은 어떤 기능인가요?',
+    answer: '키워드 분석은 특정 키워드와 관련된 상위 콘텐츠를 분석해 가장 많이 사용되는 키워드를 추천하는 기능입니다. 업로드 전 키워드를 정리하거나 상위 노출용 키워드를 빠르게 확인할 때 유용합니다.',
   },
   {
-    question: '키워드 분석은 어떻게 활용하나요?',
-    answer: '키워드 분석은 특정 키워드와 관련된 실시간 상위 요소를 분석해 가장 많이 사용되는 키워드를 추천합니다. 스톡 이미지 업로드 전 키워드 전략을 세우거나 상위 노출용 키워드를 정리할 때 유용합니다.',
+    question: '이번달 인기 검색 순위는 무엇인가요?',
+    answer: '이번달 인기 검색 순위는 최근 검색 데이터를 바탕으로 많이 찾는 키워드와 카테고리 흐름을 정리해 보여주는 기능입니다. 콘텐츠 제작 방향이나 업로드 주제를 정할 때 참고할 수 있습니다.',
   },
   {
     question: '스톡 작가에게 어떤 도움이 되나요?',
-    answer: '스톡 작가는 반복적으로 발생하는 키워드 조사와 제목 패턴 확인 시간을 줄일 수 있습니다. 이를 통해 스톡 콘텐츠 기획과 콘텐츠 제작 효율 개선에 도움을 받을 수 있습니다.',
+    answer: '스톡 작가에게 반복적으로 필요한 키워드 조사와 제목 패턴 확인 시간을 줄여줍니다. 이를 통해 콘텐츠 기획과 제작 효율을 높이고, 업로드 전략을 더 빠르게 세울 수 있습니다.',
   },
 ];
 
@@ -836,14 +845,13 @@ const MIRICANVAS_FAQ_ITEMS = [
   },
   {
     question: '템플릿 분석은 어떤 용도인가요?',
-    answer: '인기 템플릿의 제목 키워드를 분석하는 도구입니다. 상위권에 자주 노출되는 제목 패턴과 페이지 수를 참고해 콘텐츠 기획이나 템플릿 제작 방향을 잡는 데 도움이 됩니다.',
+    answer: '인기 템플릿의 제목 키워드와 상위 노출 패턴을 분석하는 도구입니다. 자주 노출되는 제목 패턴과 페이지 수를 참고해 콘텐츠 기획이나 템플릿 제작 방향을 잡는 데 도움이 됩니다.',
   },
   {
     question: '스톡 작가에게 어떤 도움이 되나요?',
-    answer: '스톡 작가는 반복적인 조사 시간을 줄이고, 실제로 많이 보이는 키워드와 제목 패턴을 데이터 기반으로 확인할 수 있습니다. 이를 통해 업로드 전 기획과 제작 효율을 높일 수 있습니다.',
+    answer: '반복적인 조사 시간을 줄이고, 실제로 많이 보이는 키워드와 제목 패턴을 데이터 기반으로 빠르게 확인할 수 있습니다. 이를 통해 업로드 준비와 제작 방향 설정이 더 쉬워집니다.',
   },
 ];
-
 const PLATFORM_CARDS = [
   {
     key: 'miricanvas',
@@ -855,10 +863,19 @@ const PLATFORM_CARDS = [
     buttonLabel: '플랫폼 보기',
   },
   {
+    key: 'crowdpic',
+    path: '/crowdpic',
+    label: '크라우드픽',
+    description: '크라우드픽 전용 키워드 분석과 이번달 인기 키워드를 제공하는 독립 모듈입니다.',
+    status: '개발중',
+    available: false,
+    buttonLabel: '분석 시작',
+  },
+  {
     key: 'canva',
     path: '/canva',
     label: '캔바',
-    description: '향후 키워드 분석, 템플릿 분석, 카테고리 분석을 지원할 예정인 준비중 플랫폼입니다.',
+    description: '향후 키워드 분석과 템플릿 분석, 카테고리 분석을 지원할 예정인 준비중 플랫폼입니다.',
     status: '준비중',
     available: false,
     buttonLabel: '준비중 안내 보기',
@@ -867,13 +884,12 @@ const PLATFORM_CARDS = [
     key: 'adobe-stock',
     path: '/adobe-stock',
     label: '어도비 스톡',
-    description: '향후 스톡 이미지와 콘텐츠 성과 데이터를 분석할 수 있도록 확장 예정인 준비중 플랫폼입니다.',
+    description: '향후 콘텐츠 검색과 콘텐츠 수집 기능을 지원할 예정인 준비중 플랫폼입니다.',
     status: '준비중',
     available: false,
     buttonLabel: '준비중 안내 보기',
   },
 ];
-
 const STATIC_PAGE_CONTENT = {
   '/canva': {
     title: '캔바 분석 도구 | 스톡 크리에이터 분석 플랫폼',
@@ -896,115 +912,117 @@ const STATIC_PAGE_CONTENT = {
     `,
   },
   '/about': {
-    title: '서비스 소개 | 스톡 크리에이터 분석 도구',
-    description: '스톡 작가와 디지털 크리에이터를 위한 키워드 분석, 템플릿 분석 서비스 소개 페이지입니다.',
+    title: '서비스 소개 | 스톡 크리에이터 분석 플랫폼',
+    description: '스톡 크리에이터를 위한 분석 도구 서비스 소개 페이지입니다.',
     content: `
       <section class="page-card stack">
         <h2>서비스 소개</h2>
-        <p>스톡 크리에이터 분석 도구는 스톡 작가, 디지털 크리에이터, 템플릿 제작자, 디자인 실무자가 더 빠르게 키워드 분석과 템플릿 분석을 수행할 수 있도록 돕는 데이터 기반 서비스입니다. 스톡 이미지나 스톡 콘텐츠를 업로드할 때는 어떤 키워드가 자주 쓰이는지, 어떤 제목 패턴이 반복되는지, 어떤 형식의 템플릿이 많이 보이는지 파악하는 작업이 중요합니다. 하지만 실제 제작 과정에서는 이 조사 작업이 많은 시간을 차지하기 때문에, 본 서비스는 그 과정을 단순화하는 데 초점을 맞추고 있습니다.</p>
-        <p>현재 제공 중인 핵심 기능은 미리캔버스 기반 분석입니다. 키워드 분석은 특정 키워드에 대해 미리캔버스 요소 데이터를 분석해 자주 사용되는 태그와 키워드 패턴을 보여주고, 템플릿 분석은 미리캔버스 템플릿 데이터를 바탕으로 제목 키워드, 페이지 수, 상위 제목 구성을 정리합니다. 이는 단순 검색 결과 모음이 아니라, 상위권 노출을 목표로 키워드를 정리할 때 빠르게 참고할 수 있는 실무형 요약 정보에 가깝습니다.</p>
-        <p>서비스의 장기적인 방향은 특정 플랫폼 전용 도구에 머무르지 않는 것입니다. 앞으로는 스톡 이미지, 디자인 템플릿, 디지털 다운로드 상품, 콘텐츠 제작 데이터를 다루는 다양한 플랫폼의 분석 기능을 순차적으로 지원하는 것을 목표로 하고 있습니다. 즉, 현재는 미리캔버스 기반 기능을 제공하지만, 서비스 전체 포지셔닝은 스톡 크리에이터를 위한 분석 플랫폼입니다. 제작자는 이 도구를 통해 상위 노출 키워드, 제목 패턴, 태그 구성을 더 체계적으로 파악하고, 콘텐츠 제작 전략을 빠르게 세울 수 있습니다.</p>
+        <p>스톡 크리에이터를 위한 분석 도구 서비스입니다.</p>
       </section>
     `,
   },
   '/privacy': {
-    title: '개인정보처리방침 | 스톡 크리에이터 분석 도구',
-    description: '수집 정보가 거의 없는 구조에 맞춘 스톡 크리에이터 분석 도구의 개인정보처리방침입니다.',
+    title: '개인정보처리방침 | 스톡 크리에이터 분석 플랫폼',
+    description: '서비스의 개인정보처리방침을 안내합니다.',
     content: `
       <section class="page-card stack">
         <h2>개인정보처리방침</h2>
-        <p>스톡 크리에이터 분석 도구는 회원가입, 프로필 생성, 결제 기능을 제공하지 않는 경량형 서비스입니다. 따라서 이름, 이메일 주소, 전화번호, 생년월일과 같은 직접 식별 가능한 개인정보를 기본적으로 수집하지 않습니다. 본 서비스는 사용자가 입력한 키워드를 바탕으로 미리캔버스 기반 분석 요청을 처리하는 구조이며, 결과 화면 역시 별도의 사용자 계정 없이 즉시 제공됩니다.</p>
-        <p>서비스 운영 과정에서는 안정적인 제공과 오류 대응을 위해 최소한의 기술 로그가 생성될 수 있습니다. 예를 들어 사용자가 입력한 검색 키워드, 요청 시각, 응답 상태 코드, 분석 실패 메시지 등이 일시적으로 기록될 수 있습니다. 이러한 정보는 서비스 품질 개선, 장애 원인 확인, 비정상 요청 탐지 목적에 한해 사용되며, 광고성 활용이나 제3자 판매를 위해 사용되지 않습니다.</p>
-        <p>쿠키, 광고 식별자, 개인 맞춤형 프로필링과 같은 고도화된 추적 기술은 현재 기본 기능 범위에서 적극적으로 사용하지 않습니다. 다만 향후 애드센스, 방문 통계, 운영 모니터링 도구가 연결될 경우 관련 범위와 목적은 본 방침을 통해 추가 고지할 예정입니다. 법령상 보관 의무가 없는 임시 로그와 운영 데이터는 필요 기간이 지나면 정리하며, 정책이 변경될 경우 본 페이지를 통해 업데이트합니다.</p>
+        <p>서비스의 개인정보처리방침을 안내합니다.</p>
       </section>
     `,
   },
   '/terms': {
-    title: '이용약관 | 스톡 크리에이터 분석 도구',
-    description: '스톡 크리에이터 분석 도구 이용 시 적용되는 기본 SaaS 이용약관입니다.',
+    title: '이용약관 | 스톡 크리에이터 분석 플랫폼',
+    description: '서비스의 이용약관을 안내합니다.',
     content: `
       <section class="page-card stack">
         <h2>이용약관</h2>
-        <p>본 서비스는 스톡 작가와 디지털 크리에이터를 위한 키워드 분석, 템플릿 분석 기능을 제공하는 온라인 SaaS형 도구입니다. 사용자는 본 서비스를 합법적이고 정상적인 범위에서 이용해야 하며, 서비스 운영을 방해하거나 외부 분석 대상 플랫폼에 과도한 부하를 주는 방식의 자동화 사용은 제한될 수 있습니다.</p>
-        <p>본 서비스가 제공하는 분석 결과는 외부 플랫폼 응답 데이터를 가공한 참고 정보입니다. 따라서 특정 검색 노출, 판매 성과, 승인 결과, 업로드 성과를 보장하지 않으며, 사용자는 결과를 자신의 제작 및 업로드 전략에 맞게 판단하여 활용해야 합니다. 운영자는 데이터 구조 변경, 외부 API 정책 변경, 서비스 점검, 기능 개선 등의 사유로 제공 화면이나 결과 형식을 수정할 수 있습니다.</p>
-        <p>사용자는 본 서비스에서 생성된 결과를 내부 참고 자료로 활용할 수 있으나, 서비스 자체를 재판매하거나 무단 복제하여 별도 상업 서비스로 제공해서는 안 됩니다. 무료 제공 범위 내에서 운영되는 현재 서비스 특성상, 서비스 중단, 일시 장애, 외부 플랫폼 응답 오류, 데이터 누락으로 인해 발생하는 간접적 손해에 대해서는 책임을 지지 않습니다. 다만 운영자는 가능한 범위에서 안정적인 서비스 제공과 오류 개선을 위해 지속적으로 노력합니다.</p>
+        <p>서비스의 이용약관을 안내합니다.</p>
       </section>
     `,
   },
   '/contact': {
-    title: '문의 | 스톡 크리에이터 분석 도구',
-    description: '서비스 문의 방법, 응답 안내, 서비스 소개를 담은 문의 페이지입니다.',
+    title: '문의 | 스톡 크리에이터 분석 플랫폼',
+    description: '서비스 문의 페이지입니다.',
     content: `
       <section class="page-card stack">
         <h2>문의</h2>
-        <p>스톡 크리에이터 분석 도구는 스톡 작가, 스톡 이미지 제작자, 디지털 크리에이터를 위한 키워드 분석 및 템플릿 분석 서비스를 운영하고 있습니다. 현재는 미리캔버스 기반 기능을 중심으로 제공하고 있으며, 서비스 안정화와 콘텐츠 확장을 함께 진행하고 있습니다.</p>
-        <p>문의 방법은 현재 정식 접수 채널을 정리 중인 단계입니다. 향후 이메일 또는 문의 폼이 준비되면 본 페이지에서 공식 접수 방법을 안내할 예정입니다. 기능 오류, 데이터 이상, 서비스 제안, 제휴 문의가 필요한 경우에는 우선 서비스 소개, 개인정보처리방침, 이용약관을 참고해 주시기 바랍니다.</p>
-        <p>응답 안내 기준은 문의 채널이 정식 오픈된 이후 별도로 공지됩니다. 기본적으로 서비스 운영, 기능 개선, 정책 안내와 관련된 문의를 우선 검토할 예정이며, 반복적이거나 기술적으로 재현이 어려운 요청은 확인 시간이 더 소요될 수 있습니다. 본 페이지는 향후 공식 문의 채널과 운영 소식을 연결하는 안내 허브 역할을 합니다.</p>
+        <p>서비스 문의 페이지입니다.</p>
       </section>
     `,
   },
 };
+function buildBreadcrumbItems(pathname) {
+  if (pathname === '/miricanvas') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '미리캔버스', href: '/miricanvas' },
+    ];
+  }
 
-Object.assign(STATIC_PAGE_CONTENT, {
-  '/about': {
-    title: '서비스 소개 | 스톡 크리에이터 분석 도구',
-    description: '스톡 콘텐츠 제작자를 위한 키워드 분석 및 템플릿 분석 서비스 소개 페이지입니다.',
-    content: `
-      <section class="page-card stack">
-        <h2>서비스 소개</h2>
-        <p>이 서비스는 스톡 콘텐츠 제작에 필요한 키워드와 템플릿 흐름을 조금 더 쉽게 확인할 수 있도록 만든 분석 도구입니다. 복잡한 조사 과정을 줄이고, 제작 전에 참고할 수 있는 정리된 데이터를 빠르게 확인하는 데 초점을 두고 있습니다.</p>
-        <p>현재는 미리캔버스 기반의 키워드 분석과 템플릿 분석 기능을 제공하고 있습니다. 사용자는 입력한 검색어를 바탕으로 많이 사용되는 키워드를 확인하거나, 템플릿 제목 패턴을 참고해 제작 방향을 잡을 수 있습니다.</p>
-        <p>서비스는 운영 과정에서 계속 내용을 다듬고 있으며, 필요한 범위 안에서 기능과 안내 문구가 변경될 수 있습니다. 전반적으로는 스톡 콘텐츠 제작자가 참고용 데이터와 흐름을 편하게 볼 수 있는 실용적인 도구를 지향합니다.</p>
-      </section>
-    `,
-  },
-  '/privacy': {
-    title: '개인정보처리방침 | 스톡 크리에이터 분석 도구',
-    description: '서비스 운영에 필요한 범위의 데이터 처리 방식을 안내하는 개인정보처리방침입니다.',
-    content: `
-      <section class="page-card stack">
-        <h2>개인정보처리방침</h2>
-        <p>본 서비스는 회원가입이나 결제 기능이 없는 간단한 분석 도구이며, 일반적으로 직접적인 개인정보를 폭넓게 수집하지 않습니다. 다만 서비스 제공과 운영을 위해 검색어, 이용 기록, 접속 정보, 로그성 데이터 등이 저장될 수 있습니다.</p>
-        <p>저장되는 데이터는 분석 결과 제공, 서비스 운영, 오류 확인, 품질 개선, 인기 검색 순위 집계 등 기본적인 운영 목적 범위 안에서 활용됩니다. 서비스 운영에 필요한 일부 외부 서비스가 함께 사용될 수 있으며, 이 과정에서 관련 데이터가 처리될 수 있습니다.</p>
-        <p>본 서비스는 수집된 데이터를 운영에 필요한 범위에서 관리하며, 정책이나 운영 방식이 변경되는 경우 본 페이지를 통해 내용을 갱신할 수 있습니다.</p>
-      </section>
-    `,
-  },
-  '/terms': {
-    title: '이용약관 | 스톡 크리에이터 분석 도구',
-    description: '서비스 이용에 관한 기본 안내와 운영 원칙을 정리한 이용약관입니다.',
-    content: `
-      <section class="page-card stack">
-        <h2>이용약관</h2>
-        <p>본 서비스는 키워드 분석, 템플릿 분석, 인기 검색 순위 확인 등 콘텐츠 제작에 참고할 수 있는 정보를 제공하는 온라인 도구입니다. 사용자는 정상적인 범위 안에서 서비스를 이용해야 하며, 운영을 방해하거나 과도한 자동 요청을 발생시키는 방식의 사용은 제한될 수 있습니다.</p>
-        <p>서비스에서 제공하는 결과와 데이터는 참고용 정보입니다. 외부 데이터나 운영 환경의 변화에 따라 결과 형식이나 제공 내용이 달라질 수 있으며, 특정 노출 성과나 결과를 보장하지는 않습니다.</p>
-        <p>운영자는 서비스 제공을 위해 필요한 범위에서 기능, 정책, 안내 문구를 조정할 수 있습니다. 사용자는 본 서비스를 이용함으로써 이러한 기본 운영 원칙에 동의한 것으로 봅니다.</p>
-      </section>
-    `,
-  },
-  '/contact': {
-    title: '문의 | 스톡 크리에이터 분석 도구',
-    description: '서비스 관련 문의와 안내를 위한 기본 페이지입니다.',
-    content: `
-      <section class="page-card stack">
-        <h2>문의</h2>
-        <p>본 페이지는 서비스 관련 문의와 안내를 위한 기본 페이지입니다. 기능 오류, 데이터 이상, 개선 제안, 운영 관련 문의가 있는 경우 추후 정식 문의 채널이 마련되면 이곳을 통해 안내할 예정입니다.</p>
-        <p>현재는 별도의 공식 문의 접수 채널을 정리 중이며, 서비스 내용과 운영 정책은 상황에 따라 조정될 수 있습니다. 필요한 경우 서비스 소개, 개인정보처리방침, 이용약관 페이지를 함께 참고해 주세요.</p>
-        <p>문의 응답 기준과 방식 역시 추후 본 페이지에서 함께 안내될 예정입니다.</p>
-      </section>
-    `,
-  },
-});
+  if (pathname === '/miricanvas/tag') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '미리캔버스', href: '/miricanvas' },
+      { label: '키워드 분석', href: '/miricanvas/tag' },
+    ];
+  }
 
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  if (pathname === '/miricanvas/template') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '미리캔버스', href: '/miricanvas' },
+      { label: '템플릿 분석', href: '/miricanvas/template' },
+    ];
+  }
+
+  if (pathname === '/miricanvas/rankings') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '미리캔버스', href: '/miricanvas' },
+      { label: '이번달 인기 검색 순위', href: '/miricanvas/rankings' },
+    ];
+  }
+
+  if (pathname === '/crowdpic') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '크라우드픽', href: '/crowdpic' },
+    ];
+  }
+
+  if (pathname === '/crowdpic/tag') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '크라우드픽', href: '/crowdpic' },
+      { label: '키워드 분석', href: '/crowdpic/tag' },
+    ];
+  }
+
+  if (pathname === '/crowdpic/rankings') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '크라우드픽', href: '/crowdpic' },
+      { label: '이번달 인기 검색 순위', href: '/crowdpic/rankings' },
+    ];
+  }
+
+  if (pathname === '/canva') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '캔바', href: '/canva' },
+    ];
+  }
+
+  if (pathname === '/adobe-stock') {
+    return [
+      { label: '홈', href: '/' },
+      { label: '어도비 스톡', href: '/adobe-stock' },
+    ];
+  }
+
+  return [];
 }
-
 function buildPageSeo(pathname) {
   if (pathname === '__404__') {
     return {
@@ -1115,55 +1133,6 @@ function buildStructuredData(pathname, origin, canonicalUrl) {
   return items.map((item) => `<script type="application/ld+json">${JSON.stringify(item)}</script>`).join('\n');
 }
 
-function buildBreadcrumbItems(pathname) {
-  if (pathname === '/miricanvas') {
-    return [
-      { label: '홈', href: '/' },
-      { label: '미리캔버스', href: '/miricanvas' },
-    ];
-  }
-
-  if (pathname === '/miricanvas/tag') {
-    return [
-      { label: '홈', href: '/' },
-      { label: '미리캔버스', href: '/miricanvas' },
-      { label: '키워드 분석', href: '/miricanvas/tag' },
-    ];
-  }
-
-  if (pathname === '/miricanvas/template') {
-    return [
-      { label: '홈', href: '/' },
-      { label: '미리캔버스', href: '/miricanvas' },
-      { label: '템플릿 분석', href: '/miricanvas/template' },
-    ];
-  }
-
-  if (pathname === '/miricanvas/rankings') {
-    return [
-      { label: '홈', href: '/' },
-      { label: '미리캔버스', href: '/miricanvas' },
-      { label: '이번달 인기 검색 순위', href: '/miricanvas/rankings' },
-    ];
-  }
-
-  if (pathname === '/canva') {
-    return [
-      { label: '홈', href: '/' },
-      { label: '캔바', href: '/canva' },
-    ];
-  }
-
-  if (pathname === '/adobe-stock') {
-    return [
-      { label: '홈', href: '/' },
-      { label: '어도비 스톡', href: '/adobe-stock' },
-    ];
-  }
-
-  return [];
-}
-
 function htmlPage(pathname, origin, options = {}) {
   const isNotFoundPage = Boolean(options.notFound);
   const staticPage = STATIC_PAGE_CONTENT[pathname] || null;
@@ -1194,7 +1163,7 @@ function htmlPage(pathname, origin, options = {}) {
     : isHomePage
     ? '스톡 콘텐츠 제작에 필요한 상위 노출 키워드를 분석합니다.'
     : isMiricanvasPage
-      ? '미리캔버스에서 스톡 콘텐츠를 제작하는 크리에이터를 위한 분석 도구입니다.'
+      ? '미리캔버스에서 스톡 콘텐츠를 제작하는 스톡 크리에이터를 위한 분석 도구입니다.'
     : isRankingsPage
       ? '이번달 키워드 검색 순위와 템플릿 검색 순위를 확인할 수 있습니다.'
     : staticPage?.description || (isTemplatePage
@@ -1257,7 +1226,7 @@ function htmlPage(pathname, origin, options = {}) {
         <div class="eyebrow">Platform Vision</div>
         <h2>플랫폼 중심으로 확장되는 스톡 작가를 위한 분석 도구</h2>
         <p>스톡 작가와 디지털 크리에이터가 상위권에 노출되는 키워드와 템플릿 제목 패턴을 더 빠르게 파악할 수 있도록 돕는 서비스입니다.</p>
-        <p>플랫폼별 특성에 맞춰 키워드 분석, 템플릿 분석, 콘텐츠 전략 수립을 지원하는 구조로 발전시키는 것이 목표입니다. 지금은 미리캔버스가 사용 가능한 상태이며, 나머지 플랫폼은 준비중 페이지에서 향후 제공 방향을 안내합니다.</p>
+        <p>플랫폼별 특성에 맞춰 키워드 분석, 템플릿 분석, 콘텐츠 전략 수립을 지원하는 구조로 발전시키는 것이 목표입니다. 다양한 플랫폼을 순차적으로 지원할 예정입니다.</p>
       </section>
 
       <section class="platform-grid">
@@ -1320,8 +1289,8 @@ function htmlPage(pathname, origin, options = {}) {
     <div class="page-grid">
       <section class="page-card stack">
         <div class="eyebrow">Miricanvas Platform</div>
-        <h2>미리캔버스에서 스톡 콘텐츠를 제작하는 크리에이터를 위한 분석 도구</h2>
-        <p>미리캔버스 분석 도구는 스톡 작가와 디지털 크리에이터가 상위 노출 키워드와 인기 템플릿 제목 패턴을 빠르게 파악할 수 있도록 설계되어 있습니다.</p>
+        <h2>미리캔버스에서 스톡 콘텐츠를 제작하는 스톡 크리에이터를 위한 분석 도구</h2>
+        <p>미리캔버스 분석 도구는 스톡 크리에이터가 상위 노출 키워드와 인기 템플릿 제목 패턴을 빠르게 파악할 수 있도록 설계되어 있습니다.</p>
       </section>
 
       <section class="miricanvas-tool-grid">
@@ -1340,7 +1309,7 @@ function htmlPage(pathname, origin, options = {}) {
         <article class="feature-card">
           <div class="eyebrow">Monthly Rankings</div>
           <h2>이번달 인기 검색 순위</h2>
-          <p>이번달 사용자 검색 데이터를 기준으로 많이 찾은 키워드와 템플릿을 정리합니다.</p>
+          <p>이번달 미리캔버스 인기 검색 데이터를 기준으로 많이 찾는 키워드와 템플릿을 정리합니다.</p>
           <a class="cta-link" href="/miricanvas/rankings">인기 검색 순위 확인</a>
         </article>
       </section>
@@ -1378,7 +1347,7 @@ function htmlPage(pathname, origin, options = {}) {
       <section class="page-card stack">
         <div class="eyebrow">Monthly Rankings</div>
         <h2>이번달 인기 검색 순위</h2>
-        <p>이번달 사용자 검색 데이터를 기준으로 많이 찾은 키워드와 템플릿을 정리합니다.</p>
+        <p>이번달 미리캔버스 인기 검색 데이터를 기준으로 많이 찾는 키워드와 템플릿을 정리합니다.</p>
         <div class="summary-grid" id="rankingPanel">
           <section class="summary-card">
             <h3>이번달 키워드 검색 순위 TOP 20</h3>
@@ -2288,9 +2257,10 @@ function htmlPage(pathname, origin, options = {}) {
   <!-- End Google Tag Manager (noscript) -->
   <div class="wrap">
     <div class="topbar">
-      <nav class="menu" aria-label="서비스 메뉴">
+            <nav class="menu" aria-label="서비스 메뉴">
         <a href="/" class="${activeMenu === 'home' ? 'active' : ''}">홈</a>
         <a href="/miricanvas" class="${activeMenu === 'miricanvas' ? 'active' : ''}">미리캔버스</a>
+        <a href="/crowdpic" class="${activeMenu === 'crowdpic' ? 'active' : ''}">크라우드픽</a>
         <a href="/canva" class="${activeMenu === 'canva' ? 'active' : ''}">캔바</a>
         <a href="/adobe-stock" class="${activeMenu === 'adobe-stock' ? 'active' : ''}">어도비 스톡</a>
       </nav>
@@ -2636,11 +2606,11 @@ function htmlPage(pathname, origin, options = {}) {
 
       const meta = document.createElement('div');
       meta.className = 'meta';
-      meta.textContent = '메타태그: ' + editableTags.length + '개 / 수집일: ' + item.collectedAt;
+      meta.textContent = '추천 키워드: ' + editableTags.length + '개 / 수집일: ' + item.collectedAt;
 
       const text = document.createElement('div');
       text.className = 'result-text';
-      text.textContent = metaTagString || '(메타태그 없음)';
+      text.textContent = metaTagString || '(추천 키워드 없음)';
 
       card.appendChild(head);
       card.appendChild(meta);
@@ -3386,3 +3356,14 @@ export async function requestHandler(req, res) {
 }
 
 export default requestHandler;
+
+
+
+
+
+
+
+
+
+
+
