@@ -556,9 +556,6 @@ export async function requestHandler(req, res) {
     const pathname = requestUrl.pathname;
     const normalizedPathname = pathname !== '/' ? pathname.replace(/\/+$/, '') || '/' : '/';
 
-    if (!CROWDPIC_ENABLED) {
-      return baseRequestHandler(req, res);
-    }
 
     if (req.method === 'GET' && normalizedPathname === '/crowdpic') {
       const seo = buildSeo('/crowdpic');
