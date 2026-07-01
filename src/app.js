@@ -1280,10 +1280,15 @@ function htmlPage(pathname, origin, options = {}) {
     </div>
   `;
 
-  const normalizedHomeHtml = homeHtml.replace(
-    '</ul>\n          <a class="cta-link" href="/miricanvas">',
-    '            <li>이번달 인기 검색 순위</li>\n          </ul>\n          <a class="cta-link" href="/miricanvas">'
-  );
+  const normalizedHomeHtml = homeHtml
+    .replace(
+      '</ul>\n          <a class="cta-link" href="/miricanvas">',
+      '            <li>??? ?? ?? ??</li>\n          </ul>\n          <a class="cta-link" href="/miricanvas">'
+    )
+    .replace(
+      /<\/article>\n\n        <article class="feature-card platform-card">[\s\S]*?<h2>\uCEA0\uBC14<\/h2>[\s\S]*?<\/article>/,
+      '</article>\n\n        <article class="feature-card platform-card">\n          <div class="platform-head">\n            <div class="platform-badges">\n              <span class="status-badge available">\uC6B4\uC601\uC911</span>\n              <span class="status-badge available">\uC0AC\uC6A9 \uAC00\uB2A5</span>\n            </div>\n          </div>\n          <h2>\uD06C\uB77C\uC6B0\uB4DC\uD53D</h2>\n          <p>\uD06C\uB77C\uC6B0\uB4DC\uD53D \uC2A4\uD1A1 \uCF58\uD150\uCE20 \uC81C\uC791\uC790\uB97C \uC704\uD55C \uBD84\uC11D \uB3C4\uAD6C\uC785\uB2C8\uB2E4.</p>\n          <ul class="feature-list feature-checklist">\n            <li>\uD0A4\uC6CC\uB4DC \uBD84\uC11D</li>\n            <li>\uC774\uBC88\uB2EC \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704</li>\n          </ul>\n          <a class="cta-link" href="/crowdpic">\uBD84\uC11D \uC2DC\uC791</a>\n        </article>\n\n        <article class="feature-card platform-card">\n          <div class="platform-head">\n            <div class="platform-badges">\n              <span class="status-badge coming">\uC900\uBE44\uC911</span>\n            </div>\n          </div>\n          <h2>\uCEA0\uBC14</h2>\n          <p>\uC900\uBE44\uC911</p>\n        </article>'
+    );
 
   const miricanvasHtml = `
     <div class="page-grid">
