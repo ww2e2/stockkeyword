@@ -19,18 +19,39 @@ const MAX_KEYWORDS_PER_REQUEST = 5;
 const TEMPLATE_API_URL = 'https://api.miricanvas.com/template/api/p/template-pages/search';
 const TEMPLATE_TYPE_FAILURE_MESSAGE = '대상 템플릿 종류 분석 결과를 불러오지 못했습니다.';
 
-const MIRICANVAS_TYPES = [
-  'ILLUST',
-  'BITMAP',
-  'FIGURE',
-  'LINE',
-  'ANI',
-  'FRAME',
-  'PRESET_FRAME',
-  'MOCKUP_GRID',
-  'MOCKUP_TEXT',
-  'CHART',
+const MIRICANVAS_CATEGORY_OPTIONS = [
+  { value: 'element', label: '요소' },
+  { value: 'photo', label: '사진' },
+  { value: 'background', label: '배경' },
 ];
+
+const MIRICANVAS_CATEGORY_TYPE_MAP = {
+  element: [
+    'ILLUST',
+    'BITMAP',
+    'FIGURE',
+    'LINE',
+    'ANI',
+    'ELEMENT_COLLECTION',
+    'DESIGNRESOURCE_COLLECTION',
+    'FRAME',
+    'PRESET_FRAME',
+    'MOCKUP_GRID',
+    'MOCKUP_TEXT',
+    'CHART',
+    'EXTERNAL_ILLUST',
+    'EXTERNAL_BITMAP',
+    'EXTERNAL_ANI',
+  ],
+  photo: ['PICTURE'],
+  background: ['BACKGROUND_PICTURE'],
+};
+
+const MIRICANVAS_CATEGORY_LABEL_MAP = {
+  element: '요소',
+  photo: '사진',
+  background: '배경',
+};
 
 const TEMPLATE_FILTER_TABS = [
   { key: 'all', label: '전체' },
@@ -308,15 +329,21 @@ function aggregateMonthlyRankings(logs, searchMonth = getCollectedMonth()) {
   const keywordCounts = new Map();
   const templateTypeCounts = new Map();
   const templateKeywordCounts = new Map();
+  const contentTypeCounts = new Map();
 
   for (const log of logs) {
     const searchType = cleanText(log?.search_type);
     const keyword = cleanText(log?.keyword);
     const templateTypeLabel = cleanText(log?.template_type_label);
     const templateTypeValue = cleanText(log?.template_type_value);
+    const contentTypeLabel = cleanText(log?.template_type_label || log?.template_type_value);
 
     if (searchType === 'keyword' && keyword) {
       keywordCounts.set(keyword, (keywordCounts.get(keyword) || 0) + 1);
+
+      if (contentTypeLabel && contentTypeLabel.toUpperCase() !== 'EMPTY') {
+        contentTypeCounts.set(contentTypeLabel, (contentTypeCounts.get(contentTypeLabel) || 0) + 1);
+      }
     }
 
     if (searchType === 'template') {
@@ -336,6 +363,11 @@ function aggregateMonthlyRankings(logs, searchMonth = getCollectedMonth()) {
     keywordSearchTop20: buildTopRankings(keywordCounts, (keyword, count, index) => ({
       rank: index + 1,
       keyword,
+      count,
+    })),
+    contentTypeTop20: buildTopRankings(contentTypeCounts, (label, count, index) => ({
+      rank: index + 1,
+      label,
       count,
     })),
     templateTypeTop20: buildTopRankings(templateTypeCounts, (label, count, index) => ({
@@ -396,7 +428,7 @@ function parseKeywordsQuery(rawQuery) {
 
 function validateKeywordsLimit(keywords) {
   if (keywords.length > MAX_KEYWORDS_PER_REQUEST) {
-    throw new Error('??踰덉뿉 理쒕? 5媛??ㅼ썙?쒓퉴吏 遺꾩꽍?????덉뒿?덈떎.');
+    throw new Error('한 번에 최대 5개 키워드까지 분석할 수 있습니다.');
   }
 }
 
@@ -404,11 +436,11 @@ function parseSingleKeyword(input) {
   const keywords = parseKeywordsInput(input);
 
   if (keywords.length === 0) {
-    throw new Error('?ㅼ썙?쒕? ?낅젰?섏꽭??');
+    throw new Error('키워드를 입력하세요.');
   }
 
   if (keywords.length > 1) {
-    throw new Error('?쒗뵆由?遺꾩꽍? ?ㅼ썙??1媛쒕쭔 ?낅젰?????덉뒿?덈떎.');
+    throw new Error('키워드 1개만 입력할 수 있습니다.');
   }
 
   return keywords[0];
@@ -463,12 +495,20 @@ function includesKeyword(item, keyword) {
   return name.includes(normalizedKeyword) || keywordsText.includes(normalizedKeyword);
 }
 
-function buildMiricanvasUrl(keyword) {
+function normalizeMiricanvasCategory(category) {
+  const normalized = cleanText(category);
+  return Object.prototype.hasOwnProperty.call(MIRICANVAS_CATEGORY_TYPE_MAP, normalized)
+    ? normalized
+    : MIRICANVAS_CATEGORY_OPTIONS[0].value;
+}
+
+function buildMiricanvasUrl(keyword, category = MIRICANVAS_CATEGORY_OPTIONS[0].value) {
+  const normalizedCategory = normalizeMiricanvasCategory(category);
   const params = new URLSearchParams();
   params.set('status', 'ACTIVE');
   params.set('keyword', keyword);
 
-  for (const type of MIRICANVAS_TYPES) {
+  for (const type of MIRICANVAS_CATEGORY_TYPE_MAP[normalizedCategory]) {
     params.append('typeList', type);
   }
 
@@ -575,14 +615,16 @@ async function fetchJson(url, purpose) {
   }
 }
 
-async function fetchMiricanvas(keyword) {
+async function fetchMiricanvas(keyword, category = MIRICANVAS_CATEGORY_OPTIONS[0].value) {
   if (!MIRICANVAS_API_URL) {
     throw new Error('MIRICANVAS_API_URL is required');
   }
 
-  const url = buildMiricanvasUrl(keyword);
+  const normalizedCategory = normalizeMiricanvasCategory(category);
+  const url = buildMiricanvasUrl(keyword, normalizedCategory);
   debugLog('[miricanvas:url]', url);
   debugLog('[miricanvas:keyword]', JSON.stringify(keyword), 'encoded=', encodeURIComponent(keyword));
+  debugLog('[miricanvas:category]', normalizedCategory, MIRICANVAS_CATEGORY_TYPE_MAP[normalizedCategory]);
 
   return fetchJson(url, 'Miricanvas');
 }
@@ -636,8 +678,9 @@ async function fetchTemplateSearch(keyword, typeValue) {
   }
 }
 
-async function collectTopTags(keyword) {
-  const response = await fetchMiricanvas(keyword);
+async function collectTopTags(keyword, category = MIRICANVAS_CATEGORY_OPTIONS[0].value) {
+  const normalizedCategory = normalizeMiricanvasCategory(category);
+  const response = await fetchMiricanvas(keyword, normalizedCategory);
   const list = Array.isArray(response?.data?.list) ? response.data.list : [];
   const matchedList = list.filter((item) => includesKeyword(item, keyword));
   const analysisList = matchedList.length >= 5 ? matchedList : list;
@@ -663,6 +706,8 @@ async function collectTopTags(keyword) {
     '[miricanvas:counts]',
     JSON.stringify({
       keyword,
+      category: normalizedCategory,
+      typeList: MIRICANVAS_CATEGORY_TYPE_MAP[normalizedCategory],
       totalResultCount: list.length,
       matchedResultCount: matchedList.length,
       usedResultCount: analysisList.length,
@@ -676,10 +721,13 @@ async function collectTopTags(keyword) {
   await safeLogSearchEvent({
     searchType: 'keyword',
     keyword,
+    templateTypeValue: normalizedCategory,
+    templateTypeLabel: MIRICANVAS_CATEGORY_LABEL_MAP[normalizedCategory] || '',
   });
 
   return {
     keyword,
+    category: normalizedCategory,
     listCount: list.length,
     matchedCount: matchedList.length,
     usedCount: analysisList.length,
@@ -1188,7 +1236,7 @@ function htmlPage(pathname, origin, options = {}) {
       ? '이번달 키워드 검색 순위와 템플릿 검색 순위를 확인할 수 있습니다.'
     : staticPage?.description || (isTemplatePage
       ? '상위 템플릿 데이터를 분석하여 제목 키워드, 페이지 수, 제목 패턴을 확인할 수 있는 템플릿 분석 도구입니다.'
-      : '실시간 상위 요소를 분석하여 가장 많이 사용되는 키워드를 추천하는 키워드 분석 도구입니다.'));
+      : '실시간 상위 콘텐츠를 분석하여 가장 많이 사용되는 키워드를 추천하는 키워드 분석 도구입니다.'));
   const structuredDataScripts = buildStructuredData(isNotFoundPage ? '__404__' : pathname, origin, canonicalUrl, { seo, faqItems: options.faqItems });
   const breadcrumbItems = options.breadcrumbItems || (isNotFoundPage ? [] : buildBreadcrumbItems(pathname));
   const breadcrumbHtml = breadcrumbItems.length > 0
@@ -1227,12 +1275,13 @@ function htmlPage(pathname, origin, options = {}) {
     : `
       <section class="card">
         <label for="keyword">키워드</label>
-        <textarea id="keyword" placeholder="키워드를 한 줄에 하나씩 입력하세요.
+        <input id="keyword" class="text-input" type="text" placeholder="키워드를 입력하세요" />
 
-예)
-수박
-빙수
-아이스크림"></textarea>
+        <label for="category" style="margin-top: 16px;">카테고리</label>
+        <select id="category" class="text-input">
+          ${MIRICANVAS_CATEGORY_OPTIONS.map((item) => `<option value="${item.value}">${item.label}</option>`).join('')}
+        </select>
+
         <div class="actions">
           <button class="primary" id="runBtn">키워드 분석</button>
         </div>
@@ -1331,7 +1380,7 @@ function htmlPage(pathname, origin, options = {}) {
         <article class="feature-card">
           <div class="eyebrow">Keyword Analysis</div>
           <h2>키워드 분석</h2>
-          <p>실시간 상위 요소를 분석하여 가장 많이 사용되는 키워드를 추천합니다.</p>
+          <p>실시간 상위 콘텐츠를 분석하여 가장 많이 사용되는 키워드를 추천합니다.</p>
           <a class="cta-link" href="/miricanvas/tag">키워드 분석 시작</a>
         </article>
         <article class="feature-card">
@@ -1385,6 +1434,10 @@ function htmlPage(pathname, origin, options = {}) {
         <div class="summary-grid" id="rankingPanel">
           <section class="summary-card">
             <h3>이번달 키워드 검색 순위 TOP 20</h3>
+            <div class="result-empty">불러오는 중...</div>
+          </section>
+          <section class="summary-card">
+            <h3>이번달 콘텐츠 유형 검색 순위</h3>
             <div class="result-empty">불러오는 중...</div>
           </section>
           <section class="summary-card">
@@ -1565,7 +1618,7 @@ function htmlPage(pathname, origin, options = {}) {
 
     .miricanvas-tool-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 20px;
     }
 
@@ -2328,10 +2381,12 @@ function htmlPage(pathname, origin, options = {}) {
     const TEMPLATE_TYPE_OPTIONS = ${JSON.stringify(TEMPLATE_TYPE_MAP)};
     const TEMPLATE_FILTER_TABS = ${JSON.stringify(TEMPLATE_FILTER_TABS)};
     const TEMPLATE_RESULT_TABS = ${JSON.stringify(TEMPLATE_RESULT_TABS)};
+    const MIRICANVAS_CATEGORY_OPTIONS = ${JSON.stringify(MIRICANVAS_CATEGORY_OPTIONS)};
     const MAX_KEYWORDS = ${MAX_KEYWORDS_PER_REQUEST};
     const resultPanelEl = document.getElementById('resultPanel');
     const statusEl = document.getElementById('status');
     const keywordEl = document.getElementById('keyword');
+    const categoryEl = document.getElementById('category');
     const runBtn = document.getElementById('runBtn');
     const templateKeywordEl = document.getElementById('templateKeyword');
     const templateTypeSearchEl = document.getElementById('templateTypeSearch');
@@ -2463,15 +2518,20 @@ function htmlPage(pathname, origin, options = {}) {
       setStatus(successMessage);
     }
 
-    function buildElementResultUrl(keywords, activeTab) {
-      const q = keywords.map((keyword) => encodeURIComponent(keyword)).join(',');
-      let url = '/miricanvas/tag?q=' + q;
+    function normalizeMiricanvasCategory(value) {
+      const normalized = cleanText(value);
+      return MIRICANVAS_CATEGORY_OPTIONS.some((item) => item.value === normalized)
+        ? normalized
+        : MIRICANVAS_CATEGORY_OPTIONS[0].value;
+    }
 
-      if (activeTab) {
-        url += '&tab=' + encodeURIComponent(activeTab);
-      }
-
-      return url;
+    function buildElementResultUrl(keyword, category) {
+      return (
+        '/miricanvas/tag?q=' +
+        encodeURIComponent(keyword) +
+        '&category=' +
+        encodeURIComponent(normalizeMiricanvasCategory(category))
+      );
     }
 
     function buildTemplateResultUrl(keyword, type, tab) {
@@ -2536,6 +2596,9 @@ function htmlPage(pathname, origin, options = {}) {
 
       rankingPanelEl.appendChild(
         createRankingCard('이번달 키워드 검색 순위 TOP 20', data.keywordSearchTop20 || [], 'keyword')
+      );
+      rankingPanelEl.appendChild(
+        createRankingCard('이번달 콘텐츠 유형 검색 순위', data.contentTypeTop20 || [], 'label')
       );
       rankingPanelEl.appendChild(
         createRankingCard('이번달 템플릿 종류 검색 순위 TOP 20', data.templateTypeTop20 || [], 'label')
@@ -2615,7 +2678,7 @@ function htmlPage(pathname, origin, options = {}) {
       return wrap;
     }
 
-    function createElementResultCard(item, selectedIndex) {
+    function createElementResultCard(item) {
       const editableTags = getEditableTags(item);
       const metaTagString = buildMetaTagString(editableTags);
       const card = document.createElement('section');
@@ -2651,42 +2714,23 @@ function htmlPage(pathname, origin, options = {}) {
       card.appendChild(text);
       card.appendChild(renderTags(editableTags, (tagIndex) => {
         editableTags.splice(tagIndex, 1);
-        renderElementResults(lastResults, selectedIndex);
+        renderElementResults(lastResults[0] || null);
       }));
 
       return card;
     }
 
-    function renderElementResults(results, selectedIndex = 0) {
+    function renderElementResults(result) {
       resultPanelEl.innerHTML = '';
-      lastResults = results;
+      lastResults = result ? [result] : [];
 
-      results.forEach((item) => {
-        getEditableTags(item);
-      });
-
-      if (!results.length) {
-        resultPanelEl.innerHTML = '<div class="result-empty">결과가 없습니다.</div>';
+      if (!result) {
+        resultPanelEl.innerHTML = '<div class="result-empty">분석할 키워드가 없습니다.</div>';
         return;
       }
 
-      const tabs = document.createElement('div');
-      tabs.className = 'tabs';
-
-      results.forEach((item, index) => {
-        const tabBtn = document.createElement('button');
-        tabBtn.className = 'tab-btn' + (index === selectedIndex ? ' active' : '');
-        tabBtn.textContent = '[' + item.keyword + ']';
-        tabBtn.addEventListener('click', () => {
-          const nextUrl = buildElementResultUrl(results.map((result) => result.keyword), item.keyword);
-          window.history.replaceState({}, '', nextUrl);
-          renderElementResults(lastResults, index);
-        });
-        tabs.appendChild(tabBtn);
-      });
-
-      resultPanelEl.appendChild(tabs);
-      resultPanelEl.appendChild(createElementResultCard(results[selectedIndex], selectedIndex));
+      getEditableTags(result);
+      resultPanelEl.appendChild(createElementResultCard(result));
     }
 
     function createMetricBlock(titleText, rows) {
@@ -3044,25 +3088,21 @@ function htmlPage(pathname, origin, options = {}) {
 
     async function loadElementResultPage() {
       const currentUrl = new URL(window.location.href);
-      const keywords = parseKeywordsQuery(currentUrl.searchParams.get('q'));
-      const activeTab = currentUrl.searchParams.get('tab');
+      const keyword = cleanText(currentUrl.searchParams.get('q'));
+      const category = normalizeMiricanvasCategory(currentUrl.searchParams.get('category'));
 
-      if (keywords.length === 0) {
+      if (!keyword) {
         resultPanelEl.innerHTML = '<div class="result-empty">분석할 키워드가 없습니다.</div>';
         setStatus('대기 중');
         return;
       }
 
-      try {
-        validateKeywordsLimit(keywords);
-      } catch (error) {
-        resultPanelEl.innerHTML = '<div class="result-empty">' + (error.message || String(error)) + '</div>';
-        setStatus('실패');
-        return;
+      if (keywordEl) {
+        keywordEl.value = keyword;
       }
 
-      if (keywordEl) {
-        keywordEl.value = keywords.join('\\n');
+      if (categoryEl) {
+        categoryEl.value = category;
       }
 
       setStatus('미리캔버스 API 호출 중...');
@@ -3076,7 +3116,8 @@ function htmlPage(pathname, origin, options = {}) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            keywordsText: keywords.join('\\n'),
+            keyword,
+            category,
           }),
         });
 
@@ -3085,10 +3126,9 @@ function htmlPage(pathname, origin, options = {}) {
           throw new Error(data?.error || '요청 실패');
         }
 
-        const results = data.results || [];
-        const selectedIndex = Math.max(0, results.findIndex((item) => item.keyword === activeTab));
-        renderElementResults(results, selectedIndex >= 0 ? selectedIndex : 0);
-        setStatus((data.keywordCount || 0) + '개 키워드 분석 완료');
+        const result = data?.results?.[0] || data || null;
+        renderElementResults(result);
+        setStatus('1개 키워드 분석 완료');
       } catch (error) {
         resultPanelEl.innerHTML = '<div class="result-empty">오류: ' + (error?.message || String(error)) + '</div>';
         setStatus('실패');
@@ -3167,21 +3207,15 @@ function htmlPage(pathname, origin, options = {}) {
 
     if (runBtn) {
       runBtn.addEventListener('click', () => {
-        const keywords = parseKeywordsInput(keywordEl.value);
+        const keyword = cleanText(keywordEl?.value);
+        const category = normalizeMiricanvasCategory(categoryEl?.value);
 
-        if (keywords.length === 0) {
+        if (!keyword) {
           setStatus('키워드를 입력하세요.');
           return;
         }
 
-        try {
-          validateKeywordsLimit(keywords);
-        } catch (error) {
-          setStatus(error.message || String(error));
-          return;
-        }
-
-        window.location.href = buildElementResultUrl(keywords);
+        window.location.href = buildElementResultUrl(keyword, category);
       });
     }
 
@@ -3307,6 +3341,7 @@ export async function requestHandler(req, res) {
     if (req.method === 'GET' && req.url?.startsWith('/api/collect')) {
       const url = new URL(req.url, 'http://localhost');
       const keyword = cleanText(url.searchParams.get('keyword'));
+      const category = normalizeMiricanvasCategory(url.searchParams.get('category'));
 
       if (!keyword) {
         res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -3314,7 +3349,7 @@ export async function requestHandler(req, res) {
         return;
       }
 
-      const result = await collectTopTags(keyword);
+      const result = await collectTopTags(keyword, category);
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify(result));
       return;
@@ -3334,25 +3369,21 @@ export async function requestHandler(req, res) {
 
     if (req.method === 'POST' && req.url === '/api/collect') {
       const body = await readJsonBody(req);
-      const keywords = parseKeywordsInput(body?.keywordsText);
-
-      if (keywords.length === 0) {
-        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ error: 'at least one keyword is required' }));
-        return;
-      }
 
       try {
-        validateKeywordsLimit(keywords);
+        const keyword = parseSingleKeyword(body?.keyword);
+        const category = normalizeMiricanvasCategory(body?.category);
+        const result = await collectTopTags(keyword, category);
+
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({
+          keywordCount: 1,
+          results: [result],
+        }));
       } catch (error) {
         res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: error.message || String(error) }));
-        return;
       }
-
-      const result = await collectTopTagsForKeywords(keywords);
-      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-      res.end(JSON.stringify(result));
       return;
     }
 
@@ -3394,6 +3425,7 @@ export async function requestHandler(req, res) {
 }
 
 export default requestHandler;
+
 
 
 

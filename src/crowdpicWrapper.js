@@ -474,7 +474,7 @@ function buildRankingMain(rankings) {
             ${renderRankingRows(keywordTop20, 'keyword')}
           </section>
           <section class="summary-card">
-            <h3>이번달 카테고리 검색 순위 TOP 20</h3>
+            <h3>이번달 카테고리 검색 순위</h3>
             ${renderRankingRows(categoryTop20, 'label')}
           </section>
         </div>
