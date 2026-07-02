@@ -99,8 +99,6 @@ function patchNav(html, activeMenu) {
   let next = html;
   const activeClass = (key) => (activeMenu === key ? 'active' : '');
   const hasCrowdpicAnchor = /<a href="\/crowdpic" class="[^"]*">[^<]*<\/a>/.test(next);
-  const hasCanvaAnchor = /<a href="\/canva" class="[^"]*">[^<]*<\/a>/.test(next);
-  const hasAdobeAnchor = /<a href="\/adobe-stock" class="[^"]*">[^<]*<\/a>/.test(next);
 
   next = next.replace(
     /<a href="\/" class="[^"]*">[^<]*<\/a>/,
@@ -123,35 +121,16 @@ function patchNav(html, activeMenu) {
     );
   }
 
-  if (hasCanvaAnchor) {
-    next = next.replace(
-      /<a href="\/canva" class="[^"]*">[^<]*<\/a>/,
-      `<a href="/canva" class="${activeClass('canva')}">캔바</a>`
-    );
-  } else {
-    next = next.replace(
-      /(<a href="\/crowdpic" class="[^"]*">[^<]*<\/a>)/,
-      `$1\n        <a href="/canva" class="${activeClass('canva')}">캔바</a>`
-    );
-  }
-
-  if (hasAdobeAnchor) {
-    next = next.replace(
-      /<a href="\/adobe-stock" class="[^"]*">[^<]*<\/a>/,
-      `<a href="/adobe-stock" class="${activeClass('adobe-stock')}">어도비 스톡</a>`
-    );
-  } else {
-    next = next.replace(
-      /(<a href="\/canva" class="[^"]*">[^<]*<\/a>)/,
-      `$1\n        <a href="/adobe-stock" class="${activeClass('adobe-stock')}">어도비 스톡</a>`
-    );
-  }
+  next = next.replace(/\s*<a href="\/canva" class="[^"]*">[^<]*<\/a>/, '');
+  next = next.replace(/\s*<a href="\/adobe-stock" class="[^"]*">[^<]*<\/a>/, '');
 
   return next;
 }
 
 function removeAdobeHomeCard(html) {
-  return html;
+  return html
+    .replace(/\s*<article class="feature-card platform-card">\s*<div class="platform-head">\s*<div class="platform-badges">\s*<span class="status-badge coming">�غ���<\/span>\s*<\/div>\s*<\/div>\s*<h2>(?:\\uCE94\\uBC14|ĵ��)<\/h2>\s*<p>�غ���<\/p>\s*<\/article>/, '')
+    .replace(/\s*<article class="feature-card platform-card">\s*<div class="platform-head">\s*<div class="platform-badges">\s*<span class="status-badge coming">�غ���<\/span>\s*<\/div>\s*<\/div>\s*<h2>��� ����<\/h2>\s*<p>�غ���<\/p>\s*<\/article>/, '');
 }
 
 function buildCrowdpicHomeCard() {

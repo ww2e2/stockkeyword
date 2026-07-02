@@ -187,7 +187,7 @@ function buildRobotsTxt(origin) {
 
 function buildSitemapXml(origin) {
   const lastmod = getCollectedDate();
-  const urls = ['/', '/miricanvas', '/miricanvas/tag', '/miricanvas/template', '/miricanvas/rankings', '/canva', '/adobe-stock', '/about', '/privacy', '/terms', '/contact'];
+  const urls = ['/', '/miricanvas', '/miricanvas/tag', '/miricanvas/template', '/miricanvas/rankings', '/crowdpic', '/crowdpic/tag', '/crowdpic/rankings', '/about', '/privacy', '/terms', '/contact'];
   const urlset = urls.map((path) => {
     const loc = `${origin}${path === '/' ? '/' : path}`;
     return [
@@ -867,7 +867,7 @@ const HOME_FAQ_ITEMS = [
   },
   {
     question: '어떤 플랫폼을 지원하나요?',
-    answer: '현재는 미리캔버스와 크라우드픽 기능을 제공하고 있으며, 이후 캔바와 어도비 스톡까지 확장할 예정입니다. 플랫폼별 특성에 맞는 분석 기능을 같은 구조로 사용할 수 있도록 발전시키고 있습니다.',
+    answer: '현재는 미리캔버스와 크라우드픽 기능을 제공하고 있습니다. 플랫폼별 특성에 맞는 분석 기능을 같은 구조로 사용할 수 있도록 발전시키고 있습니다.',
   },
   {
     question: '키워드 분석은 어떤 기능인가요?',
@@ -1082,8 +1082,8 @@ function buildPageSeo(pathname) {
 
   if (pathname === '/') {
     return {
-      title: '스톡 작가를 위한 분석 도구 | 미리캔버스, 캔바, 어도비 스톡',
-      description: '스톡 작가를 위한 분석 도구입니다. 현재는 미리캔버스 기반 키워드 분석과 템플릿 분석을 제공하며, 캔바와 어도비 스톡으로 확장할 예정입니다.',
+      title: '스톡 작가를 위한 분석 도구 | 미리캔버스, 크라우드픽',
+      description: '스톡 작가를 위한 분석 도구입니다. 현재는 미리캔버스와 크라우드픽 기반 분석 기능을 제공합니다.',
     };
   }
 
@@ -1332,25 +1332,6 @@ function htmlPage(pathname, origin, options = {}) {
           <a class="cta-link" href="/crowdpic">분석 시작</a>
         </article>
 
-        <article class="feature-card platform-card">
-          <div class="platform-head">
-            <div class="platform-badges">
-              <span class="status-badge coming">준비중</span>
-            </div>
-          </div>
-          <h2>\uCE94\uBC14</h2>
-          <p>준비중</p>
-        </article>
-
-        <article class="feature-card platform-card">
-          <div class="platform-head">
-            <div class="platform-badges">
-              <span class="status-badge coming">준비중</span>
-            </div>
-          </div>
-          <h2>어도비 스톡</h2>
-          <p>준비중</p>
-        </article>
       </section>
 
       <section class="page-card stack">
@@ -2348,8 +2329,6 @@ function htmlPage(pathname, origin, options = {}) {
         <a href="/" class="${activeMenu === 'home' ? 'active' : ''}">홈</a>
         <a href="/miricanvas" class="${activeMenu === 'miricanvas' ? 'active' : ''}">미리캔버스</a>
         <a href="/crowdpic" class="${activeMenu === 'crowdpic' ? 'active' : ''}">크라우드픽</a>
-        <a href="/canva" class="${activeMenu === 'canva' ? 'active' : ''}">캔바</a>
-        <a href="/adobe-stock" class="${activeMenu === 'adobe-stock' ? 'active' : ''}">어도비 스톡</a>
       </nav>
     </div>
 
