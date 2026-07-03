@@ -21,6 +21,7 @@ import {
   buildSitemapXml,
   serveFaviconAsset,
 } from './routes/static.js';
+import { createMiricanvasApiRoutes } from './routes/miricanvas.js';
 import { createRankingsService } from './services/rankings.js';
 import {
   fetchMonthlySearchLogs,
@@ -298,6 +299,17 @@ async function readJsonBody(req) {
   return JSON.parse(bodyText);
 }
 
+const { handleMiricanvasApiRequest } = createMiricanvasApiRoutes({
+  cleanText,
+  collectTemplateTrend,
+  collectTopTags,
+  getMonthlyRankings,
+  getTemplateTypeConfig,
+  normalizeMiricanvasCategory,
+  parseSingleKeyword,
+  readJsonBody,
+});
+
 const PLATFORM_CARDS = [
   {
     key: 'miricanvas',
@@ -425,70 +437,7 @@ export async function requestHandler(req, res) {
       res.end(htmlPage(pathname, requestUrl.origin));
       return;
     }
-
-    if (req.method === 'GET' && req.url?.startsWith('/api/collect')) {
-      const url = new URL(req.url, 'http://localhost');
-      const keyword = cleanText(url.searchParams.get('keyword'));
-      const category = normalizeMiricanvasCategory(url.searchParams.get('category'));
-
-      if (!keyword) {
-        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ error: 'keyword is required' }));
-        return;
-      }
-
-      const result = await collectTopTags(keyword, category);
-      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-      res.end(JSON.stringify(result));
-      return;
-    }
-
-    if (req.method === 'GET' && req.url === '/api/monthly-rankings') {
-      try {
-        const result = await getMonthlyRankings();
-        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify(result));
-      } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ error: error?.message || String(error) }));
-      }
-      return;
-    }
-
-    if (req.method === 'POST' && req.url === '/api/collect') {
-      const body = await readJsonBody(req);
-
-      try {
-        const keyword = parseSingleKeyword(body?.keyword);
-        const category = normalizeMiricanvasCategory(body?.category);
-        const result = await collectTopTags(keyword, category);
-
-        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({
-          keywordCount: 1,
-          results: [result],
-        }));
-      } catch (error) {
-        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ error: error.message || String(error) }));
-      }
-      return;
-    }
-
-    if (req.method === 'POST' && req.url === '/api/template-trend') {
-      const body = await readJsonBody(req);
-
-      try {
-        const keyword = parseSingleKeyword(body?.keyword);
-        const typeConfig = getTemplateTypeConfig(body?.type);
-        const result = await collectTemplateTrend(keyword, typeConfig.value);
-
-        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify(result));
-      } catch (error) {
-        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ error: error.message || String(error) }));
-      }
+    if (await handleMiricanvasApiRequest(req, res)) {
       return;
     }
 
