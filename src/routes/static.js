@@ -1,56 +1,99 @@
-import { readFile } from 'fs/promises';
+import fs from 'fs';
+import path from 'path';
 
-export const FAVICON_FILE_MAP = new Map([
-  ['/favicon.ico', { file: 'favicon.ico', contentType: 'image/x-icon' }],
-  ['/favicon-16x16.png', { file: 'favicon-16x16.png', contentType: 'image/png' }],
-  ['/favicon-32x32.png', { file: 'favicon-32x32.png', contentType: 'image/png' }],
-  ['/apple-touch-icon.png', { file: 'apple-touch-icon.png', contentType: 'image/png' }],
-  ['/android-chrome-192x192.png', { file: 'android-chrome-192x192.png', contentType: 'image/png' }],
-  ['/android-chrome-512x512.png', { file: 'android-chrome-512x512.png', contentType: 'image/png' }],
-  ['/site.webmanifest', { file: 'site.webmanifest', contentType: 'application/manifest+json; charset=utf-8' }],
-]);
+const FAVICON_DIR = path.resolve(process.cwd(), 'favicon_io');
 
 export function buildRobotsTxt(origin) {
   return [
     'User-agent: *',
     'Allow: /',
-    '',
     `Sitemap: ${origin}/sitemap.xml`,
+    '',
   ].join('\n');
 }
 
-export function buildSitemapXml(origin, { escapeHtml, getCollectedDate }) {
-  const lastmod = getCollectedDate();
-  const urls = ['/', '/miricanvas', '/miricanvas/tag', '/miricanvas/template', '/miricanvas/rankings', '/crowdpic', '/crowdpic/tag', '/crowdpic/rankings', '/about', '/privacy', '/terms', '/contact'];
-  const urlset = urls.map((path) => {
-    const loc = `${origin}${path === '/' ? '/' : path}`;
-    return [
-      '  <url>',
-      `    <loc>${escapeHtml(loc)}</loc>`,
-      `    <lastmod>${lastmod}</lastmod>`,
-      '  </url>',
-    ].join('\n');
-  }).join('\n');
 
-  return [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    urlset,
-    '</urlset>',
-  ].join('\n');
+const SITEMAP_PATHS = [
+  '/',
+
+  '/miricanvas',
+  '/miricanvas/tag',
+  '/miricanvas/template',
+  '/miricanvas/rankings',
+
+  '/crowdpic',
+  '/crowdpic/tag',
+  '/crowdpic/rankings',
+
+  '/tooldi',
+  '/tooldi/tag',
+  '/tooldi/template',
+  '/tooldi/rankings',
+
+  '/calendar',
+  ...Array.from(
+    { length: 12 },
+    (_, index) => `/calendar/${index + 1}`,
+  ),
+
+  '/faq',
+  '/about',
+  '/privacy',
+  '/terms',
+  '/contact',
+];
+
+function escapeXml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
-export async function serveFaviconAsset(reqPath, res) {
-  const asset = FAVICON_FILE_MAP.get(reqPath);
-  if (!asset) {
-    return false;
-  }
+export function buildSitemapXml(origin) {
+  const baseUrl = String(origin ?? '').replace(/\/+$/, '');
 
-  const fileBuffer = await readFile(new URL(`../favicon_io/${asset.file}`, import.meta.url));
-  res.writeHead(200, {
-    'Content-Type': asset.contentType,
-    'Cache-Control': 'public, max-age=86400',
-  });
-  res.end(fileBuffer);
+  const urls = SITEMAP_PATHS
+    .map((pathname) => `
+  <url>
+    <loc>${escapeXml(`${baseUrl}${pathname}`)}</loc>
+  </url>`)
+    .join('');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}
+</urlset>
+`;
+}
+
+export function serveFaviconAsset(pathname, res) {
+  const fileMap = {
+    '/favicon.ico': 'favicon.ico',
+    '/favicon-32x32.png': 'favicon-32x32.png',
+    '/favicon-16x16.png': 'favicon-16x16.png',
+    '/apple-touch-icon.png': 'apple-touch-icon.png',
+    '/android-chrome-192x192.png': 'android-chrome-192x192.png',
+    '/android-chrome-512x512.png': 'android-chrome-512x512.png',
+    '/site.webmanifest': 'site.webmanifest',
+  };
+
+  const fileName = fileMap[pathname];
+  if (!fileName) return false;
+
+  const filePath = path.join(FAVICON_DIR, fileName);
+  if (!fs.existsSync(filePath)) return false;
+
+  const contentType = fileName.endsWith('.png')
+    ? 'image/png'
+    : fileName.endsWith('.ico')
+      ? 'image/x-icon'
+      : fileName.endsWith('.webmanifest')
+        ? 'application/manifest+json'
+        : 'text/plain';
+
+  res.writeHead(200, { 'Content-Type': contentType });
+  res.end(fs.readFileSync(filePath));
   return true;
 }

@@ -1,370 +1,428 @@
-﻿import http from 'http';
-import dotenv from 'dotenv';
-import { TEMPLATE_TYPE_MAP } from './templateTypeMap.js';
-import { handleCrowdpicRequest } from './crowdpicPages.js';
-import {
-  ADS_TXT_CONTENT,
-  DEFAULT_TEMPLATE_TIER,
-  HOME_FAQ_ITEMS,
-  MIRICANVAS_CATEGORY_LABEL_MAP,
-  MIRICANVAS_CATEGORY_OPTIONS,
-  MIRICANVAS_CATEGORY_TYPE_MAP,
-  MIRICANVAS_FAQ_ITEMS,
-  SEARCH_PLATFORM,
-  STATIC_PAGE_CONTENT,
-  TEMPLATE_FILTER_TABS,
-  TEMPLATE_PURPOSE_BY_GROUP,
-  TEMPLATE_RESULT_TABS,
-} from './config/siteConfig.js';
+import { PLATFORM_CONFIGS, getCurrentMonthNumber, getMonthLabel, getMonthTopic } from './config/siteConfig.js';
 import {
   buildRobotsTxt,
   buildSitemapXml,
   serveFaviconAsset,
 } from './routes/static.js';
-import { createMiricanvasApiRoutes } from './routes/miricanvas.js';
-import { createRankingsService } from './services/rankings.js';
 import {
-  fetchMonthlySearchLogs,
-  safeLogSearchEvent,
-} from './services/supabase.js';
-import { createMiricanvasService } from './services/miricanvas.js';
-import { createHtmlView } from './views/html.js';
+  htmlPage,
+  renderAboutPage,
+  renderCalendarPage,
+  renderContactPage,
+  renderFaqPage,
+  renderHomePage,
+  renderKeywordAnalysisPage,
+  renderPrivacyPage,
+  renderTemplateAnalysisPage,
+  renderMonthlyTopics,
+  renderPlatformPage,
+  renderRankingsPage,
+  renderTermsPage,
+} from './views/html.js';
+import { getMiricanvasKeywordResult, getMiricanvasTemplateResult } from './services/miricanvas.js';
+import { getCrowdpicKeywordResult } from './services/crowdpic.js';
+import { getTooldiKeywordResult, getTooldiTemplateResult } from './services/tooldi.js';
+import { sanitizeKeywords } from './utils/keywords.js';
+import { getMonthlyRankingResult, logSearchEvent } from './services/supabase.js';
 
-dotenv.config();
-
-const PORT = Number(process.env.PORT || 3000);
-const DEBUG = String(process.env.DEBUG || 'false').toLowerCase() === 'true';
-const MIRICANVAS_API_URL = process.env.MIRICANVAS_API_URL || '';
-const MIRICANVAS_API_METHOD = (process.env.MIRICANVAS_API_METHOD || 'GET').toUpperCase();
-const MIRICANVAS_API_HEADERS_JSON = process.env.MIRICANVAS_API_HEADERS_JSON || '';
-const MIRICANVAS_TEAM_IDX = process.env.MIRICANVAS_TEAM_IDX || '';
-const TIME_ZONE = process.env.TIME_ZONE || 'Asia/Seoul';
-const MAX_KEYWORDS_PER_REQUEST = 5;
-const TEMPLATE_API_URL = 'https://api.miricanvas.com/template/api/p/template-pages/search';
-const TEMPLATE_TYPE_FAILURE_MESSAGE = '대상 템플릿 종류 분석 결과를 불러오지 못했습니다.';
-
-function debugLog(...args) {
-  if (!DEBUG) return;
-  console.log(...args);
+function cleanText(value) {
+  return String(value ?? '').trim();
 }
 
-function debugWarn(...args) {
-  if (!DEBUG) return;
-  console.warn(...args);
+
+function getOptionLabel(options, value) {
+  const normalizedValue = cleanText(value);
+  const option = (Array.isArray(options) ? options : []).find((item) => (
+    cleanText(typeof item === 'string' ? item : item?.value) === normalizedValue
+  ));
+  return cleanText(typeof option === 'string' ? option : option?.label) || normalizedValue;
 }
 
-function debugError(...args) {
-  if (!DEBUG) return;
-  console.error(...args);
+function getContentTypeLogValue(config, value) {
+  const inputValue = cleanText(value);
+  const option = (Array.isArray(config?.contentTypeOptions) ? config.contentTypeOptions : []).find((item) => (
+    cleanText(item?.inputValue ?? item?.label ?? item?.value) === inputValue
+  ));
+
+  return {
+    value: cleanText(option?.value) || inputValue,
+    label: cleanText(option?.label) || inputValue,
+  };
 }
 
-function normalizeTemplateApiValues(apiValue, fallbackValue = '') {
-  const values = Array.isArray(apiValue) ? apiValue : [apiValue || fallbackValue];
-  return values.map(cleanText).filter(Boolean);
+async function logSuccessfulSearch({ config, feature, result }) {
+  const query = cleanText(result?.query);
+  if (!query) return;
+
+  const isTemplate = feature === 'template';
+  const contentType = getContentTypeLogValue(config, result?.contentType);
+  try {
+    await logSearchEvent({
+      platform: config.id,
+      feature,
+      query,
+      typeValue: isTemplate ? cleanText(result?.templateTypeId) : contentType.value,
+      typeLabel: isTemplate
+        ? getOptionLabel(config?.templateSearchOptions?.contentTypes, result?.templateTypeId)
+        : contentType.label,
+    });
+  } catch (error) {
+    console.error('Failed to save search log:', error?.message || String(error));
+  }
 }
 
-function getTemplatePurpose(typeConfig) {
-  return cleanText(typeConfig?.purpose) || TEMPLATE_PURPOSE_BY_GROUP[typeConfig?.group] || 'WEB';
+function parseMonthFromPath(pathname) {
+  const match = pathname.match(/^\/calendar\/(\d{1,2})$/);
+  return match ? Number(match[1]) : null;
 }
 
-function getTemplateTier(typeConfig) {
-  return cleanText(typeConfig?.tier) || DEFAULT_TEMPLATE_TIER;
+function getPlatformConfigFromPath(pathname) {
+  const platformId = String(pathname || '').replace(/^\//, '');
+  return platformId && !platformId.includes('/')
+    ? PLATFORM_CONFIGS[platformId] || null
+    : null;
 }
 
-function flattenTemplateTypeItems(items, parentPath = []) {
-  const flattened = [];
+function getPlatformConfigForPage(pathname, pageName) {
+  const match = String(pathname || '').match(/^\/([^/]+)\/([^/]+)$/);
+  if (!match || match[2] !== pageName) {
+    return null;
+  }
 
-  for (const item of items) {
-    const currentPath = [...parentPath, item.label];
+  return PLATFORM_CONFIGS[match[1]] || null;
+}
 
-    if (Array.isArray(item.children) && item.children.length > 0) {
-      flattened.push(...flattenTemplateTypeItems(item.children, currentPath));
-      continue;
-    }
+function getPageMeta(pathname) {
+  if (pathname === '/') {
+    return { title: 'StockKeyword | 홈', description: '스톡 작가를 위한 키워드와 월별 소재를 정리합니다.' };
+  }
+  const platformConfig = getPlatformConfigFromPath(pathname);
+  if (platformConfig) {
+    return {
+      title: platformConfig.name,
+      description: platformConfig.description,
+    };
+  }
+  if (pathname === '/calendar' || pathname.startsWith('/calendar/')) {
+    const month = parseMonthFromPath(pathname) || Number(getCurrentMonthNumber());
+    return { title: `${getMonthLabel(month)} | 월별 작업 캘린더`, description: `${getMonthLabel(month)} 스톡 작업에 활용하기 좋은 소재를 확인하세요.` };
+  }
 
-    flattened.push({
-      ...item,
-      pathLabels: currentPath,
+  if (pathname === '/faq') {
+    return {
+      title: 'FAQ | StockKeyword',
+      description: 'StockKeyword의 키워드 추천 방식과 플랫폼별 분석 기능을 확인하세요.',
+    };
+  }
+
+  if (pathname === '/about') {
+    return {
+      title: '서비스 소개 | StockKeyword',
+      description: '스톡 작가를 위한 키워드·템플릿 리서치 도구 StockKeyword를 소개합니다.',
+    };
+  }
+
+  if (pathname === '/privacy' || pathname === '/privacy-policy') {
+    return {
+      title: '개인정보처리방침 | StockKeyword',
+      description: 'StockKeyword의 개인정보 처리와 이용 기록 관리 기준을 안내합니다.',
+    };
+  }
+
+  if (pathname === '/terms' || pathname === '/terms-of-service') {
+    return {
+      title: '이용약관 | StockKeyword',
+      description: 'StockKeyword의 서비스 이용 조건과 운영 기준을 안내합니다.',
+    };
+  }
+
+  if (pathname === '/contact') {
+    return {
+      title: '문의 | StockKeyword',
+      description: 'StockKeyword 오류 제보, 기능 제안과 제휴 문의 방법을 안내합니다.',
+    };
+  }
+
+
+  const keywordPlatformConfig = getPlatformConfigForPage(pathname, 'tag');
+  if (keywordPlatformConfig) {
+    return {
+      title: keywordPlatformConfig.keywordPageTitle,
+      description: keywordPlatformConfig.keywordPageDescription,
+    };
+  }
+
+  const rankingPlatformConfig = getPlatformConfigForPage(pathname, 'rankings');
+  if (rankingPlatformConfig) {
+    return {
+      title: '\uC774\uBC88 \uB2EC \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704',
+      description: rankingPlatformConfig.name + '\uC758 \uC774\uBC88 \uB2EC \uAC80\uC0C9 \uD750\uB984\uC744 \uD655\uC778\uD569\uB2C8\uB2E4.',
+    };
+  }
+
+  if (pathname === '/miricanvas/template') {
+    return {
+      title: '템플릿 분석',
+      description: '미리캔버스 템플릿의 제목과 구성 패턴을 분석합니다',
+    };
+  }
+
+  if (pathname === '/tooldi/template') {
+    return {
+      title: '템플릿 분석',
+      description: '툴디 템플릿의 기획 키워드와 제목 패턴을 분석합니다',
+    };
+  }
+
+  if (pathname.startsWith('/miricanvas')) {
+    return { title: '미리캔버스 | StockKeyword', description: '미리캔버스 전용 분석 화면입니다.' };
+  }
+
+  if (pathname.startsWith('/crowdpic')) {
+    return { title: '크라우드픽 | StockKeyword', description: '크라우드픽 전용 분석 화면입니다.' };
+  }
+
+  if (pathname.startsWith('/tooldi')) {
+    return { title: '툴디 | StockKeyword', description: '툴디 전용 분석 화면입니다.' };
+  }
+
+  return { title: 'StockKeyword', description: '스톡 작가를 위한 분석 도구입니다.' };
+}
+
+function getSampleKeywordResult(pathname, searchParams) {
+  const requestedQuery = cleanText(searchParams.get('q'));
+
+
+  const query = requestedQuery || (pathname === '/crowdpic/tag' ? '여행' : '명절');
+
+
+  if (pathname === '/crowdpic/tag') {
+    return {
+      query,
+      keywords: ['여행', '여행 사진', '휴가', '풍경', '해변', '가족 여행', '비행기', '호텔', '렌터카', '캐리어', '바다', '일몰'],
+      recommendedCount: 12,
+      collectedAt: '2026-07-08',
+    };
+  }
+
+  return {
+    query,
+    keywords: ['명절', '한복', '선물', '가족', '전통', '추석', '설날', '차례', '송편', '복주머니'],
+    recommendedCount: 10,
+    collectedAt: '2026-07-08',
+  };
+}
+
+function sanitizeKeywordResult(result) {
+  if (!result) return null;
+
+  const keywords = sanitizeKeywords(result?.keywords);
+  return {
+    ...result,
+    keywords,
+    recommendedCount: keywords.length,
+  };
+}
+
+async function renderPage(pathname, origin, requestUrl) {
+  if (pathname === '/tag') {
+    return renderPage('/miricanvas/tag', origin, requestUrl);
+  }
+
+  if (pathname === '/result') {
+    return renderPage('/miricanvas/tag', origin, requestUrl);
+  }
+
+  if (pathname === '/template') {
+    return renderPage('/miricanvas/template', origin, requestUrl);
+  }
+
+  if (pathname === '/') {
+    return htmlPage(pathname, origin, {
+      activeMenu: 'home',
+      ...getPageMeta(pathname),
+      contentHtml: renderHomePage(),
     });
   }
 
-  return flattened;
-}
-
-const FLAT_TEMPLATE_TYPE_MAP = flattenTemplateTypeItems(TEMPLATE_TYPE_MAP);
-const TEMPLATE_TYPE_INDEX = new Map(FLAT_TEMPLATE_TYPE_MAP.map((item) => [item.value, item]));
-const TEMPLATE_TYPE_API_INDEX = new Map();
-for (const item of FLAT_TEMPLATE_TYPE_MAP) {
-  const apiKeys = normalizeTemplateApiValues(item.apiValue, item.value);
-  for (const apiKey of apiKeys) {
-    if (!TEMPLATE_TYPE_API_INDEX.has(apiKey)) {
-      TEMPLATE_TYPE_API_INDEX.set(apiKey, item);
-    }
-  }
-}
-const TEMPLATE_RESULT_TAB_INDEX = new Map(TEMPLATE_RESULT_TABS.map((item) => [item.key, item]));
-
-function cleanText(value) {
-  return String(value ?? '').replace(/\uFEFF/g, '').trim();
-}
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function getCollectedDate() {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: TIME_ZONE,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date());
-}
-
-function getCollectedMonth() {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: TIME_ZONE,
-    year: 'numeric',
-    month: '2-digit',
-  }).format(new Date());
-}
-
-function parseJsonObject(raw, label) {
-  if (!raw) return {};
-
-  const parsed = JSON.parse(raw);
-  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new Error(`${label} must be a JSON object`);
+  if (pathname === '/calendar') {
+    return htmlPage(pathname, origin, {
+      activeMenu: 'calendar',
+      ...getPageMeta(pathname),
+      contentHtml: renderCalendarPage(),
+    });
   }
 
-  return parsed;
-}
-
-function parseKeywordsInput(input) {
-  const lines = String(input ?? '')
-    .split(/\r?\n/)
-    .map(cleanText)
-    .filter(Boolean);
-
-  const seen = new Set();
-  const keywords = [];
-
-  for (const line of lines) {
-    if (seen.has(line)) continue;
-    seen.add(line);
-    keywords.push(line);
+  if (pathname === '/faq') {
+    return htmlPage(pathname, origin, {
+      activeMenu: 'faq',
+      ...getPageMeta(pathname),
+      contentHtml: renderFaqPage(),
+    });
   }
 
-  return keywords;
-}
-
-function parseKeywordsQuery(rawQuery) {
-  return String(rawQuery ?? '')
-    .split(',')
-    .map(cleanText)
-    .filter(Boolean)
-    .filter((value, index, array) => array.indexOf(value) === index);
-}
-
-function validateKeywordsLimit(keywords) {
-  if (keywords.length > MAX_KEYWORDS_PER_REQUEST) {
-    throw new Error('한 번에 최대 5개 키워드까지 분석할 수 있습니다.');
-  }
-}
-
-function parseSingleKeyword(input) {
-  const keywords = parseKeywordsInput(input);
-
-  if (keywords.length === 0) {
-    throw new Error('키워드를 입력하세요.');
+  if (pathname === '/about') {
+    return htmlPage(pathname, origin, {
+      activeMenu: 'about',
+      ...getPageMeta(pathname),
+      contentHtml: renderAboutPage(),
+    });
   }
 
-  if (keywords.length > 1) {
-    throw new Error('키워드 1개만 입력할 수 있습니다.');
+  if (pathname === '/privacy' || pathname === '/privacy-policy') {
+    return htmlPage(pathname, origin, {
+      activeMenu: 'privacy',
+      ...getPageMeta(pathname),
+      contentHtml: renderPrivacyPage(),
+    });
   }
 
-  return keywords[0];
-}
-
-function getTemplateTypeConfig(typeValue) {
-  const value = cleanText(typeValue);
-  const config = TEMPLATE_TYPE_INDEX.get(value) || TEMPLATE_TYPE_API_INDEX.get(value);
-
-  if (!config) {
-    throw new Error('?좏슚???쒗뵆由?醫낅쪟瑜??좏깮?섏꽭??');
+  if (pathname === '/terms' || pathname === '/terms-of-service') {
+    return htmlPage(pathname, origin, {
+      activeMenu: 'terms',
+      ...getPageMeta(pathname),
+      contentHtml: renderTermsPage(),
+    });
   }
 
-  return config;
-}
-
-function normalizeTemplateTab(tabKey) {
-  const value = cleanText(tabKey);
-  if (TEMPLATE_RESULT_TAB_INDEX.has(value)) {
-    return value;
-  }
-  return TEMPLATE_RESULT_TABS[0].key;
-}
-
-function extractTagList(keywordsField) {
-  const raw = Array.isArray(keywordsField)
-    ? keywordsField.join('|')
-    : String(keywordsField ?? '');
-
-  return raw
-    .split('|')
-    .map(cleanText)
-    .filter(Boolean);
-}
-
-function countFrequency(items) {
-  const counts = new Map();
-
-  for (const item of items) {
-    counts.set(item, (counts.get(item) || 0) + 1);
+  if (pathname === '/contact') {
+    return htmlPage(pathname, origin, {
+      activeMenu: 'contact',
+      ...getPageMeta(pathname),
+      contentHtml: renderContactPage(),
+    });
   }
 
-  return counts;
-}
 
-function includesKeyword(item, keyword) {
-  const normalizedKeyword = cleanText(keyword);
-  if (!normalizedKeyword) return false;
-
-  const name = cleanText(item?.name);
-  const keywordsText = cleanText(item?.keywords);
-  return name.includes(normalizedKeyword) || keywordsText.includes(normalizedKeyword);
-}
-
-function normalizeMiricanvasCategory(category) {
-  const normalized = cleanText(category);
-  return Object.prototype.hasOwnProperty.call(MIRICANVAS_CATEGORY_TYPE_MAP, normalized)
-    ? normalized
-    : MIRICANVAS_CATEGORY_OPTIONS[0].value;
-}
-
-const {
-  fetchMiricanvas,
-  fetchTemplateSearch,
-  collectTopTags,
-  collectTopTagsForKeywords,
-  collectTemplateTrend,
-} = createMiricanvasService({
-  MIRICANVAS_API_HEADERS_JSON,
-  MIRICANVAS_API_METHOD,
-  MIRICANVAS_API_URL,
-  MIRICANVAS_CATEGORY_LABEL_MAP,
-  MIRICANVAS_CATEGORY_OPTIONS,
-  MIRICANVAS_CATEGORY_TYPE_MAP,
-  MIRICANVAS_TEAM_IDX,
-  SEARCH_PLATFORM,
-  TEMPLATE_API_URL,
-  TEMPLATE_TYPE_FAILURE_MESSAGE,
-  cleanText,
-  debugError,
-  debugLog,
-  debugWarn,
-  getCollectedDate,
-  getCollectedMonth,
-  getTemplatePurpose,
-  getTemplateTier,
-  getTemplateTypeConfig,
-  normalizeMiricanvasCategory,
-  normalizeTemplateApiValues,
-  parseJsonObject,
-  safeLogSearchEvent,
-});
-
-const { getMonthlyRankings } = createRankingsService({
-  cleanText,
-  fetchMonthlySearchLogs,
-  getCollectedMonth,
-  searchPlatform: SEARCH_PLATFORM,
-});
-
-async function readJsonBody(req) {
-  const chunks = [];
-
-  for await (const chunk of req) {
-    chunks.push(chunk);
+  if (pathname.startsWith('/calendar/')) {
+    const month = parseMonthFromPath(pathname) || Number(getCurrentMonthNumber());
+    const monthData = getMonthTopic(month);
+    return htmlPage(pathname, origin, {
+      activeMenu: 'calendar',
+      ...getPageMeta(pathname),
+      contentHtml: renderMonthlyTopics({
+        month,
+        monthData,
+        title: `${getMonthLabel(month)} 추천 소재`,
+        description: '이번 달 스톡 작업에 활용하기 좋은 대표 소재를 확인하세요.',
+        showNavigation: true,
+      }),
+    });
   }
 
-  const bodyText = Buffer.concat(chunks).toString('utf8');
-  if (!bodyText.trim()) return {};
+  const platformConfig = getPlatformConfigFromPath(pathname);
+  if (platformConfig) {
+    return htmlPage(pathname, origin, {
+      activeMenu: platformConfig.id,
+      ...getPageMeta(pathname),
+      contentHtml: renderPlatformPage(platformConfig),
+    });
+  }
 
-  return JSON.parse(bodyText);
+  const keywordPlatformConfig = getPlatformConfigForPage(pathname, 'tag');
+  if (keywordPlatformConfig) {
+    const rawResult = keywordPlatformConfig.id === 'miricanvas'
+      ? await getMiricanvasKeywordResult({
+          keyword: requestUrl.searchParams.get('q'),
+          contentType: requestUrl.searchParams.get('contentType'),
+        })
+      : keywordPlatformConfig.id === 'crowdpic'
+        ? await getCrowdpicKeywordResult({
+            keyword: requestUrl.searchParams.get('q'),
+            contentType: requestUrl.searchParams.get('contentType'),
+          })
+        : keywordPlatformConfig.id === 'tooldi'
+          ? await getTooldiKeywordResult({ keyword: requestUrl.searchParams.get('q'), contentType: requestUrl.searchParams.get('contentType') })
+          : getSampleKeywordResult(pathname, requestUrl.searchParams);
+    const result = sanitizeKeywordResult(rawResult);
+    await logSuccessfulSearch({
+      config: keywordPlatformConfig,
+      feature: 'keyword',
+      result,
+    });
+    return htmlPage(pathname, origin, {
+      activeMenu: keywordPlatformConfig.id,
+      ...getPageMeta(pathname),
+      contentHtml: renderKeywordAnalysisPage(keywordPlatformConfig, result),
+    });
+  }
+
+  const rankingPlatformConfig = getPlatformConfigForPage(pathname, 'rankings');
+  if (rankingPlatformConfig) {
+    return htmlPage(pathname, origin, {
+      activeMenu: rankingPlatformConfig.id,
+      ...getPageMeta(pathname),
+      contentHtml: renderRankingsPage(
+        rankingPlatformConfig,
+        await getMonthlyRankingResult(rankingPlatformConfig),
+      ),
+    });
+  }
+
+  if (pathname === '/tooldi/template') {
+    const config = PLATFORM_CONFIGS.tooldi;
+    const defaultTemplateTypeId =
+      config.templateSearchOptions.contentTypes[0]?.value || 'all';
+
+    const result = await getTooldiTemplateResult({
+      keyword: requestUrl.searchParams.get('q'),
+      templateTypeId:
+        requestUrl.searchParams.get('contentType')
+        || defaultTemplateTypeId,
+    });
+
+    await logSuccessfulSearch({
+      config,
+      feature: 'template',
+      result,
+    });
+
+    return htmlPage(pathname, origin, {
+      activeMenu: 'tooldi',
+      ...getPageMeta(pathname),
+      contentHtml: renderTemplateAnalysisPage(
+        config,
+        sanitizeKeywordResult(result),
+      ),
+    });
+  }
+
+  if (pathname === '/miricanvas/template') {
+    const config = PLATFORM_CONFIGS.miricanvas;
+    const defaultTemplateTypeId = config.templateSearchOptions.contentTypes[0]?.value;
+    const result = await getMiricanvasTemplateResult({
+      keyword: requestUrl.searchParams.get('q'),
+      templateTypeId: requestUrl.searchParams.get('contentType') || defaultTemplateTypeId,
+    });
+    await logSuccessfulSearch({
+      config,
+      feature: 'template',
+      result,
+    });
+    return htmlPage(pathname, origin, {
+      activeMenu: 'miricanvas',
+      ...getPageMeta(pathname),
+      contentHtml: renderTemplateAnalysisPage(config, sanitizeKeywordResult(result)),
+    });
+  }
+
+  if (pathname === '/miricanvas/template') {
+    const key = pathname.split('/')[1];
+    const config = PLATFORM_CONFIGS[key];
+    return htmlPage(pathname, origin, {
+      activeMenu: key,
+      ...getPageMeta(pathname),
+      contentHtml: renderPlatformPage(config),
+    });
+  }
+
+  return htmlPage(pathname, origin, {
+    activeMenu: 'home',
+    title: '페이지를 찾을 수 없습니다',
+    description: '요청하신 페이지를 찾을 수 없습니다.',
+    contentHtml: renderHomePage(),
+  });
 }
-
-const { handleMiricanvasApiRequest } = createMiricanvasApiRoutes({
-  cleanText,
-  collectTemplateTrend,
-  collectTopTags,
-  getMonthlyRankings,
-  getTemplateTypeConfig,
-  normalizeMiricanvasCategory,
-  parseSingleKeyword,
-  readJsonBody,
-});
-
-const PLATFORM_CARDS = [
-  {
-    key: 'miricanvas',
-    path: '/miricanvas',
-    label: '미리캔버스',
-    description: '미리캔버스 기반 키워드 분석과 템플릿 분석을 제공하는 현재 운영 중인 플랫폼입니다.',
-    status: '사용 가능',
-    available: true,
-    buttonLabel: '플랫폼 보기',
-  },
-  {
-    key: 'crowdpic',
-    path: '/crowdpic',
-    label: '크라우드픽',
-    description: '크라우드픽 전용 키워드 분석과 이번달 인기 키워드를 제공하는 독립 모듈입니다.',
-    status: '개발중',
-    available: false,
-    buttonLabel: '분석 시작',
-  },
-  {
-    key: 'canva',
-    path: '/canva',
-    label: '캔바',
-    description: '향후 키워드 분석과 템플릿 분석, 카테고리 분석을 지원할 예정인 준비중 플랫폼입니다.',
-    status: '준비중',
-    available: false,
-    buttonLabel: '준비중 안내 보기',
-  },
-  {
-    key: 'adobe-stock',
-    path: '/adobe-stock',
-    label: '어도비 스톡',
-    description: '향후 콘텐츠 검색과 콘텐츠 수집 기능을 지원할 예정인 준비중 플랫폼입니다.',
-    status: '준비중',
-    available: false,
-    buttonLabel: '준비중 안내 보기',
-  },
-];
-const {
-  buildBreadcrumbItems,
-  buildPageSeo,
-  buildStructuredData,
-  htmlPage,
-} = createHtmlView({
-  DEBUG,
-  HOME_FAQ_ITEMS,
-  MAX_KEYWORDS_PER_REQUEST,
-  MIRICANVAS_CATEGORY_OPTIONS,
-  MIRICANVAS_FAQ_ITEMS,
-  STATIC_PAGE_CONTENT,
-  TEMPLATE_FILTER_TABS,
-  TEMPLATE_RESULT_TABS,
-  TEMPLATE_TYPE_MAP,
-  escapeHtml,
-});
 
 export async function requestHandler(req, res) {
   try {
@@ -372,108 +430,44 @@ export async function requestHandler(req, res) {
     const host = cleanText(req.headers.host) || 'localhost';
     const requestUrl = new URL(req.url, `${protocol}://${host}`);
 
-    if (req.method === 'GET' && requestUrl.pathname === '/tag') {
-      res.writeHead(301, { Location: `/miricanvas/tag${requestUrl.search}` });
-      res.end();
-      return;
-    }
-
-    if (req.method === 'GET' && requestUrl.pathname === '/result') {
-      res.writeHead(301, { Location: `/miricanvas/tag${requestUrl.search}` });
-      res.end();
-      return;
-    }
-
-    if (req.method === 'GET' && requestUrl.pathname === '/template') {
-      res.writeHead(301, { Location: `/miricanvas/template${requestUrl.search}` });
-      res.end();
-      return;
-    }
-
     if (req.method === 'GET' && requestUrl.pathname === '/robots.txt') {
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end(buildRobotsTxt(requestUrl.origin));
       return;
     }
 
-    if (req.method === 'GET' && requestUrl.pathname === '/ads.txt') {
-      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end(ADS_TXT_CONTENT);
-      return;
-    }
-
-    if (req.method === 'GET' && await serveFaviconAsset(requestUrl.pathname, res)) {
-      return;
-    }
-
-    if (await handleCrowdpicRequest(req, res, requestUrl, htmlPage, readJsonBody)) {
-      return;
-    }
 
     if (req.method === 'GET' && requestUrl.pathname === '/sitemap.xml') {
-      res.writeHead(200, { 'Content-Type': 'application/xml; charset=utf-8' });
-      res.end(buildSitemapXml(requestUrl.origin, { escapeHtml, getCollectedDate }));
+      res.writeHead(200, {
+        'Content-Type': 'application/xml; charset=utf-8',
+        'Cache-Control': 'public, max-age=3600',
+      });
+      res.end(buildSitemapXml(requestUrl.origin));
       return;
     }
 
-    if (
-      req.method === 'GET' &&
-      (
-        requestUrl.pathname === '/' ||
-        requestUrl.pathname === '/miricanvas' ||
-        requestUrl.pathname === '/miricanvas/tag' ||
-        requestUrl.pathname === '/miricanvas/template' ||
-        requestUrl.pathname === '/miricanvas/rankings' ||
-        requestUrl.pathname === '/canva' ||
-        requestUrl.pathname === '/adobe-stock' ||
-        requestUrl.pathname === '/about' ||
-        requestUrl.pathname === '/privacy' ||
-        requestUrl.pathname === '/terms' ||
-        requestUrl.pathname === '/contact'
-      )
-    ) {
-      const pathname = requestUrl.pathname;
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end(htmlPage(pathname, requestUrl.origin));
-      return;
-    }
-    if (await handleMiricanvasApiRequest(req, res)) {
-      return;
-    }
-
-    if (req.method === 'GET' && (req.url === '/health' || req.url === '/healthz')) {
-      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end('ok');
+    if (req.method === 'GET' && serveFaviconAsset(requestUrl.pathname, res)) {
       return;
     }
 
     if (req.method === 'GET') {
-      res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end(htmlPage(requestUrl.pathname, requestUrl.origin, { notFound: true }));
+      const content = await renderPage(requestUrl.pathname, requestUrl.origin, requestUrl);
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(content);
       return;
     }
 
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
     res.end('not found');
+    return;
   } catch (error) {
-    res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify({ error: error?.message || String(error) }));
+    console.error('Request failed:', error?.message || String(error));
+
+    if (!res.headersSent && !res.writableEnded) {
+      res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ error: error?.message || String(error) }));
+    }
   }
 }
 
 export default requestHandler;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

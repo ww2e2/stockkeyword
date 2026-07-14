@@ -1,261 +1,2161 @@
-export const MIRICANVAS_CATEGORY_OPTIONS = [
-  { value: 'element', label: '요소' },
-  { value: 'photo', label: '사진' },
-  { value: 'background', label: '배경' },
-];
-
-export const MIRICANVAS_CATEGORY_TYPE_MAP = {
-  element: [
-    'ILLUST',
-    'BITMAP',
-    'FIGURE',
-    'LINE',
-    'ANI',
-    'ELEMENT_COLLECTION',
-    'DESIGNRESOURCE_COLLECTION',
-    'FRAME',
-    'PRESET_FRAME',
-    'MOCKUP_GRID',
-    'MOCKUP_TEXT',
-    'CHART',
-    'EXTERNAL_ILLUST',
-    'EXTERNAL_BITMAP',
-    'EXTERNAL_ANI',
-  ],
-  photo: ['PICTURE'],
-  background: ['BACKGROUND_PICTURE'],
+export const SITE_INFO = {
+  serviceName: 'StockKeyword',
+  siteUrl: 'https://www.stockkeyword.com',
+  contactEmail: 'contact@stockkeyword.com',
+  policyEffectiveDate: '2026-07-13',
 };
 
-export const MIRICANVAS_CATEGORY_LABEL_MAP = {
-  element: '요소',
-  photo: '사진',
-  background: '배경',
-};
-
-export const TEMPLATE_FILTER_TABS = [
-  { key: 'all', label: '전체' },
-  { key: 'photo', label: '사진' },
-  { key: 'video', label: '동영상' },
-  { key: 'print', label: '인쇄' },
-];
-
-export const TEMPLATE_RESULT_TABS = [
-  { key: 'titleKeywords', label: '제목 키워드' },
-  { key: 'pageCount', label: '페이지 수' },
-  { key: 'topTitles', label: '상위 제목' },
-];
-
-export const TEMPLATE_PURPOSE_BY_GROUP = {
-  photo: 'WEB',
-  video: 'VIDEO',
-  print: 'PRINT',
-};
-
-export const DEFAULT_TEMPLATE_TIER = 'PREMIUM';
-export const ADS_TXT_CONTENT = 'google.com, pub-3386559853644133, DIRECT, f08c47fec0942fa0';
-export const SEARCH_PLATFORM = 'miricanvas';
-
-export const HOME_FAQ_ITEMS = [
-  {
-    question: '\uC774 \uC11C\uBE44\uC2A4\uB294 \uBB34\uC5C7\uC778\uAC00\uC694?',
-    answer: '\uC774 \uC11C\uBE44\uC2A4\uB294 \uC2A4\uD1A1 \uC791\uAC00\uC640 \uB514\uC9C0\uD138 \uD06C\uB9AC\uC5D0\uC774\uD130\uB97C \uC704\uD55C \uBD84\uC11D \uB3C4\uAD6C\uC785\uB2C8\uB2E4. \uC2A4\uD1A1 \uCF58\uD150\uCE20\uC640 \uD15C\uD50C\uB9BF \uB370\uC774\uD130\uC5D0\uC11C \uD0A4\uC6CC\uB4DC \uBD84\uC11D\uACFC \uD15C\uD50C\uB9BF \uBD84\uC11D\uC744 \uBE60\uB974\uAC8C \uD655\uC778\uD560 \uC218 \uC788\uB3C4\uB85D \uAD6C\uC131\uB418\uC5B4 \uC788\uC2B5\uB2C8\uB2E4.',
+export const PLATFORM_CONFIGS = {
+  miricanvas: {
+    contentTypeOptions: [
+      { value: 'element', label: '요소', inputValue: '요소' },
+      { value: 'photo', label: '사진', inputValue: '사진' },
+      { value: 'background', label: '배경', inputValue: '배경' },
+    ],
+    id: 'miricanvas',
+    name: '미리캔버스',
+    description: '검색 · 템플릿 · 월간 흐름을 한눈에 필요한 정보만 빠르게 확인합니다.',
+    keywordPageTitle: '키워드 분석',
+    keywordPageDescription: '미리캔버스에서 실시간으로 키워드를 추출합니다',
+    rankingFeatures: { keyword: true, template: true },
+    features: [
+      { title: '키워드 분석', href: '/miricanvas/tag', description: '검색에서 실시간 키워드를 추출합니다.' },
+      { title: '템플릿 분석', href: '/miricanvas/template', description: '템플릿 흐름과 제목 패턴을 확인합니다.' },
+      { title: '이번 달 인기 검색 순위', href: '/miricanvas/rankings', description: '이번 달 누적 검색 흐름을 봅니다.' },
+    ],
+    searchOptions: {
+      placeholder: '예) 테니스',
+      buttonLabel: '분석하기',
+      contentTypeLabel: '요소',
+      contentTypes: ['요소', '사진', '배경'],
+    },
+    templateSearchOptions: {
+      placeholder: '예) 여름 여행',
+      buttonLabel: '분석하기',
+      contentTypes: [
+        { label: '카드뉴스', value: 'card_news' },
+        { label: '프레젠테이션', value: 'presentation' },
+        { label: '유튜브 썸네일', value: 'youtube_thumb' },
+        { label: '유튜브 채널 아트', value: 'youtube_cover' },
+        { label: '상세페이지', value: 'detail_page' },
+        { label: '포스터 세로형', value: 'web_post_ver_poster' },
+        { label: '포스터 가로형', value: 'web_post_hor_poster' },
+      ],
+    },
   },
-  {
-    question: '\uC5B4\uB5A4 \uD50C\uB7AB\uD3FC\uC744 \uC9C0\uC6D0\uD558\uB098\uC694?',
-    answer: '\uD604\uC7AC\uB294 \uBBF8\uB9AC\uCE94\uBC84\uC2A4\uC640 \uD06C\uB77C\uC6B0\uB4DC\uD53D \uAE30\uB2A5\uC744 \uC81C\uACF5\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4. \uD50C\uB7AB\uD3FC\uBCC4 \uD2B9\uC131\uC5D0 \uB9DE\uB294 \uBD84\uC11D \uAE30\uB2A5\uC744 \uAC19\uC740 \uAD6C\uC870\uB85C \uC0AC\uC6A9\uD560 \uC218 \uC788\uB3C4\uB85D \uBC1C\uC804\uC2DC\uD0A4\uACE0 \uC788\uC2B5\uB2C8\uB2E4.',
+  crowdpic: {
+    contentTypeOptions: [
+      { value: 'all', label: '전체', inputValue: '전체' },
+      { value: 'photo', label: '사진', inputValue: '사진' },
+      { value: 'graphic', label: '일러스트', inputValue: '일러스트' },
+      { value: 'calli', label: '캘리그라피', inputValue: '캘리그라피' },
+      { value: 'icon', label: '아이콘', inputValue: '아이콘' },
+      { value: 'mockup', label: '목업', inputValue: '목업' },
+    ],
+    id: 'crowdpic',
+    name: '크라우드픽',
+    description: '크라우드픽에 필요한 분석 기능을 빠르게 확인합니다.',
+    keywordPageTitle: '키워드 분석',
+    keywordPageDescription: '크라우드픽에서 실시간으로 키워드를 추출합니다',
+    rankingFeatures: { keyword: true, template: false },
+    features: [
+      { title: '키워드 분석', href: '/crowdpic/tag', description: '크라우드픽 결과를 분석합니다.' },
+      { title: '이번 달 인기 검색 순위', href: '/crowdpic/rankings', description: '이번 달 검색 흐름을 확인합니다.' },
+    ],
+    searchOptions: {
+      placeholder: '예) 여행',
+      buttonLabel: '분석하기',
+      contentTypeLabel: '카테고리',
+      contentTypes: ['전체', '사진', '일러스트', '캘리그래피', '아이콘', '목업'],
+    },
   },
-  {
-    question: '\uD0A4\uC6CC\uB4DC \uBD84\uC11D\uC740 \uC5B4\uB5A4 \uAE30\uB2A5\uC778\uAC00\uC694?',
-    answer: '\uD0A4\uC6CC\uB4DC \uBD84\uC11D\uC740 \uD2B9\uC815 \uD0A4\uC6CC\uB4DC\uC640 \uAD00\uB828\uB41C \uC0C1\uC704 \uCF58\uD150\uCE20\uB97C \uBD84\uC11D\uD574 \uAC00\uC7A5 \uB9CE\uC774 \uC0AC\uC6A9\uB418\uB294 \uD0A4\uC6CC\uB4DC\uB97C \uCD94\uCC9C\uD558\uB294 \uAE30\uB2A5\uC785\uB2C8\uB2E4. \uC5C5\uB85C\uB4DC\uC5D0 \uD544\uC694\uD55C \uD0A4\uC6CC\uB4DC\uB97C \uC815\uB9AC\uD558\uAC70\uB098 \uC0C1\uC704 \uB178\uCD9C\uC6A9 \uD0A4\uC6CC\uB4DC\uB97C \uBE60\uB974\uAC8C \uD655\uC778\uD558\uB294 \uC6A9\uB3C4\uC785\uB2C8\uB2E4.',
-  },
-  {
-    question: '\uC774\uBC88\uB2EC \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704\uB294 \uBB34\uC5C7\uC778\uAC00\uC694?',
-    answer: '\uC774\uBC88\uB2EC \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704\uB294 \uCD5C\uADFC \uAC80\uC0C9 \uB370\uC774\uD130\uB97C \uBC14\uD0D5\uC73C\uB85C \uB9CE\uC774 \uCC3E\uB294 \uD0A4\uC6CC\uB4DC\uC640 \uCE74\uD14C\uACE0\uB9AC \uD750\uB984\uC744 \uC815\uB9AC\uD574 \uBCF4\uC5EC\uC8FC\uB294 \uAE30\uB2A5\uC785\uB2C8\uB2E4. \uCF58\uD150\uCE20 \uC81C\uC791 \uBC29\uD5A5\uC774\uB098 \uC5C5\uB85C\uB4DC \uC8FC\uC81C\uB97C \uC815\uD560 \uB54C \uCC38\uACE0\uC6A9\uC73C\uB85C \uD65C\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
-  },
-  {
-    question: '\uC2A4\uD1A1 \uC791\uAC00\uC5D0\uAC8C \uC5B4\uB5A4 \uB3C4\uC6C0\uC774 \uB418\uB098\uC694?',
-    answer: '\uC2A4\uD1A1 \uC791\uAC00\uC5D0\uAC8C \uBC18\uBCF5\uC801\uC73C\uB85C \uD544\uC694\uD55C \uD0A4\uC6CC\uB4DC \uC870\uC0AC\uC640 \uC81C\uBAA9 \uD328\uD134 \uD655\uC778 \uC2DC\uAC04\uC744 \uC904\uC5EC\uC90D\uB2C8\uB2E4. \uC774\uB97C \uD1B5\uD574 \uCF58\uD150\uCE20 \uAE30\uD68D\uACFC \uC81C\uC791 \uD6A8\uC728\uC744 \uB192\uC774\uACE0 \uC5C5\uB85C\uB4DC \uC804\uB7B5\uC744 \uBE60\uB974\uAC8C \uC7A1\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
-  },
-];
-
-export const MIRICANVAS_FAQ_ITEMS = [
-  {
-    question: '미리캔버스 분석 도구는 무엇인가요?',
-    answer: '미리캔버스에서 스톡 콘텐츠를 제작하는 크리에이터를 위해 만든 분석 도구 묶음입니다. 현재는 키워드 분석과 템플릿 분석 기능을 제공합니다.',
-  },
-  {
-    question: '키워드 분석은 어떤 용도인가요?',
-    answer: '실시간 상위 요소를 바탕으로 많이 사용되는 키워드를 빠르게 확인하는 용도입니다. 자주 쓰이는 키워드를 정리해 업로드 전략이나 키워드 설계에 활용할 수 있습니다.',
-  },
-  {
-    question: '템플릿 분석은 어떤 용도인가요?',
-    answer: '인기 템플릿의 제목 키워드와 상위 노출 패턴을 분석하는 도구입니다. 자주 노출되는 제목 패턴과 페이지 수를 참고해 콘텐츠 기획이나 템플릿 제작 방향을 잡는 데 도움이 됩니다.',
-  },
-  {
-    question: '스톡 작가에게 어떤 도움이 되나요?',
-    answer: '반복적인 조사 시간을 줄이고, 실제로 많이 보이는 키워드와 제목 패턴을 데이터 기반으로 빠르게 확인할 수 있습니다. 이를 통해 업로드 준비와 제작 방향 설정이 더 쉬워집니다.',
-  },
-];
-
-export const STATIC_PAGE_CONTENT = {
-  '/canva': {
-    title: '\uCEA0\uBC14 \uBD84\uC11D \uB3C4\uAD6C | \uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130 \uBD84\uC11D \uD50C\uB7AB\uD3FC',
-    description: '\uCEA0\uBC14 \uBD84\uC11D \uB3C4\uAD6C\uB294 \uD604\uC7AC \uC900\uBE44\uC911\uC785\uB2C8\uB2E4.',
-    content: `
-      <section class="page-card stack">
-        <h2>\uD604\uC7AC \uC900\uBE44\uC911\uC785\uB2C8\uB2E4.</h2>
-        <p>\uCEA0\uBC14 \uBD84\uC11D \uB3C4\uAD6C\uB294 \uD604\uC7AC \uC900\uBE44\uC911\uC785\uB2C8\uB2E4.</p>
-      </section>
-    `,
-  },
-  '/adobe-stock': {
-    title: '\uC5B4\uB3C4\uBE44 \uC2A4\uD1A1 \uBD84\uC11D \uB3C4\uAD6C | \uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130 \uBD84\uC11D \uD50C\uB7AB\uD3FC',
-    description: '\uC5B4\uB3C4\uBE44 \uC2A4\uD1A1 \uBD84\uC11D \uB3C4\uAD6C\uB294 \uD604\uC7AC \uC900\uBE44\uC911\uC785\uB2C8\uB2E4.',
-    content: `
-      <section class="page-card stack">
-        <h2>\uD604\uC7AC \uC900\uBE44\uC911\uC785\uB2C8\uB2E4.</h2>
-        <p>\uC5B4\uB3C4\uBE44 \uC2A4\uD1A1 \uBD84\uC11D \uB3C4\uAD6C\uB294 \uD604\uC7AC \uC900\uBE44\uC911\uC785\uB2C8\uB2E4.</p>
-      </section>
-    `,
-  },
-  '/about': {
-    title: '\uC11C\uBE44\uC2A4 \uC18C\uAC1C | \uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130 \uBD84\uC11D \uD50C\uB7AB\uD3FC',
-    description: '\uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130\uB97C \uC704\uD55C \uBD84\uC11D \uB3C4\uAD6C \uC11C\uBE44\uC2A4 \uC18C\uAC1C \uD398\uC774\uC9C0\uC785\uB2C8\uB2E4.',
-    content: `
-      <section class="page-card stack">
-        <h2>\uC11C\uBE44\uC2A4 \uC18C\uAC1C</h2>
-        <p>\uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130 \uBD84\uC11D \uD50C\uB7AB\uD3FC\uC740 \uC2A4\uD1A1 \uCF58\uD150\uCE20\uB97C \uC81C\uC791\uD558\uB294 \uD06C\uB9AC\uC5D0\uC774\uD130\uAC00 \uD0A4\uC6CC\uB4DC\uC640 \uAC80\uC0C9 \uD750\uB984\uC744 \uB354 \uBE60\uB974\uAC8C \uD30C\uC545\uD560 \uC218 \uC788\uB3C4\uB85D \uB3D5\uB294 \uBD84\uC11D \uB3C4\uAD6C\uC785\uB2C8\uB2E4.</p>
-
-        <article class="faq-item">
-          <h3>\uBB34\uC5C7\uC744 \uC81C\uACF5\uD558\uB098\uC694?</h3>
-          <p>\uD50C\uB7AB\uD3FC\uBCC4 \uD0A4\uC6CC\uB4DC \uBD84\uC11D, \uC774\uBC88\uB2EC \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704, \uD15C\uD50C\uB9BF \uBC0F \uCF58\uD150\uCE20 \uC720\uD615 \uBD84\uC11D \uAE30\uB2A5\uC744 \uD1B5\uD574 \uC2E4\uC81C \uC5C5\uB85C\uB4DC\uC640 \uC81C\uC791\uC5D0 \uD544\uC694\uD55C \uC815\uBCF4\uB97C \uD55C \uACF3\uC5D0\uC11C \uD655\uC778\uD560 \uC218 \uC788\uB3C4\uB85D \uAD6C\uC131\uB418\uC5B4 \uC788\uC2B5\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>\uB204\uAD6C\uB97C \uC704\uD55C \uC11C\uBE44\uC2A4\uC778\uAC00\uC694?</h3>
-          <p>\uBBF8\uB9AC\uCE94\uBC84\uC2A4, \uD06C\uB77C\uC6B0\uB4DC\uD53D \uB4F1 \uC2A4\uD1A1 \uD50C\uB7AB\uD3FC\uC5D0\uC11C \uCF58\uD150\uCE20\uB97C \uC81C\uC791\uD558\uAC70\uB098 \uC5C5\uB85C\uB4DC\uD558\uB294 \uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130\uB97C \uC704\uD55C \uC11C\uBE44\uC2A4\uC785\uB2C8\uB2E4. \uBC18\uBCF5\uC801\uC778 \uAC80\uC0C9\uACFC \uC218\uC9D1 \uC2DC\uAC04\uC744 \uC904\uC774\uACE0, \uC81C\uC791 \uBC29\uD5A5\uC744 \uBE60\uB974\uAC8C \uACB0\uC815\uD560 \uC218 \uC788\uB3C4\uB85D \uB3D5\uB294 \uAC83\uC774 \uBAA9\uD45C\uC785\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>\uC5B4\uB5BB\uAC8C \uD65C\uC6A9\uD558\uBA74 \uC88B\uB098\uC694?</h3>
-          <p>\uC5C5\uB85C\uB4DC \uC804\uC5D0 \uB9CE\uC774 \uC0AC\uC6A9\uB418\uB294 \uD0A4\uC6CC\uB4DC\uB97C \uD655\uC778\uD558\uACE0, \uC774\uBC88\uB2EC \uAC80\uC0C9 \uD750\uB984\uC744 \uCC38\uACE0\uD574 \uC8FC\uC81C\uC640 \uD45C\uD604 \uBC29\uC2DD\uC744 \uC815\uB9AC\uD558\uB294 \uC6A9\uB3C4\uB85C \uD65C\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uAC80\uC0C9 \uB370\uC774\uD130\uC640 \uCD94\uCC9C \uD0A4\uC6CC\uB4DC\uB97C \uBC14\uD0D5\uC73C\uB85C \uC81C\uBAA9, \uC124\uBA85, \uD0DC\uADF8 \uC804\uB7B5\uC744 \uAD6C\uCCB4\uD654\uD558\uB294 \uB370\uC5D0\uB3C4 \uB3C4\uC6C0\uC774 \uB429\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>\uD50C\uB7AB\uD3FC \uC9C0\uC6D0 \uBC29\uD5A5</h3>
-          <p>\uD604\uC7AC \uC81C\uACF5 \uC911\uC778 \uAE30\uB2A5\uC740 \uC9C0\uC6D0 \uD50C\uB7AB\uD3FC\uBCC4 \uD2B9\uC131\uC5D0 \uB9DE\uCDB0 \uB3C5\uB9BD\uC801\uC73C\uB85C \uAD6C\uC131\uB418\uC5B4 \uC788\uC73C\uBA70, \uC55E\uC73C\uB85C\uB3C4 \uB2E4\uC591\uD55C \uD50C\uB7AB\uD3FC\uC744 \uC21C\uCC28\uC801\uC73C\uB85C \uC9C0\uC6D0\uD560 \uC218 \uC788\uB3C4\uB85D \uAD6C\uC870\uB97C \uD655\uC7A5\uD574 \uB098\uAC08 \uC608\uC815\uC785\uB2C8\uB2E4.</p>
-        </article>
-      </section>
-    `,
-  },
-  '/privacy': {
-    title: '\uAC1C\uC778\uC815\uBCF4\uCC98\uB9AC\uBC29\uCE68 | \uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130 \uBD84\uC11D \uD50C\uB7AB\uD3FC',
-    description: '\uC11C\uBE44\uC2A4\uC758 \uAC1C\uC778\uC815\uBCF4\uCC98\uB9AC\uBC29\uCE68\uC744 \uC548\uB0B4\uD569\uB2C8\uB2E4.',
-    content: `
-      <section class="page-card stack">
-        <h2>\uAC1C\uC778\uC815\uBCF4\uCC98\uB9AC\uBC29\uCE68</h2>
-        <p>\uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130 \uBD84\uC11D \uD50C\uB7AB\uD3FC\uC740 \uC11C\uBE44\uC2A4 \uC6B4\uC601\uC5D0 \uD544\uC694\uD55C \uCD5C\uC18C \uBC94\uC704 \uB0B4\uC5D0\uC11C\uB9CC \uC815\uBCF4\uB97C \uCC98\uB9AC\uD558\uBA70, \uAD00\uB828 \uBC95\uB839\uACFC \uC6D0\uCE59\uC744 \uC900\uC218\uD558\uAE30 \uC704\uD574 \uB178\uB825\uD569\uB2C8\uB2E4.</p>
-
-        <article class="faq-item">
-          <h3>1. \uC218\uC9D1\uD558\uB294 \uC815\uBCF4</h3>
-          <p>\uC11C\uBE44\uC2A4 \uC774\uC6A9 \uACFC\uC815\uC5D0\uC11C \uAC80\uC0C9 \uD0A4\uC6CC\uB4DC, \uC120\uD0DD\uD55C \uCE74\uD14C\uACE0\uB9AC, \uD15C\uD50C\uB9BF \uC885\uB958, \uC811\uC18D \uC2DC\uC810\uACFC \uAC19\uC740 \uC774\uC6A9 \uAE30\uB85D\uC774 \uC800\uC7A5\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC774\uB294 \uAC80\uC0C9 \uC21C\uC704 \uC9D1\uACC4, \uAE30\uB2A5 \uAC1C\uC120, \uC624\uB958 \uD655\uC778\uC744 \uC704\uD55C \uBAA9\uC801\uC73C\uB85C \uC0AC\uC6A9\uB429\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>2. \uC815\uBCF4 \uC774\uC6A9 \uBAA9\uC801</h3>
-          <p>\uC218\uC9D1\uB41C \uC815\uBCF4\uB294 \uD0A4\uC6CC\uB4DC \uBD84\uC11D \uACB0\uACFC \uC81C\uACF5, \uC6D4\uAC04 \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704 \uC9D1\uACC4, \uC11C\uBE44\uC2A4 \uD488\uC9C8 \uAC1C\uC120, \uBE44\uC815\uC0C1 \uC0AC\uC6A9 \uBC29\uC9C0, \uC624\uB958 \uB300\uC751\uC744 \uC704\uD574 \uD65C\uC6A9\uB429\uB2C8\uB2E4. \uC218\uC9D1 \uBAA9\uC801\uACFC \uBB34\uAD00\uD55C \uC6A9\uB3C4\uB85C \uC784\uC758 \uC0AC\uC6A9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>3. \uBCF4\uAD00 \uBC0F \uD30C\uAE30</h3>
-          <p>\uC774\uC6A9 \uAE30\uB85D\uC740 \uC11C\uBE44\uC2A4 \uC6B4\uC601\uACFC \uD1B5\uACC4 \uBD84\uC11D\uC5D0 \uD544\uC694\uD55C \uAE30\uAC04 \uB3D9\uC548 \uBCF4\uAD00\uB420 \uC218 \uC788\uC73C\uBA70, \uBCF4\uAD00 \uBAA9\uC801\uC774 \uB2EC\uC131\uB418\uC5C8\uAC70\uB098 \uB354 \uC774\uC0C1 \uD544\uC694\uD558\uC9C0 \uC54A\uC740 \uACBD\uC6B0 \uB0B4\uBD80 \uAE30\uC900\uC5D0 \uB530\uB77C \uC0AD\uC81C \uB610\uB294 \uBE44\uC2DD\uBCC4 \uCC98\uB9AC\uD569\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>4. \uC81C3\uC790 \uC81C\uACF5</h3>
-          <p>\uBC95\uB839\uC5D0 \uB530\uB978 \uC694\uAD6C\uAC00 \uC788\uB294 \uACBD\uC6B0\uB97C \uC81C\uC678\uD558\uACE0, \uC774\uC6A9\uC790\uC758 \uC815\uBCF4\uB97C \uC678\uBD80\uC5D0 \uC784\uC758\uB85C \uC81C\uACF5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC11C\uBE44\uC2A4 \uC6B4\uC601\uC744 \uC704\uD574 \uC678\uBD80 \uC778\uD504\uB77C\uB97C \uC0AC\uC6A9\uD558\uB294 \uACBD\uC6B0\uC5D0\uB3C4 \uD544\uC694\uD55C \uBC94\uC704 \uB0B4\uC5D0\uC11C\uB9CC \uCC98\uB9AC\uB418\uB3C4\uB85D \uAD00\uB9AC\uD569\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>5. \uC774\uC6A9\uC790 \uC720\uC758\uC0AC\uD56D</h3>
-          <p>\uC11C\uBE44\uC2A4\uC5D0 \uC785\uB825\uD558\uB294 \uAC80\uC0C9\uC5B4\uC640 \uBD84\uC11D \uB300\uC0C1 \uC815\uBCF4\uB294 \uD1B5\uACC4 \uBC0F \uAE30\uB2A5 \uAC1C\uC120\uC5D0 \uBC18\uC601\uB420 \uC218 \uC788\uC73C\uBBC0\uB85C, \uBBFC\uAC10\uD55C \uAC1C\uC778\uC815\uBCF4\uB098 \uC678\uBD80\uC5D0 \uB178\uCD9C\uB418\uBA74 \uC548 \uB418\uB294 \uC815\uBCF4\uB97C \uC785\uB825\uD558\uC9C0 \uC54A\uB3C4\uB85D \uC8FC\uC758\uD574 \uC8FC\uC138\uC694.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>6. \uCFE0\uD0A4 \uBC0F \uC720\uC0AC \uAE30\uC220 \uC0AC\uC6A9</h3>
-          <p>\uC11C\uBE44\uC2A4\uB294 \uC774\uC6A9\uC790 \uACBD\uD5D8 \uAC1C\uC120, \uBC29\uBB38 \uBD84\uC11D \uBC0F \uAD11\uACE0 \uC81C\uACF5\uC744 \uC704\uD574 \uCFE0\uD0A4 \uB610\uB294 \uC720\uC0AC\uD55C \uAE30\uC220\uC744 \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD5A5\uD6C4 Google AdSense \uB4F1 \uC81C3\uC790 \uAD11\uACE0 \uC11C\uBE44\uC2A4\uB97C \uC0AC\uC6A9\uD558\uB294 \uACBD\uC6B0 Google\uC744 \uD3EC\uD568\uD55C \uC81C3\uC790 \uC0AC\uC5C5\uC790\uAC00 \uC774\uC6A9\uC790\uC758 \uC774\uC804 \uBC29\uBB38 \uAE30\uB85D \uB4F1\uC744 \uAE30\uBC18\uC73C\uB85C \uAD11\uACE0\uB97C \uC81C\uACF5\uD558\uAE30 \uC704\uD574 \uCFE0\uD0A4\uB97C \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.</p>
-        </article>
-      </section>
-    `,
-  },
-  '/terms': {
-    title: '\uC774\uC6A9\uC57D\uAD00 | \uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130 \uBD84\uC11D \uD50C\uB7AB\uD3FC',
-    description: '\uC11C\uBE44\uC2A4\uC758 \uC774\uC6A9\uC57D\uAD00\uC744 \uC548\uB0B4\uD569\uB2C8\uB2E4.',
-    content: `
-      <section class="page-card stack">
-        <h2>\uC774\uC6A9\uC57D\uAD00</h2>
-        <p>\uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130 \uBD84\uC11D \uD50C\uB7AB\uD3FC\uC740 \uC2A4\uD1A1 \uCF58\uD150\uCE20 \uC81C\uC791\uACFC \uC5C5\uB85C\uB4DC\uB97C \uB3D5\uAE30 \uC704\uD55C \uBD84\uC11D \uC11C\uBE44\uC2A4\uB97C \uC81C\uACF5\uD569\uB2C8\uB2E4. \uC544\uB798 \uB0B4\uC6A9\uC740 \uC11C\uBE44\uC2A4 \uC774\uC6A9 \uC2DC \uAE30\uBCF8\uC801\uC73C\uB85C \uC801\uC6A9\uB418\uB294 \uC548\uB0B4 \uC0AC\uD56D\uC785\uB2C8\uB2E4.</p>
-
-        <article class="faq-item">
-          <h3>1. \uC11C\uBE44\uC2A4 \uBAA9\uC801</h3>
-          <p>\uBCF8 \uC11C\uBE44\uC2A4\uB294 \uD50C\uB7AB\uD3FC\uBCC4 \uD0A4\uC6CC\uB4DC\uC640 \uAC80\uC0C9 \uD750\uB984\uC744 \uBD84\uC11D\uD558\uC5EC \uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130\uC758 \uCF58\uD150\uCE20 \uAE30\uD68D\uACFC \uC5C5\uB85C\uB4DC \uC804\uB7B5 \uC218\uB9BD\uC744 \uC9C0\uC6D0\uD558\uB294 \uAC83\uC744 \uBAA9\uC801\uC73C\uB85C \uD569\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>2. \uC81C\uACF5 \uAE30\uB2A5</h3>
-          <p>\uC11C\uBE44\uC2A4\uB294 \uD0A4\uC6CC\uB4DC \uBD84\uC11D, \uD15C\uD50C\uB9BF \uBD84\uC11D, \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704 \uB4F1 \uC6B4\uC601 \uC911\uC778 \uAE30\uB2A5\uC744 \uC81C\uACF5\uD569\uB2C8\uB2E4. \uAE30\uB2A5 \uAD6C\uC131\uC740 \uC11C\uBE44\uC2A4 \uAC1C\uC120, \uC815\uCC45 \uBCC0\uACBD, \uD50C\uB7AB\uD3FC \uAD6C\uC870 \uBCC0\uACBD \uB4F1\uC5D0 \uB530\uB77C \uCD94\uAC00\uB418\uAC70\uB098 \uC870\uC815\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>3. \uC774\uC6A9 \uC81C\uD55C</h3>
-          <p>\uC11C\uBE44\uC2A4\uC758 \uC815\uC0C1 \uC6B4\uC601\uC744 \uBC29\uD574\uD558\uAC70\uB098, \uACFC\uB3C4\uD55C \uC790\uB3D9 \uC694\uCCAD\uC744 \uBC1C\uC0DD\uC2DC\uD0A4\uAC70\uB098, \uBC95\uB839 \uB610\uB294 \uC81C3\uC790\uC758 \uAD8C\uB9AC\uB97C \uCE68\uD574\uD558\uB294 \uBC29\uC2DD\uC758 \uC0AC\uC6A9\uC740 \uC81C\uD55C\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD544\uC694 \uC2DC \uC77C\uBD80 \uAE30\uB2A5 \uC811\uADFC\uC774 \uCC28\uB2E8\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>4. \uACB0\uACFC \uD65C\uC6A9 \uCC45\uC784</h3>
-          <p>\uBD84\uC11D \uACB0\uACFC\uC640 \uCD94\uCC9C \uD0A4\uC6CC\uB4DC\uB294 \uCC38\uACE0\uC6A9 \uC815\uBCF4\uC774\uBA70, \uC2E4\uC81C \uC5C5\uB85C\uB4DC \uC131\uACFC\uB098 \uC2EC\uC0AC \uACB0\uACFC\uB97C \uBCF4\uC7A5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC774\uC6A9\uC790\uB294 \uAC01 \uD50C\uB7AB\uD3FC \uC815\uCC45\uACFC \uAE30\uC900\uC744 \uC9C1\uC811 \uD655\uC778\uD55C \uB4A4 \uCD5C\uC885 \uD65C\uC6A9 \uC5EC\uBD80\uB97C \uD310\uB2E8\uD574\uC57C \uD569\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>5. \uC11C\uBE44\uC2A4 \uBCC0\uACBD</h3>
-          <p>\uC11C\uBE44\uC2A4\uB294 \uC6B4\uC601 \uC0C1\uD669\uC5D0 \uB530\uB77C \uC77C\uBD80 \uAE30\uB2A5\uC774 \uC218\uC815, \uC911\uB2E8 \uB610\uB294 \uC885\uB8CC\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC8FC\uC694 \uBCC0\uACBD \uC0AC\uD56D\uC740 \uAC00\uB2A5\uD55C \uBC94\uC704 \uB0B4\uC5D0\uC11C \uC11C\uBE44\uC2A4 \uD654\uBA74 \uB610\uB294 \uACF5\uC9C0 \uD615\uD0DC\uB85C \uC548\uB0B4\uD569\uB2C8\uB2E4.</p>
-        </article>
-      </section>
-    `,
-  },
-  '/contact': {
-    title: '\uBB38\uC758 | \uC2A4\uD1A1 \uD06C\uB9AC\uC5D0\uC774\uD130 \uBD84\uC11D \uD50C\uB7AB\uD3FC',
-    description: '\uC11C\uBE44\uC2A4 \uBB38\uC758 \uD398\uC774\uC9C0\uC785\uB2C8\uB2E4.',
-    content: `
-      <section class="page-card stack">
-        <h2>\uBB38\uC758</h2>
-        <p>\uC11C\uBE44\uC2A4 \uC774\uC6A9 \uC911 \uBD88\uD3B8\uD55C \uC810\uC774\uB098 \uC218\uC815\uC774 \uD544\uC694\uD55C \uB0B4\uC6A9\uC774 \uC788\uB2E4\uBA74 \uBB38\uC758 \uB0B4\uC6A9\uC744 \uC815\uB9AC\uD574 \uC804\uB2EC\uD574 \uC8FC\uC138\uC694. \uD655\uC778 \uAC00\uB2A5\uD55C \uBC94\uC704\uC5D0\uC11C \uC21C\uCC28\uC801\uC73C\uB85C \uAC80\uD1A0\uD558\uACE0 \uAC1C\uC120\uC5D0 \uBC18\uC601\uD569\uB2C8\uB2E4.</p>
-
-        <article class="faq-item">
-          <h3>\uC774\uBA54\uC77C \uBB38\uC758</h3>
-          <p>contact@stockkeyword.com</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>\uBB38\uC758 \uC2DC \uD568\uAED8 \uC54C\uB824\uC8FC\uC2DC\uBA74 \uC88B\uC740 \uB0B4\uC6A9</h3>
-          <ul class="feature-list">
-            <li>\uC774\uC6A9\uD55C \uD398\uC774\uC9C0 \uACBD\uB85C \uB610\uB294 \uAE30\uB2A5 \uC774\uB984</li>
-            <li>\uC785\uB825\uD55C \uAC80\uC0C9\uC5B4, \uCE74\uD14C\uACE0\uB9AC, \uD15C\uD50C\uB9BF \uC885\uB958</li>
-            <li>\uAE30\uB300\uD55C \uACB0\uACFC\uC640 \uC2E4\uC81C \uACB0\uACFC\uC758 \uCC28\uC774</li>
-            <li>\uC624\uB958 \uBB38\uAD6C \uB610\uB294 \uD654\uBA74\uC5D0\uC11C \uD655\uC778\uD55C \uC774\uC0C1 \uD604\uC0C1</li>
-          </ul>
-        </article>
-
-        <article class="faq-item">
-          <h3>\uC774\uB7F0 \uBB38\uC758\uB97C \uBC1B\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4</h3>
-          <p>\uD0A4\uC6CC\uB4DC \uBD84\uC11D \uACB0\uACFC \uC624\uB958, \uAC80\uC0C9 \uACB0\uACFC \uB204\uB77D, \uD398\uC774\uC9C0 \uD45C\uC2DC \uBB38\uC81C, \uD50C\uB7AB\uD3FC \uAE30\uB2A5 \uC81C\uC548, \uB370\uC774\uD130 \uC9D1\uACC4 \uAD00\uB828 \uC758\uACAC \uB4F1 \uC11C\uBE44\uC2A4 \uC774\uC6A9\uACFC \uC9C1\uC811 \uAD00\uB828\uB41C \uBB38\uC758\uB97C \uBC1B\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4.</p>
-        </article>
-
-        <article class="faq-item">
-          <h3>\uC751\uB2F5 \uBC0F \uBC18\uC601 \uC548\uB0B4</h3>
-          <p>\uBB38\uC758 \uB0B4\uC6A9\uC740 \uC911\uC694\uB3C4\uC640 \uC7AC\uD604 \uAC00\uB2A5\uC131\uC744 \uAE30\uC900\uC73C\uB85C \uD655\uC778\uD558\uBA70, \uC11C\uBE44\uC2A4 \uC6B4\uC601 \uC77C\uC815\uC5D0 \uB530\uB77C \uC21C\uCC28\uC801\uC73C\uB85C \uBC18\uC601\uB429\uB2C8\uB2E4. \uBAA8\uB4E0 \uC694\uCCAD\uC774 \uC989\uC2DC \uC801\uC6A9\uB418\uC9C0\uB294 \uC54A\uC744 \uC218 \uC788\uC73C\uB098, \uBC18\uBCF5\uC801\uC73C\uB85C \uBC1C\uC0DD\uD558\uB294 \uBB38\uC81C\uB294 \uC6B0\uC120\uC801\uC73C\uB85C \uAC80\uD1A0\uD569\uB2C8\uB2E4.</p>
-        </article>
-      </section>
-    `,
+  tooldi: {
+    contentTypeOptions: [
+      { value: 'all', label: '전체', inputValue: '전체' },
+      { value: 'element', label: '요소', inputValue: '요소' },
+      { value: 'photo', label: '사진', inputValue: '사진' },
+      { value: 'background', label: '배경', inputValue: '배경' },
+    ],
+    id: 'tooldi',
+    name: '툴디',
+    description: '툴디에 필요한 분석 기능을 빠르게 확인합니다.',
+    keywordPageTitle: '키워드 분석',
+    keywordPageDescription: '툴디에서 실시간으로 키워드를 추출합니다',
+    rankingFeatures: { keyword: true, template: true },
+    features: [
+      { title: '키워드 분석', href: '/tooldi/tag', description: '툴디 추출 결과를 분석합니다.' },
+      { title: '템플릿 분석', href: '/tooldi/template', description: '유료 템플릿의 기획 키워드와 제목을 분석합니다.' },
+      { title: '이번 달 인기 검색 순위', href: '/tooldi/rankings', description: '툴디 검색 흐름을 확인합니다.' },
+    ],
+    searchOptions: {
+      placeholder: '\uC608) \uBA85\uC808',
+      buttonLabel: '\uBD84\uC11D\uD558\uAE30',
+      contentTypeLabel: '\uCE74\uD14C\uACE0\uB9AC',
+      contentTypes: [
+        { label: '\uC0AC\uC9C4', value: 'picture' },
+        { label: '\uC694\uC18C', value: 'shape' },
+        { label: '\uBC30\uACBD', value: 'background' },
+      ],
+    },
+    templateSearchOptions: {
+      placeholder: '예) 명절',
+      buttonLabel: '분석하기',
+      contentTypeLabel: '템플릿 유형',
+      contentTypes: [
+        { label: '모든 템플릿', value: 'all' },
+      ],
+    },
   },
 };
+
+export const PLATFORM_MENU = [
+  { key: 'home', label: '홈', href: '/' },
+  { key: 'miricanvas', label: '미리캔버스', href: '/miricanvas' },
+  { key: 'crowdpic', label: '크라우드픽', href: '/crowdpic' },
+  { key: 'tooldi', label: '툴디', href: '/tooldi' },
+  { key: 'calendar', label: '월별 작업 캘린더', href: '/calendar' },
+];
+
+export const MONTHLY_TOPICS = {
+  "1": {
+    "month": 1,
+    "title": "새해와 한겨울",
+    "summary": "새해 · 다이어리 · 겨울 · 눈 · 스키 · 설날 · 복주머니 · 온천 · 겨울 여행 · 연말정산",
+    "keywords": [
+      "새해",
+      "다이어리",
+      "겨울",
+      "눈",
+      "스키",
+      "설날",
+      "복주머니",
+      "온천",
+      "겨울 여행",
+      "연말정산"
+    ],
+    "topics": [
+      {
+        "title": "새해",
+        "keywords": [
+          "해돋이",
+          "달력",
+          "떡국",
+          "연하장",
+          "복주머니",
+          "세뱃돈 봉투",
+          "한복",
+          "일출",
+          "시계",
+          "새해 숫자"
+        ]
+      },
+      {
+        "title": "다이어리",
+        "keywords": [
+          "플래너",
+          "스티커",
+          "볼펜",
+          "체크리스트",
+          "달력",
+          "메모지",
+          "클립",
+          "노트",
+          "인덱스",
+          "책상"
+        ]
+      },
+      {
+        "title": "겨울",
+        "keywords": [
+          "눈사람",
+          "장갑",
+          "목도리",
+          "패딩",
+          "털모자",
+          "부츠",
+          "핫팩",
+          "난로",
+          "성에 낀 창문",
+          "겨울나무"
+        ]
+      },
+      {
+        "title": "눈",
+        "keywords": [
+          "눈송이",
+          "설원",
+          "눈사람",
+          "눈덩이",
+          "제설차",
+          "눈삽",
+          "스노우볼",
+          "눈꽃",
+          "발자국",
+          "고드름"
+        ]
+      },
+      {
+        "title": "스키",
+        "keywords": [
+          "스키판",
+          "스키폴",
+          "고글",
+          "헬멧",
+          "리프트",
+          "슬로프",
+          "스키복",
+          "스키장",
+          "설산",
+          "스키부츠"
+        ]
+      },
+      {
+        "title": "설날",
+        "keywords": [
+          "한복",
+          "세배",
+          "윷놀이",
+          "떡국",
+          "복주머니",
+          "세뱃돈",
+          "병풍",
+          "보자기",
+          "전통문양",
+          "가족상"
+        ]
+      },
+      {
+        "title": "복주머니",
+        "keywords": [
+          "노리개",
+          "매듭",
+          "엽전",
+          "금박",
+          "색동",
+          "한복",
+          "세뱃돈 봉투",
+          "복 글자",
+          "보자기",
+          "매화"
+        ]
+      },
+      {
+        "title": "온천",
+        "keywords": [
+          "노천탕",
+          "수건",
+          "목욕바구니",
+          "수증기",
+          "온천계란",
+          "대나무",
+          "돌담",
+          "유카타",
+          "나무바가지",
+          "설산"
+        ]
+      },
+      {
+        "title": "겨울 여행",
+        "keywords": [
+          "캐리어",
+          "기차",
+          "설산",
+          "펜션",
+          "캠핑카",
+          "지도",
+          "핫초코",
+          "카메라",
+          "겨울숲",
+          "눈길"
+        ]
+      },
+      {
+        "title": "연말정산",
+        "keywords": [
+          "계산기",
+          "영수증",
+          "서류철",
+          "통장",
+          "세금계산서",
+          "도장",
+          "노트북",
+          "그래프",
+          "동전",
+          "파일봉투"
+        ]
+      }
+    ]
+  },
+  "2": {
+    "month": 2,
+    "title": "졸업과 봄 준비",
+    "summary": "발렌타인데이 · 초콜릿 · 졸업 · 입학 준비 · 겨울 여행 · 정월대보름 · 커플 · 꽃다발 · 개학 준비 · 선물",
+    "keywords": [
+      "발렌타인데이",
+      "초콜릿",
+      "졸업",
+      "입학 준비",
+      "겨울 여행",
+      "정월대보름",
+      "커플",
+      "꽃다발",
+      "개학 준비",
+      "선물"
+    ],
+    "topics": [
+      {
+        "title": "발렌타인데이",
+        "keywords": [
+          "하트 상자",
+          "초콜릿",
+          "리본",
+          "편지",
+          "꽃다발",
+          "선물백",
+          "하트 풍선",
+          "케이크",
+          "곰인형",
+          "커플 머그"
+        ]
+      },
+      {
+        "title": "초콜릿",
+        "keywords": [
+          "초콜릿 바",
+          "트러플",
+          "카카오콩",
+          "초콜릿 몰드",
+          "포장지",
+          "리본",
+          "쿠키",
+          "딸기",
+          "마카롱",
+          "선물 상자"
+        ]
+      },
+      {
+        "title": "졸업",
+        "keywords": [
+          "학사모",
+          "졸업장",
+          "꽃다발",
+          "교복",
+          "강당",
+          "단상",
+          "리본",
+          "사진기",
+          "학교 건물",
+          "졸업 앨범"
+        ]
+      },
+      {
+        "title": "입학 준비",
+        "keywords": [
+          "책가방",
+          "필통",
+          "연필",
+          "공책",
+          "실내화",
+          "이름표",
+          "교과서",
+          "책상",
+          "도시락",
+          "알림장"
+        ]
+      },
+      {
+        "title": "겨울 여행",
+        "keywords": [
+          "캐리어",
+          "기차표",
+          "설산",
+          "온천",
+          "패딩",
+          "카메라",
+          "여권",
+          "지도",
+          "펜션",
+          "핫초코"
+        ]
+      },
+      {
+        "title": "정월대보름",
+        "keywords": [
+          "보름달",
+          "오곡밥",
+          "부럼",
+          "귀밝이술",
+          "달집",
+          "쥐불놀이",
+          "복조리",
+          "한복",
+          "횃불",
+          "견과류"
+        ]
+      },
+      {
+        "title": "커플",
+        "keywords": [
+          "커플링",
+          "커플 머그",
+          "커플 신발",
+          "사진 프레임",
+          "꽃다발",
+          "데이트 티켓",
+          "하트 풍선",
+          "편지",
+          "케이크",
+          "우산"
+        ]
+      },
+      {
+        "title": "꽃다발",
+        "keywords": [
+          "장미",
+          "튤립",
+          "안개꽃",
+          "리본",
+          "포장지",
+          "꽃병",
+          "유칼립투스",
+          "카네이션",
+          "해바라기",
+          "꽃바구니"
+        ]
+      },
+      {
+        "title": "개학 준비",
+        "keywords": [
+          "시간표",
+          "교과서",
+          "공책",
+          "연필",
+          "책가방",
+          "사물함",
+          "교실",
+          "실내화",
+          "칠판",
+          "학생증"
+        ]
+      },
+      {
+        "title": "선물",
+        "keywords": [
+          "선물 상자",
+          "리본",
+          "쇼핑백",
+          "카드",
+          "포장지",
+          "꽃다발",
+          "쿠키",
+          "향수병",
+          "머그컵",
+          "곰인형"
+        ]
+      }
+    ]
+  },
+  "3": {
+    "month": 3,
+    "title": "봄과 새 출발",
+    "summary": "봄 · 개학 · 입학 · 새싹 · 벚꽃 · 화이트데이 · 봄꽃 · 교실 · 새 학기 · 피크닉",
+    "keywords": [
+      "봄",
+      "개학",
+      "입학",
+      "새싹",
+      "벚꽃",
+      "화이트데이",
+      "봄꽃",
+      "교실",
+      "새 학기",
+      "피크닉"
+    ],
+    "topics": [
+      {
+        "title": "봄",
+        "keywords": [
+          "새싹",
+          "나비",
+          "튤립",
+          "민들레",
+          "봄비",
+          "참새",
+          "꽃길",
+          "얇은 재킷",
+          "자전거",
+          "돗자리"
+        ]
+      },
+      {
+        "title": "개학",
+        "keywords": [
+          "책가방",
+          "교복",
+          "교과서",
+          "칠판",
+          "시간표",
+          "사물함",
+          "학교버스",
+          "실내화",
+          "학생증",
+          "교문"
+        ]
+      },
+      {
+        "title": "입학",
+        "keywords": [
+          "입학식 현수막",
+          "명찰",
+          "꽃다발",
+          "학사모",
+          "교복",
+          "학교 건물",
+          "책상",
+          "교과서",
+          "교문",
+          "사진 프레임"
+        ]
+      },
+      {
+        "title": "새싹",
+        "keywords": [
+          "떡잎",
+          "화분",
+          "흙",
+          "물뿌리개",
+          "삽",
+          "씨앗",
+          "유리병",
+          "정원 장갑",
+          "햇빛",
+          "새싹 트레이"
+        ]
+      },
+      {
+        "title": "벚꽃",
+        "keywords": [
+          "벚꽃잎",
+          "벚나무",
+          "꽃길",
+          "돗자리",
+          "카메라",
+          "도시락",
+          "자전거",
+          "한강",
+          "꽃비",
+          "벚꽃 축제등"
+        ]
+      },
+      {
+        "title": "화이트데이",
+        "keywords": [
+          "사탕병",
+          "롤리팝",
+          "하트 상자",
+          "리본",
+          "편지",
+          "꽃다발",
+          "쿠키",
+          "마카롱",
+          "선물백",
+          "곰인형"
+        ]
+      },
+      {
+        "title": "봄꽃",
+        "keywords": [
+          "튤립",
+          "프리지아",
+          "개나리",
+          "진달래",
+          "목련",
+          "수선화",
+          "꽃병",
+          "꽃바구니",
+          "화관",
+          "정원"
+        ]
+      },
+      {
+        "title": "교실",
+        "keywords": [
+          "칠판",
+          "책상",
+          "의자",
+          "교탁",
+          "사물함",
+          "시계",
+          "공책",
+          "연필",
+          "창문",
+          "게시판"
+        ]
+      },
+      {
+        "title": "새 학기",
+        "keywords": [
+          "시간표",
+          "이름표",
+          "필통",
+          "공책",
+          "책가방",
+          "학생증",
+          "교과서",
+          "사물함",
+          "학교버스",
+          "실내화"
+        ]
+      },
+      {
+        "title": "피크닉",
+        "keywords": [
+          "돗자리",
+          "바구니",
+          "샌드위치",
+          "주스병",
+          "꽃다발",
+          "풍선",
+          "도시락",
+          "카메라",
+          "자전거",
+          "피크닉 테이블"
+        ]
+      }
+    ]
+  },
+  "4": {
+    "month": 4,
+    "title": "봄꽃과 야외 활동",
+    "summary": "벚꽃 · 봄꽃 · 피크닉 · 식목일 · 캠핑 · 봄 여행 · 자전거 · 야외 카페 · 도시 공원 · 봄비",
+    "keywords": [
+      "벚꽃",
+      "봄꽃",
+      "피크닉",
+      "식목일",
+      "캠핑",
+      "봄 여행",
+      "자전거",
+      "야외 카페",
+      "도시 공원",
+      "봄비"
+    ],
+    "topics": [
+      {
+        "title": "벚꽃",
+        "keywords": [
+          "벚꽃잎",
+          "벚나무",
+          "꽃길",
+          "돗자리",
+          "도시락",
+          "카메라",
+          "자전거",
+          "꽃비",
+          "벚꽃등",
+          "한강"
+        ]
+      },
+      {
+        "title": "봄꽃",
+        "keywords": [
+          "튤립",
+          "개나리",
+          "진달래",
+          "목련",
+          "유채꽃",
+          "수선화",
+          "꽃병",
+          "화관",
+          "정원",
+          "꽃바구니"
+        ]
+      },
+      {
+        "title": "피크닉",
+        "keywords": [
+          "돗자리",
+          "바구니",
+          "샌드위치",
+          "레모네이드",
+          "도시락",
+          "풍선",
+          "카메라",
+          "자전거",
+          "꽃다발",
+          "피크닉 테이블"
+        ]
+      },
+      {
+        "title": "식목일",
+        "keywords": [
+          "묘목",
+          "삽",
+          "물뿌리개",
+          "화분",
+          "흙",
+          "장갑",
+          "씨앗",
+          "나무 이름표",
+          "정원 가위",
+          "새싹"
+        ]
+      },
+      {
+        "title": "캠핑",
+        "keywords": [
+          "텐트",
+          "랜턴",
+          "모닥불",
+          "캠핑의자",
+          "침낭",
+          "코펠",
+          "캠핑카",
+          "타프",
+          "아이스박스",
+          "꼬치"
+        ]
+      },
+      {
+        "title": "봄 여행",
+        "keywords": [
+          "캐리어",
+          "기차",
+          "지도",
+          "카메라",
+          "꽃길",
+          "여권",
+          "렌터카",
+          "숙소",
+          "백팩",
+          "기차표"
+        ]
+      },
+      {
+        "title": "자전거",
+        "keywords": [
+          "자전거",
+          "헬멧",
+          "자물쇠",
+          "물통",
+          "자전거도로",
+          "바구니",
+          "펌프",
+          "장갑",
+          "스포츠 시계",
+          "공원길"
+        ]
+      },
+      {
+        "title": "야외 카페",
+        "keywords": [
+          "테라스 의자",
+          "카페 테이블",
+          "커피잔",
+          "파라솔",
+          "화분",
+          "케이크",
+          "메뉴판",
+          "라탄 의자",
+          "전구 조명",
+          "노트북"
+        ]
+      },
+      {
+        "title": "도시 공원",
+        "keywords": [
+          "벤치",
+          "분수",
+          "산책로",
+          "가로등",
+          "잔디밭",
+          "나무",
+          "자전거",
+          "강아지",
+          "놀이터",
+          "비둘기"
+        ]
+      },
+      {
+        "title": "봄비",
+        "keywords": [
+          "투명 우산",
+          "빗방울",
+          "장화",
+          "우비",
+          "물웅덩이",
+          "벚꽃잎",
+          "창문",
+          "빗길",
+          "우산꽂이",
+          "빗물받이"
+        ]
+      }
+    ]
+  },
+  "5": {
+    "month": 5,
+    "title": "가정의 달",
+    "summary": "어린이날 · 어버이날 · 스승의날 · 가정의달 · 꽃다발 · 봄 나들이 · 선물 · 가족 · 카네이션 · 결혼식",
+    "keywords": [
+      "어린이날",
+      "어버이날",
+      "스승의날",
+      "가정의달",
+      "꽃다발",
+      "봄 나들이",
+      "선물",
+      "가족",
+      "카네이션",
+      "결혼식"
+    ],
+    "topics": [
+      {
+        "title": "어린이날",
+        "keywords": [
+          "풍선",
+          "선물 상자",
+          "회전목마",
+          "장난감",
+          "비눗방울",
+          "놀이공원",
+          "케이크",
+          "왕관",
+          "색종이",
+          "미끄럼틀"
+        ]
+      },
+      {
+        "title": "어버이날",
+        "keywords": [
+          "카네이션",
+          "감사 카드",
+          "용돈 봉투",
+          "꽃바구니",
+          "케이크",
+          "가족사진",
+          "리본",
+          "선물 상자",
+          "찻잔",
+          "액자"
+        ]
+      },
+      {
+        "title": "스승의날",
+        "keywords": [
+          "카네이션",
+          "칠판",
+          "분필",
+          "감사 편지",
+          "꽃다발",
+          "교탁",
+          "책",
+          "펜",
+          "선물 상자",
+          "교실"
+        ]
+      },
+      {
+        "title": "가정의달",
+        "keywords": [
+          "가족사진",
+          "집",
+          "식탁",
+          "소파",
+          "액자",
+          "케이크",
+          "꽃병",
+          "도시락",
+          "자동차",
+          "공원"
+        ]
+      },
+      {
+        "title": "꽃다발",
+        "keywords": [
+          "카네이션",
+          "장미",
+          "튤립",
+          "안개꽃",
+          "포장지",
+          "리본",
+          "꽃병",
+          "꽃바구니",
+          "유칼립투스",
+          "꽃가위"
+        ]
+      },
+      {
+        "title": "봄 나들이",
+        "keywords": [
+          "돗자리",
+          "도시락",
+          "자전거",
+          "카메라",
+          "모자",
+          "백팩",
+          "꽃길",
+          "공원",
+          "주스병",
+          "운동화"
+        ]
+      },
+      {
+        "title": "선물",
+        "keywords": [
+          "선물 상자",
+          "리본",
+          "쇼핑백",
+          "감사 카드",
+          "향수병",
+          "머그컵",
+          "쿠키",
+          "꽃다발",
+          "포장지",
+          "봉투"
+        ]
+      },
+      {
+        "title": "가족",
+        "keywords": [
+          "가족사진",
+          "식탁",
+          "소파",
+          "집",
+          "액자",
+          "도시락",
+          "자동차",
+          "공원 벤치",
+          "반려견",
+          "케이크"
+        ]
+      },
+      {
+        "title": "카네이션",
+        "keywords": [
+          "붉은 카네이션",
+          "분홍 카네이션",
+          "꽃바구니",
+          "리본",
+          "꽃병",
+          "감사 카드",
+          "용돈 봉투",
+          "꽃다발",
+          "잎사귀",
+          "포장지"
+        ]
+      },
+      {
+        "title": "결혼식",
+        "keywords": [
+          "웨딩드레스",
+          "부케",
+          "반지",
+          "청첩장",
+          "웨딩케이크",
+          "샴페인잔",
+          "신랑신부",
+          "웨딩홀",
+          "꽃장식",
+          "축의금 봉투"
+        ]
+      }
+    ]
+  },
+  "6": {
+    "month": 6,
+    "title": "초여름과 장마 시작",
+    "summary": "여름 · 장마 · 수국 · 초여름 · 여름 여행 · 캠핑 · 비 · 우산 · 시험 기간 · 호국보훈",
+    "keywords": [
+      "여름",
+      "장마",
+      "수국",
+      "초여름",
+      "여름 여행",
+      "캠핑",
+      "비",
+      "우산",
+      "시험 기간",
+      "호국보훈"
+    ],
+    "topics": [
+      {
+        "title": "여름",
+        "keywords": [
+          "선풍기",
+          "수박",
+          "아이스크림",
+          "샌들",
+          "선글라스",
+          "수영복",
+          "부채",
+          "얼음컵",
+          "파라솔",
+          "해바라기"
+        ]
+      },
+      {
+        "title": "장마",
+        "keywords": [
+          "우산",
+          "장화",
+          "우비",
+          "빗방울",
+          "먹구름",
+          "물웅덩이",
+          "배수구",
+          "빗길",
+          "제습기",
+          "빨래건조대"
+        ]
+      },
+      {
+        "title": "수국",
+        "keywords": [
+          "파란 수국",
+          "분홍 수국",
+          "꽃다발",
+          "꽃병",
+          "정원",
+          "빗방울",
+          "잎사귀",
+          "화분",
+          "꽃길",
+          "창가"
+        ]
+      },
+      {
+        "title": "초여름",
+        "keywords": [
+          "매실",
+          "자두",
+          "해바라기",
+          "수국",
+          "선풍기",
+          "얇은 셔츠",
+          "운동화",
+          "아이스티",
+          "초록 나무",
+          "소나기"
+        ]
+      },
+      {
+        "title": "여름 여행",
+        "keywords": [
+          "캐리어",
+          "여권",
+          "비행기",
+          "호텔",
+          "선글라스",
+          "수영복",
+          "지도",
+          "카메라",
+          "샌들",
+          "렌터카"
+        ]
+      },
+      {
+        "title": "캠핑",
+        "keywords": [
+          "텐트",
+          "랜턴",
+          "모닥불",
+          "캠핑의자",
+          "침낭",
+          "코펠",
+          "캠핑카",
+          "타프",
+          "아이스박스",
+          "바비큐"
+        ]
+      },
+      {
+        "title": "비",
+        "keywords": [
+          "빗방울",
+          "창문",
+          "물웅덩이",
+          "빗길",
+          "우산",
+          "장화",
+          "우비",
+          "구름",
+          "빗물받이",
+          "와이퍼"
+        ]
+      },
+      {
+        "title": "우산",
+        "keywords": [
+          "투명 우산",
+          "장우산",
+          "접이식 우산",
+          "우산꽂이",
+          "빗방울",
+          "손잡이",
+          "우비",
+          "장화",
+          "우산커버",
+          "빗길"
+        ]
+      },
+      {
+        "title": "시험 기간",
+        "keywords": [
+          "시험지",
+          "연필",
+          "지우개",
+          "책상",
+          "시계",
+          "교과서",
+          "형광펜",
+          "노트",
+          "책가방",
+          "독서실"
+        ]
+      },
+      {
+        "title": "호국보훈",
+        "keywords": [
+          "태극기",
+          "무궁화",
+          "현충탑",
+          "국립묘지",
+          "군모",
+          "훈장",
+          "헌화",
+          "국화",
+          "추모 리본",
+          "현충문"
+        ]
+      }
+    ]
+  },
+  "7": {
+    "month": 7,
+    "title": "본격적인 여름",
+    "summary": "장마 · 여름휴가 · 수박 · 바다 · 물놀이 · 아이스커피 · 캠핑 · 여름 축제 · 열대야 · 여름 스포츠",
+    "keywords": [
+      "장마",
+      "여름휴가",
+      "수박",
+      "바다",
+      "물놀이",
+      "아이스커피",
+      "캠핑",
+      "여름 축제",
+      "열대야",
+      "여름 스포츠"
+    ],
+    "topics": [
+      {
+        "title": "장마",
+        "keywords": [
+          "우산",
+          "장화",
+          "우비",
+          "빗방울",
+          "먹구름",
+          "배수구",
+          "물웅덩이",
+          "번개",
+          "빗길",
+          "제습기"
+        ]
+      },
+      {
+        "title": "여름휴가",
+        "keywords": [
+          "캐리어",
+          "여권",
+          "비행기",
+          "호텔",
+          "선글라스",
+          "수영복",
+          "튜브",
+          "지도",
+          "카메라",
+          "샌들"
+        ]
+      },
+      {
+        "title": "수박",
+        "keywords": [
+          "수박조각",
+          "수박씨",
+          "접시",
+          "포크",
+          "주스컵",
+          "아이스박스",
+          "과일바구니",
+          "냉장고",
+          "피크닉매트",
+          "수박화채"
+        ]
+      },
+      {
+        "title": "바다",
+        "keywords": [
+          "파도",
+          "조개",
+          "불가사리",
+          "모래성",
+          "등대",
+          "보트",
+          "서핑보드",
+          "파라솔",
+          "갈매기",
+          "구명튜브"
+        ]
+      },
+      {
+        "title": "물놀이",
+        "keywords": [
+          "튜브",
+          "물총",
+          "수영모",
+          "수경",
+          "구명조끼",
+          "워터슬라이드",
+          "비치볼",
+          "오리튜브",
+          "수영장",
+          "분수"
+        ]
+      },
+      {
+        "title": "아이스커피",
+        "keywords": [
+          "투명컵",
+          "얼음",
+          "빨대",
+          "에스프레소",
+          "콜드브루병",
+          "텀블러",
+          "커피콩",
+          "컵홀더",
+          "트레이",
+          "카페테이블"
+        ]
+      },
+      {
+        "title": "캠핑",
+        "keywords": [
+          "텐트",
+          "랜턴",
+          "모닥불",
+          "캠핑의자",
+          "침낭",
+          "코펠",
+          "캠핑카",
+          "아이스박스",
+          "꼬치",
+          "타프"
+        ]
+      },
+      {
+        "title": "여름 축제",
+        "keywords": [
+          "불꽃놀이",
+          "무대",
+          "마이크",
+          "야시장",
+          "푸드트럭",
+          "부채",
+          "풍선",
+          "조명",
+          "포스터",
+          "입장권"
+        ]
+      },
+      {
+        "title": "열대야",
+        "keywords": [
+          "선풍기",
+          "에어컨",
+          "얼음팩",
+          "대자리",
+          "수면안대",
+          "물병",
+          "침대",
+          "얇은이불",
+          "온도계",
+          "창문"
+        ]
+      },
+      {
+        "title": "여름 스포츠",
+        "keywords": [
+          "서핑보드",
+          "수영모",
+          "배구공",
+          "야구공",
+          "축구공",
+          "테니스라켓",
+          "러닝화",
+          "자전거",
+          "카약",
+          "스케이트보드"
+        ]
+      }
+    ]
+  },
+  "8": {
+    "month": 8,
+    "title": "휴가와 늦여름",
+    "summary": "휴가 · 바다 · 광복절 · 늦여름 · 개학 · 여름 축제 · 말복 · 피서 · 휴양지 · 야외 스포츠",
+    "keywords": [
+      "휴가",
+      "바다",
+      "광복절",
+      "늦여름",
+      "개학",
+      "여름 축제",
+      "말복",
+      "피서",
+      "휴양지",
+      "야외 스포츠"
+    ],
+    "topics": [
+      {
+        "title": "휴가",
+        "keywords": [
+          "캐리어",
+          "여권",
+          "비행기표",
+          "호텔키",
+          "선글라스",
+          "수영복",
+          "지도",
+          "카메라",
+          "샌들",
+          "여행가방"
+        ]
+      },
+      {
+        "title": "바다",
+        "keywords": [
+          "파도",
+          "모래성",
+          "조개",
+          "불가사리",
+          "등대",
+          "보트",
+          "서핑보드",
+          "파라솔",
+          "갈매기",
+          "해변의자"
+        ]
+      },
+      {
+        "title": "광복절",
+        "keywords": [
+          "태극기",
+          "무궁화",
+          "독립문",
+          "대한민국 지도",
+          "광복절 현수막",
+          "한복",
+          "기념탑",
+          "태극 부채",
+          "역사책",
+          "기념 배지"
+        ]
+      },
+      {
+        "title": "늦여름",
+        "keywords": [
+          "해바라기",
+          "매미",
+          "소나기",
+          "부채",
+          "선풍기",
+          "아이스티",
+          "수박",
+          "초록 나무",
+          "구름",
+          "잠자리"
+        ]
+      },
+      {
+        "title": "개학",
+        "keywords": [
+          "책가방",
+          "교과서",
+          "시간표",
+          "필통",
+          "공책",
+          "교복",
+          "사물함",
+          "교문",
+          "학교버스",
+          "실내화"
+        ]
+      },
+      {
+        "title": "여름 축제",
+        "keywords": [
+          "불꽃놀이",
+          "야시장",
+          "무대",
+          "마이크",
+          "푸드트럭",
+          "부채",
+          "풍선",
+          "조명",
+          "포스터",
+          "입장권"
+        ]
+      },
+      {
+        "title": "말복",
+        "keywords": [
+          "삼계탕",
+          "닭",
+          "인삼",
+          "대추",
+          "뚝배기",
+          "수저",
+          "김치",
+          "복날 달력",
+          "부채",
+          "수박"
+        ]
+      },
+      {
+        "title": "피서",
+        "keywords": [
+          "계곡",
+          "튜브",
+          "돗자리",
+          "아이스박스",
+          "수영복",
+          "파라솔",
+          "물총",
+          "수박",
+          "캠핑의자",
+          "그늘막"
+        ]
+      },
+      {
+        "title": "휴양지",
+        "keywords": [
+          "리조트",
+          "야자수",
+          "수영장",
+          "선베드",
+          "파라솔",
+          "칵테일잔",
+          "호텔",
+          "해변",
+          "여권",
+          "캐리어"
+        ]
+      },
+      {
+        "title": "야외 스포츠",
+        "keywords": [
+          "축구공",
+          "농구공",
+          "테니스라켓",
+          "배드민턴채",
+          "러닝화",
+          "자전거",
+          "스케이트보드",
+          "야구글러브",
+          "배구공",
+          "헬멧"
+        ]
+      }
+    ]
+  },
+  "9": {
+    "month": 9,
+    "title": "가을의 시작",
+    "summary": "가을 · 독서 · 추석 · 단풍 · 개학 · 가을 여행 · 송편 · 한복 · 가을 하늘 · 수확",
+    "keywords": [
+      "가을",
+      "독서",
+      "추석",
+      "단풍",
+      "개학",
+      "가을 여행",
+      "송편",
+      "한복",
+      "가을 하늘",
+      "수확"
+    ],
+    "topics": [
+      {
+        "title": "가을",
+        "keywords": [
+          "낙엽",
+          "도토리",
+          "밤",
+          "갈대",
+          "잠자리",
+          "체크 머플러",
+          "트렌치코트",
+          "호박",
+          "책",
+          "따뜻한 차"
+        ]
+      },
+      {
+        "title": "독서",
+        "keywords": [
+          "책",
+          "책갈피",
+          "안경",
+          "스탠드",
+          "책장",
+          "머그컵",
+          "도서관",
+          "독서노트",
+          "연필",
+          "쿠션"
+        ]
+      },
+      {
+        "title": "추석",
+        "keywords": [
+          "보름달",
+          "송편",
+          "한복",
+          "차례상",
+          "보자기",
+          "감",
+          "밤",
+          "윷놀이",
+          "토끼",
+          "전통문양"
+        ]
+      },
+      {
+        "title": "단풍",
+        "keywords": [
+          "단풍잎",
+          "은행잎",
+          "가을길",
+          "벤치",
+          "등산화",
+          "카메라",
+          "가을산",
+          "낙엽더미",
+          "머플러",
+          "공원"
+        ]
+      },
+      {
+        "title": "개학",
+        "keywords": [
+          "책가방",
+          "교과서",
+          "시간표",
+          "공책",
+          "필통",
+          "교복",
+          "사물함",
+          "교문",
+          "학교버스",
+          "칠판"
+        ]
+      },
+      {
+        "title": "가을 여행",
+        "keywords": [
+          "캐리어",
+          "기차표",
+          "단풍산",
+          "카메라",
+          "지도",
+          "백팩",
+          "등산화",
+          "숙소",
+          "기차",
+          "머플러"
+        ]
+      },
+      {
+        "title": "송편",
+        "keywords": [
+          "송편",
+          "솔잎",
+          "대나무 찜기",
+          "접시",
+          "깨소",
+          "콩",
+          "한복",
+          "보자기",
+          "차례상",
+          "달"
+        ]
+      },
+      {
+        "title": "한복",
+        "keywords": [
+          "저고리",
+          "치마",
+          "두루마기",
+          "노리개",
+          "갓",
+          "꽃신",
+          "비녀",
+          "색동",
+          "보자기",
+          "전통문양"
+        ]
+      },
+      {
+        "title": "가을 하늘",
+        "keywords": [
+          "구름",
+          "억새",
+          "잠자리",
+          "갈대",
+          "풍선",
+          "비행기",
+          "해질녘",
+          "가을나무",
+          "새떼",
+          "들판"
+        ]
+      },
+      {
+        "title": "수확",
+        "keywords": [
+          "벼",
+          "사과",
+          "감",
+          "밤",
+          "고구마",
+          "바구니",
+          "허수아비",
+          "트랙터",
+          "밀짚모자",
+          "곡식자루"
+        ]
+      }
+    ]
+  },
+  "10": {
+    "month": 10,
+    "title": "가을 행사와 할로윈",
+    "summary": "할로윈 · 단풍 · 가을 · 캠핑 · 독서 · 가을 축제 · 국화 · 호박 · 코스튬 · 야외 행사",
+    "keywords": [
+      "할로윈",
+      "단풍",
+      "가을",
+      "캠핑",
+      "독서",
+      "가을 축제",
+      "국화",
+      "호박",
+      "코스튬",
+      "야외 행사"
+    ],
+    "topics": [
+      {
+        "title": "할로윈",
+        "keywords": [
+          "호박등",
+          "유령",
+          "박쥐",
+          "마녀모자",
+          "사탕바구니",
+          "거미줄",
+          "해골",
+          "검은고양이",
+          "묘비",
+          "촛대"
+        ]
+      },
+      {
+        "title": "단풍",
+        "keywords": [
+          "단풍잎",
+          "은행잎",
+          "낙엽길",
+          "가을산",
+          "벤치",
+          "카메라",
+          "머플러",
+          "등산화",
+          "낙엽더미",
+          "공원"
+        ]
+      },
+      {
+        "title": "가을",
+        "keywords": [
+          "도토리",
+          "밤",
+          "갈대",
+          "낙엽",
+          "트렌치코트",
+          "책",
+          "머그컵",
+          "호박",
+          "체크담요",
+          "가을꽃"
+        ]
+      },
+      {
+        "title": "캠핑",
+        "keywords": [
+          "텐트",
+          "랜턴",
+          "모닥불",
+          "캠핑의자",
+          "침낭",
+          "코펠",
+          "캠핑카",
+          "타프",
+          "장작",
+          "머그컵"
+        ]
+      },
+      {
+        "title": "독서",
+        "keywords": [
+          "책",
+          "책갈피",
+          "안경",
+          "스탠드",
+          "도서관",
+          "책장",
+          "머그컵",
+          "연필",
+          "독서노트",
+          "쿠션"
+        ]
+      },
+      {
+        "title": "가을 축제",
+        "keywords": [
+          "무대",
+          "현수막",
+          "푸드트럭",
+          "조명",
+          "풍선",
+          "국화장식",
+          "입장권",
+          "야시장",
+          "포스터",
+          "공연의자"
+        ]
+      },
+      {
+        "title": "국화",
+        "keywords": [
+          "노란 국화",
+          "흰 국화",
+          "꽃병",
+          "꽃다발",
+          "화분",
+          "정원",
+          "국화축제등",
+          "리본",
+          "꽃바구니",
+          "잎사귀"
+        ]
+      },
+      {
+        "title": "호박",
+        "keywords": [
+          "주황 호박",
+          "호박등",
+          "호박바구니",
+          "호박수프",
+          "호박파이",
+          "덩굴",
+          "호박밭",
+          "나무상자",
+          "밀짚모자",
+          "촛불"
+        ]
+      },
+      {
+        "title": "코스튬",
+        "keywords": [
+          "마녀망토",
+          "마녀모자",
+          "유령의상",
+          "해골가면",
+          "호박가면",
+          "악마뿔",
+          "검은망토",
+          "마법봉",
+          "고양이귀",
+          "사탕바구니"
+        ]
+      },
+      {
+        "title": "야외 행사",
+        "keywords": [
+          "행사텐트",
+          "무대",
+          "마이크",
+          "배너",
+          "의자",
+          "푸드트럭",
+          "입장권",
+          "조명",
+          "풍선",
+          "안내표지판"
+        ]
+      }
+    ]
+  },
+  "11": {
+    "month": 11,
+    "title": "겨울 준비",
+    "summary": "빼빼로데이 · 수능 · 겨울 준비 · 첫눈 · 김장 · 연말 · 낙엽 · 패딩 · 난방 · 감사",
+    "keywords": [
+      "빼빼로데이",
+      "수능",
+      "겨울 준비",
+      "첫눈",
+      "김장",
+      "연말",
+      "낙엽",
+      "패딩",
+      "난방",
+      "감사"
+    ],
+    "topics": [
+      {
+        "title": "빼빼로데이",
+        "keywords": [
+          "막대과자",
+          "초콜릿",
+          "리본",
+          "선물상자",
+          "편지",
+          "하트 스티커",
+          "쿠키",
+          "포장지",
+          "쇼핑백",
+          "꽃다발"
+        ]
+      },
+      {
+        "title": "수능",
+        "keywords": [
+          "수험표",
+          "연필",
+          "지우개",
+          "시계",
+          "도시락",
+          "보온병",
+          "시험지",
+          "책상",
+          "교문",
+          "응원 피켓"
+        ]
+      },
+      {
+        "title": "겨울 준비",
+        "keywords": [
+          "패딩",
+          "목도리",
+          "장갑",
+          "털모자",
+          "부츠",
+          "핫팩",
+          "전기담요",
+          "난로",
+          "가습기",
+          "겨울이불"
+        ]
+      },
+      {
+        "title": "첫눈",
+        "keywords": [
+          "눈송이",
+          "우산",
+          "눈사람",
+          "장갑",
+          "목도리",
+          "겨울나무",
+          "가로등",
+          "발자국",
+          "고드름",
+          "창문"
+        ]
+      },
+      {
+        "title": "김장",
+        "keywords": [
+          "배추",
+          "무",
+          "고춧가루",
+          "고무장갑",
+          "김치통",
+          "대야",
+          "소금",
+          "쪽파",
+          "마늘",
+          "절임배추"
+        ]
+      },
+      {
+        "title": "연말",
+        "keywords": [
+          "달력",
+          "다이어리",
+          "샴페인잔",
+          "케이크",
+          "전구조명",
+          "선물상자",
+          "파티모자",
+          "시계",
+          "꽃다발",
+          "카운트다운 숫자"
+        ]
+      },
+      {
+        "title": "낙엽",
+        "keywords": [
+          "은행잎",
+          "단풍잎",
+          "낙엽더미",
+          "빗자루",
+          "공원벤치",
+          "가을길",
+          "장화",
+          "우산",
+          "도토리",
+          "갈대"
+        ]
+      },
+      {
+        "title": "패딩",
+        "keywords": [
+          "롱패딩",
+          "숏패딩",
+          "지퍼",
+          "후드",
+          "옷걸이",
+          "털모자",
+          "장갑",
+          "목도리",
+          "부츠",
+          "쇼핑백"
+        ]
+      },
+      {
+        "title": "난방",
+        "keywords": [
+          "라디에이터",
+          "전기난로",
+          "온풍기",
+          "전기담요",
+          "가습기",
+          "온도계",
+          "보일러",
+          "두꺼운양말",
+          "머그컵",
+          "겨울이불"
+        ]
+      },
+      {
+        "title": "감사",
+        "keywords": [
+          "감사카드",
+          "꽃다발",
+          "선물상자",
+          "리본",
+          "편지",
+          "머그컵",
+          "쿠키",
+          "액자",
+          "꽃병",
+          "봉투"
+        ]
+      }
+    ]
+  },
+  "12": {
+    "month": 12,
+    "title": "크리스마스와 연말",
+    "summary": "크리스마스 · 연말 · 새해 · 겨울 · 눈 · 송년회 · 선물 · 파티 · 트리 · 카운트다운",
+    "keywords": [
+      "크리스마스",
+      "연말",
+      "새해",
+      "겨울",
+      "눈",
+      "송년회",
+      "선물",
+      "파티",
+      "트리",
+      "카운트다운"
+    ],
+    "topics": [
+      {
+        "title": "크리스마스",
+        "keywords": [
+          "산타",
+          "루돌프",
+          "트리",
+          "선물상자",
+          "양말",
+          "리스",
+          "종",
+          "눈사람",
+          "지팡이사탕",
+          "별장식"
+        ]
+      },
+      {
+        "title": "연말",
+        "keywords": [
+          "달력",
+          "샴페인잔",
+          "케이크",
+          "전구조명",
+          "시계",
+          "선물상자",
+          "파티모자",
+          "다이어리",
+          "꽃다발",
+          "카운트다운 숫자"
+        ]
+      },
+      {
+        "title": "새해",
+        "keywords": [
+          "해돋이",
+          "달력",
+          "다이어리",
+          "복주머니",
+          "떡국",
+          "연하장",
+          "시계",
+          "새해 숫자",
+          "폭죽",
+          "일출"
+        ]
+      },
+      {
+        "title": "겨울",
+        "keywords": [
+          "장갑",
+          "목도리",
+          "패딩",
+          "털모자",
+          "부츠",
+          "핫팩",
+          "난로",
+          "고드름",
+          "눈사람",
+          "겨울나무"
+        ]
+      },
+      {
+        "title": "눈",
+        "keywords": [
+          "눈송이",
+          "설원",
+          "눈사람",
+          "눈덩이",
+          "눈삽",
+          "고드름",
+          "눈꽃",
+          "발자국",
+          "스노우볼",
+          "제설차"
+        ]
+      },
+      {
+        "title": "송년회",
+        "keywords": [
+          "샴페인잔",
+          "케이크",
+          "파티모자",
+          "테이블",
+          "리본",
+          "풍선",
+          "전구조명",
+          "포토월",
+          "초대장",
+          "명찰"
+        ]
+      },
+      {
+        "title": "선물",
+        "keywords": [
+          "선물상자",
+          "리본",
+          "쇼핑백",
+          "포장지",
+          "카드",
+          "양말",
+          "장난감",
+          "향수병",
+          "머그컵",
+          "쿠키"
+        ]
+      },
+      {
+        "title": "파티",
+        "keywords": [
+          "풍선",
+          "파티모자",
+          "케이크",
+          "샴페인잔",
+          "전구조명",
+          "색종이",
+          "초대장",
+          "포토월",
+          "스피커",
+          "선물상자"
+        ]
+      },
+      {
+        "title": "트리",
+        "keywords": [
+          "크리스마스트리",
+          "별장식",
+          "오너먼트",
+          "전구",
+          "리본",
+          "선물상자",
+          "트리스커트",
+          "종",
+          "지팡이사탕",
+          "양말"
+        ]
+      },
+      {
+        "title": "카운트다운",
+        "keywords": [
+          "시계",
+          "숫자판",
+          "폭죽",
+          "샴페인잔",
+          "풍선",
+          "전광판",
+          "파티모자",
+          "색종이",
+          "타이머",
+          "도시 야경"
+        ]
+      }
+    ]
+  }
+};
+
+export function getMonthTopic(month) {
+  const monthNumber = Number(month);
+  return MONTHLY_TOPICS[monthNumber] || MONTHLY_TOPICS[1];
+}
+
+export function getCurrentMonthNumber() {
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Seoul', month: '2-digit' }).format(new Date()).replace(/^0/, '');
+}
+
+export function getMonthLabel(month) {
+  return `${Number(month)}월`;
+}

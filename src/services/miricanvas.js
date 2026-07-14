@@ -1,420 +1,391 @@
-export function createMiricanvasService(dependencies) {
-  const {
-    MIRICANVAS_API_HEADERS_JSON,
-    MIRICANVAS_API_METHOD,
-    MIRICANVAS_API_URL,
-    MIRICANVAS_CATEGORY_LABEL_MAP,
-    MIRICANVAS_CATEGORY_OPTIONS,
-    MIRICANVAS_CATEGORY_TYPE_MAP,
-    MIRICANVAS_TEAM_IDX,
-    SEARCH_PLATFORM,
-    TEMPLATE_API_URL,
-    TEMPLATE_TYPE_FAILURE_MESSAGE,
-    cleanText,
-    debugError,
-    debugLog,
-    debugWarn,
-    getCollectedDate,
-    getCollectedMonth,
-    getTemplatePurpose,
-    getTemplateTier,
-    getTemplateTypeConfig,
-    normalizeMiricanvasCategory,
-    normalizeTemplateApiValues,
-    parseJsonObject,
-    safeLogSearchEvent,
-  } = dependencies;
+import { sanitizeKeywords } from '../utils/keywords.js';
 
-  function extractTagList(keywordsField) {
-    const raw = Array.isArray(keywordsField)
-      ? keywordsField.join('|')
-      : String(keywordsField ?? '');
+const MIRICANVAS_ELEMENT_ENDPOINT = 'https://api.miricanvas.com/designresource/api/d/element';
+const MIRICANVAS_TEMPLATE_SEARCH_ENDPOINT = 'https://api.miricanvas.com/template/api/p/template-pages/search';
+const MIRICANVAS_TEMPLATE_DETAIL_ENDPOINT = 'https://api.miricanvas.com/api/template';
+const RECOMMENDED_LIMIT = 30;
+const TEMPLATE_RESULT_LIMIT = 30;
+const TEMPLATE_SEARCH_PAGE_SIZE = 30;
+const TEMPLATE_SEARCH_MAX_PAGES = 20;
+const TEMPLATE_KEYWORD_LIMIT = 20;
+const SUPPORTED_TEMPLATE_TYPE_IDS = new Set([
+  'card_news',
+  'presentation',
+  'youtube_thumb',
+  'youtube_cover',
+  'detail_page',
+  'web_post_ver_poster',
+  'web_post_hor_poster',
+]);
 
-    return raw
-      .split('|')
-      .map(cleanText)
-      .filter(Boolean);
+const TYPE_LIST_BY_CONTENT_TYPE = {
+  요소: ['ILLUST', 'BITMAP', 'FIGURE', 'PRESET_FIGURE'],
+  사진: ['PICTURE'],
+  배경: ['BACKGROUND_PICTURE'],
+};
+
+function cleanText(value) {
+  return String(value ?? '').trim();
+}
+
+const TEMPLATE_DESIGN_ONLY_KEYWORDS = new Set([
+  // 색상
+  '빨강', '빨간색', '레드',
+  '주황', '주황색', '오렌지',
+  '노랑', '노란색', '옐로우',
+  '연두', '연두색', '라임',
+  '초록', '초록색', '녹색', '그린',
+  '청록', '청록색', '민트',
+  '파랑', '파란색', '블루',
+  '남색', '네이비',
+  '보라', '보라색', '퍼플',
+  '분홍', '분홍색', '핑크',
+  '자주', '자주색', '마젠타',
+  '갈색', '브라운',
+  '베이지', '아이보리', '크림',
+  '하양', '흰색', '화이트',
+  '검정', '검은색', '블랙',
+  '회색', '그레이',
+  '금색', '골드', '은색', '실버',
+  '무채색', '컬러풀', '파스텔',
+
+  // 스타일·분위기
+  '미니멀', '미니멀리즘', '미니멀한',
+  '모던', '모던한',
+  '심플', '심플한',
+  '깔끔', '깔끔한',
+  '밝은', '어두운',
+  '트렌디', '트렌디한',
+  '감성', '감성적인',
+  '세련', '세련된',
+  '고급', '고급스러운',
+  '귀여운', '캐주얼',
+  '빈티지', '레트로', '클래식',
+  '러블리', '힙한', '키치',
+  '화려한', '차분한',
+  '역동적', '역동적인',
+  '생동감', '생동감있는', '생동감 있는',
+  '자연스러운', '현대적', '현대적인',
+  '미래적', '미래적인',
+]);
+
+function normalizePlanningKeyword(value) {
+  return cleanText(value).toLocaleLowerCase('ko');
+}
+
+function isPlanningKeyword(value) {
+  return !TEMPLATE_DESIGN_ONLY_KEYWORDS.has(normalizePlanningKeyword(value));
+}
+
+function getTier(item) {
+  return cleanText(
+    item?.tier
+    ?? item?.template?.tier
+    ?? item?.designResource?.tier
+    ?? item?.data?.tier
+    ?? item?.data?.template?.tier
+  ).toUpperCase();
+}
+
+function isPremiumItem(item) {
+  return getTier(item) === 'PREMIUM';
+}
+
+function getTemplateIdentity(template, page, index) {
+  const idx = cleanText(
+    template?.idx
+    ?? template?.templateIdx
+    ?? template?.template?.idx
+  );
+
+  if (idx) return idx;
+
+  const title = cleanText(template?.title ?? template?.template?.title);
+  const pageCount = cleanText(
+    template?.pageCount
+    ?? template?.template?.pageCount
+  );
+
+  return `${page}:${index}:${title}:${pageCount}`;
+}
+
+function splitKeywords(value) {
+  if (Array.isArray(value)) return value.flatMap(splitKeywords);
+  return cleanText(value).split('|').map(cleanText).filter(Boolean);
+}
+
+function getElements(payload) {
+  const data = payload?.data ?? payload;
+  return [data?.content, data?.elements, data?.items, data?.results, data?.list, data?.data?.content]
+    .find(Array.isArray) || [];
+}
+
+
+function getTemplatePages(payload) {
+  const data = payload?.data ?? payload;
+  return [data?.content, data?.templatePages, data?.items, data?.results, data?.list, data?.data?.content]
+    .find(Array.isArray) || [];
+}
+
+function getTemplateKeywordList(payload) {
+  const data = payload?.data ?? payload;
+  return [data?.keywordList, data?.template?.keywordList, data?.data?.keywordList]
+    .find(Array.isArray) || [];
+}
+
+function collectKeywords(elements) {
+  const keywords = [];
+  for (const element of elements) {
+    keywords.push(...splitKeywords(element?.keywords), ...splitKeywords(element?.originKeywords));
   }
+  return sanitizeKeywords(keywords);
+}
 
-  function countFrequency(items) {
-    const counts = new Map();
+function getRecommendedKeywords(elements, limit = RECOMMENDED_LIMIT) {
+  const frequencyByKeyword = new Map();
+  const firstAppearanceByKeyword = new Map();
+  let appearanceIndex = 0;
 
-    for (const item of items) {
-      counts.set(item, (counts.get(item) || 0) + 1);
-    }
+  for (const element of elements) {
+    const keywordsInElement = sanitizeKeywords(splitKeywords(element?.keywords));
 
-    return counts;
-  }
+    for (const keyword of keywordsInElement) {
+      if (!firstAppearanceByKeyword.has(keyword)) {
+        firstAppearanceByKeyword.set(keyword, appearanceIndex++);
+      }
 
-  function includesKeyword(item, keyword) {
-    const normalizedKeyword = cleanText(keyword);
-    if (!normalizedKeyword) return false;
-
-    const name = cleanText(item?.name);
-    const keywordsText = cleanText(item?.keywords);
-    return name.includes(normalizedKeyword) || keywordsText.includes(normalizedKeyword);
-  }
-
-  function buildMiricanvasUrl(keyword, category = MIRICANVAS_CATEGORY_OPTIONS[0].value) {
-    const normalizedCategory = normalizeMiricanvasCategory(category);
-    const params = new URLSearchParams();
-    params.set('status', 'ACTIVE');
-    params.set('keyword', keyword);
-
-    for (const type of MIRICANVAS_CATEGORY_TYPE_MAP[normalizedCategory]) {
-      params.append('typeList', type);
-    }
-
-    params.set('color', '');
-    params.set('includePresetV2', 'true');
-    params.set('page', '1');
-    params.set('pageSize', '30');
-    params.set('tier', 'PREMIUM');
-    params.set('domain', 'production');
-    params.set('language', 'ko');
-
-    if (MIRICANVAS_TEAM_IDX) {
-      params.set('teamIdx', MIRICANVAS_TEAM_IDX);
-    }
-
-    return MIRICANVAS_API_URL + '?' + params.toString();
-  }
-
-  function buildTemplateSearchUrl(keyword, typeValue) {
-    const typeConfig = getTemplateTypeConfig(typeValue);
-    const params = new URLSearchParams();
-    const apiValues = normalizeTemplateApiValues(typeConfig.apiValue, typeConfig.value);
-    const purpose = getTemplatePurpose(typeConfig);
-    const tier = getTemplateTier(typeConfig);
-
-    params.set('color', '');
-    params.set('tier', tier);
-    params.set('strictLanguage', 'true');
-    params.append('categoryList', 'TEMPLATE');
-    params.append('categoryList', 'CREATOR');
-    params.set('status', 'ACTIVE');
-    params.set('isPageSearch', 'false');
-    params.set('includeTemplateV2', 'true');
-    params.set('language', 'ko');
-    params.set('page', '1');
-    params.set('pageSize', '30');
-    params.set('domain', 'production');
-    params.set('purpose', purpose);
-    params.set('keyword', keyword);
-    for (const apiValue of apiValues) {
-      params.append('templateTypeIdList', apiValue);
-    }
-
-    debugLog('[template:apiValue]', JSON.stringify(apiValues));
-
-    return TEMPLATE_API_URL + '?' + params.toString();
-  }
-
-  function getLogSnippet(value, maxLength = 500) {
-    const text = cleanText(value);
-    if (text.length <= maxLength) {
-      return text;
-    }
-    return text.slice(0, maxLength) + '...';
-  }
-
-  async function fetchJson(url, purpose) {
-    const headers = parseJsonObject(MIRICANVAS_API_HEADERS_JSON, 'MIRICANVAS_API_HEADERS_JSON');
-    const init = {
-      method: MIRICANVAS_API_METHOD,
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-    };
-
-    const response = await fetch(url, init);
-    const text = await response.text().catch(() => '');
-
-    debugLog(
-      '[' + String(purpose).toLowerCase() + ':response]',
-      JSON.stringify({
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        bodySnippet: getLogSnippet(text),
-      })
-    );
-
-    if (!response.ok) {
-      const error = new Error((purpose + ' request failed: ' + response.status + ' ' + response.statusText + ' ' + text).trim());
-      error.status = response.status;
-      error.statusText = response.statusText;
-      error.responseText = text;
-      error.requestUrl = url;
-      error.requestPurpose = purpose;
-      throw error;
-    }
-
-    if (!text.trim()) {
-      return {};
-    }
-
-    try {
-      return JSON.parse(text);
-    } catch (error) {
-      const parseError = new Error(purpose + ' response parse failed: ' + (error.message || String(error)));
-      parseError.status = response.status;
-      parseError.statusText = response.statusText;
-      parseError.responseText = text;
-      parseError.requestUrl = url;
-      parseError.requestPurpose = purpose;
-      throw parseError;
+      frequencyByKeyword.set(keyword, (frequencyByKeyword.get(keyword) || 0) + 1);
     }
   }
 
-  async function fetchMiricanvas(keyword, category = MIRICANVAS_CATEGORY_OPTIONS[0].value) {
-    if (!MIRICANVAS_API_URL) {
-      throw new Error('MIRICANVAS_API_URL is required');
-    }
+  return [...frequencyByKeyword.keys()]
+    .sort((left, right) => (
+      frequencyByKeyword.get(right) - frequencyByKeyword.get(left)
+      || firstAppearanceByKeyword.get(left) - firstAppearanceByKeyword.get(right)
+    ))
+    .slice(0, limit);
+}
 
-    const normalizedCategory = normalizeMiricanvasCategory(category);
-    const url = buildMiricanvasUrl(keyword, normalizedCategory);
-    debugLog('[miricanvas:url]', url);
-    debugLog('[miricanvas:keyword]', JSON.stringify(keyword), 'encoded=', encodeURIComponent(keyword));
-    debugLog('[miricanvas:category]', normalizedCategory, MIRICANVAS_CATEGORY_TYPE_MAP[normalizedCategory]);
+export function buildMiricanvasElementUrl({ keyword, contentType = '요소' }) {
+  const url = new URL(MIRICANVAS_ELEMENT_ENDPOINT);
+  const params = url.searchParams;
+  params.set('status', 'ACTIVE');
+  params.set('keyword', cleanText(keyword));
+  params.set('includePresetV2', 'true');
+  params.set('teamIdx', '11530479');
+  params.set('page', '1');
+  params.set('pageSize', '30');
+  params.set('tier', 'PREMIUM');
+  params.set('domain', 'production');
+  params.set('language', 'ko');
+  for (const type of TYPE_LIST_BY_CONTENT_TYPE[contentType] || TYPE_LIST_BY_CONTENT_TYPE.요소) params.append('typeList', type);
+  return url;
+}
 
-    return fetchJson(url, 'Miricanvas');
-  }
-
-  async function fetchTemplateSearch(keyword, typeValue) {
-    const typeConfig = getTemplateTypeConfig(typeValue);
-    const url = buildTemplateSearchUrl(keyword, typeValue);
-    const apiValues = normalizeTemplateApiValues(typeConfig.apiValue, typeConfig.value);
-    const purpose = getTemplatePurpose(typeConfig);
-    const tier = getTemplateTier(typeConfig);
-    debugLog('[template:url]', url);
-    debugLog('[template:keyword]', JSON.stringify(keyword), 'encoded=', encodeURIComponent(keyword));
-    debugLog(
-      '[template:request-config]',
-      JSON.stringify({
-        selectedType: cleanText(typeValue),
-        label: typeConfig.label,
-        value: typeConfig.value,
-        apiValue: typeConfig.apiValue || typeConfig.value,
-        apiValues,
-        purpose,
-        tier,
-        group: typeConfig.group,
-        page: 1,
-        pageSize: 30,
-        templateTypeIdList: apiValues,
-      })
-    );
-
-    try {
-      return await fetchJson(url, 'Template');
-    } catch (error) {
-      debugError(
-        '[template:error]',
-        JSON.stringify({
-          status: error?.status || null,
-          label: typeConfig.label,
-          value: typeConfig.value,
-          apiValue: typeConfig.apiValue || typeConfig.value,
-          apiValues,
-          purpose,
-          tier,
-          group: typeConfig.group,
-          url,
-          message: error?.message || String(error),
-          bodySnippet: getLogSnippet(error?.responseText || ''),
-        })
-      );
-
-      throw new Error(TEMPLATE_TYPE_FAILURE_MESSAGE);
-    }
-  }
-
-  async function collectTopTags(keyword, category = MIRICANVAS_CATEGORY_OPTIONS[0].value) {
-    const normalizedCategory = normalizeMiricanvasCategory(category);
-    const response = await fetchMiricanvas(keyword, normalizedCategory);
-    const list = Array.isArray(response?.data?.list) ? response.data.list : [];
-    const matchedList = list.filter((item) => includesKeyword(item, keyword));
-    const analysisList = matchedList.length >= 5 ? matchedList : list;
-
-    const allTags = [];
-    for (const item of analysisList) {
-      allTags.push(...extractTagList(item?.keywords));
-    }
-
-    const counts = countFrequency(allTags);
-    const topTags = [...counts.entries()]
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'))
-      .slice(0, 30)
-      .map(([tag]) => tag);
-
-    const topNames = list
-      .map((item) => cleanText(item?.name))
-      .filter(Boolean)
-      .slice(0, 5);
-
-    debugLog('[miricanvas:top-names-5]', topNames);
-    debugLog(
-      '[miricanvas:counts]',
-      JSON.stringify({
-        keyword,
-        category: normalizedCategory,
-        typeList: MIRICANVAS_CATEGORY_TYPE_MAP[normalizedCategory],
-        totalResultCount: list.length,
-        matchedResultCount: matchedList.length,
-        usedResultCount: analysisList.length,
-      })
-    );
-
-    if (list.length > 0 && matchedList.length === 0) {
-      debugWarn('[miricanvas:warning] keyword-related matches are missing. Falling back to the full result list.');
-    }
-
-    await safeLogSearchEvent({
-      searchType: 'keyword',
-      keyword,
-      templateTypeValue: normalizedCategory,
-      templateTypeLabel: MIRICANVAS_CATEGORY_LABEL_MAP[normalizedCategory] || '',
-    }, {
-      cleanText,
-      debugLog,
-      getCollectedMonth,
-      searchPlatform: SEARCH_PLATFORM,
-    });
-
-    return {
-      keyword,
-      category: normalizedCategory,
-      listCount: list.length,
-      matchedCount: matchedList.length,
-      usedCount: analysisList.length,
-      topTags,
-      metaTagString: topTags.join(', '),
-      collectedAt: getCollectedDate(),
-    };
-  }
-
-  async function collectTopTagsForKeywords(keywords) {
-    const results = [];
-
-    for (const keyword of keywords) {
-      results.push(await collectTopTags(keyword));
-    }
-
-    return {
-      keywordCount: keywords.length,
-      results,
-    };
-  }
-
-  function tokenizeTitle(title) {
-    return cleanText(title)
-      .replace(/[^\p{L}\p{N}]+/gu, ' ')
-      .split(/\s+/)
-      .map((token) => token.toLowerCase())
-      .filter(Boolean)
-      .filter((token) => token.length >= 2);
-  }
-
-  function buildRatioEntries(countsMap, total, buildLabel) {
-    return [...countsMap.entries()]
-      .sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0]), 'ko'))
-      .map(([value, count]) => ({
-        value,
-        label: buildLabel(value),
-        count,
-        percentage: total > 0 ? Number(((count / total) * 100).toFixed(1)) : 0,
-      }));
-  }
-
-  async function collectTemplateTrend(keyword, typeValue) {
-    const typeConfig = getTemplateTypeConfig(typeValue);
-    const response = await fetchTemplateSearch(keyword, typeValue);
-    const rawList = Array.isArray(response?.data?.list) ? response.data.list : [];
-    const list = rawList.slice(0, 30);
-
-    debugLog(
-      '[template:response-shape]',
-      JSON.stringify({
-        hasData: Boolean(response?.data),
-        listIsArray: Array.isArray(response?.data?.list),
-        listLength: rawList.length,
-        firstTitle: cleanText(rawList[0]?.title),
-        firstPageCount: rawList[0]?.pageCount ?? null,
-      })
-    );
-
-    const titles = list
-      .map((item) => cleanText(item?.title))
-      .filter(Boolean);
-
-    const titleTokens = titles.flatMap(tokenizeTitle);
-    const titleKeywordTop10 = [...countFrequency(titleTokens).entries()]
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'))
-      .slice(0, 10)
-      .map(([value, count]) => ({
-        value,
-        count,
-        percentage: titles.length > 0 ? Number(((count / titles.length) * 100).toFixed(1)) : 0,
-      }));
-
-    const pageCounts = new Map();
-    for (const item of list) {
-      const pageCount = Number(item?.pageCount);
-      if (!Number.isFinite(pageCount) || pageCount <= 0) continue;
-      pageCounts.set(pageCount, (pageCounts.get(pageCount) || 0) + 1);
-    }
-
-    const pageCountRatios = buildRatioEntries(pageCounts, list.length, (value) => String(value) + '\uD398\uC774\uC9C0');
-
-    debugLog(
-      '[template:counts]',
-      JSON.stringify({
-        keyword,
-        typeValue,
-        templateCount: list.length,
-        titleKeywordCount: titleTokens.length,
-      })
-    );
-
-    await safeLogSearchEvent({
-      searchType: 'template',
-      keyword,
-      templateTypeValue: typeConfig.value,
-      templateTypeLabel: typeConfig.label,
-    }, {
-      cleanText,
-      debugLog,
-      getCollectedMonth,
-      searchPlatform: SEARCH_PLATFORM,
-    });
-
-    return {
-      keyword,
-      typeValue: typeConfig.value,
-      typeLabel: typeConfig.label,
-      typeGroup: typeConfig.group,
-      typePathText: (() => {
-        const pathLabels = Array.isArray(typeConfig.pathLabels) ? [...typeConfig.pathLabels] : [typeConfig.label];
-        if (pathLabels[0] === typeConfig.group) {
-          pathLabels.shift();
-        }
-        return typeConfig.group + ' > ' + pathLabels.join(' > ');
-      })(),
-      templateCount: list.length,
-      titleKeywordTop10,
-      pageCountRatios,
-      topTemplateTitles: titles,
-      collectedAt: getCollectedDate(),
-    };
-  }
-
+export async function getMiricanvasKeywordResult({ keyword, contentType }) {
+  const query = cleanText(keyword);
+  if (!query) return null;
+  const response = await fetch(buildMiricanvasElementUrl({ keyword: query, contentType }), { headers: { Accept: 'application/json' } });
+  if (!response.ok) throw new Error(`미리캔버스 검색 API 요청에 실패했습니다. (${response.status})`);
+  const elements = getElements(await response.json())
+    .filter(isPremiumItem);
+  const allKeywords = collectKeywords(elements);
+  const keywords = getRecommendedKeywords(elements);
   return {
-    fetchMiricanvas,
-    fetchTemplateSearch,
-    collectTopTags,
-    collectTopTagsForKeywords,
-    collectTemplateTrend,
+    query,
+    contentType: TYPE_LIST_BY_CONTENT_TYPE[contentType] ? contentType : '요소',
+    keywords,
+    recommendedCount: keywords.length,
+    recommendedLimit: RECOMMENDED_LIMIT,
+    totalKeywordCount: allKeywords.length,
+    collectedAt: new Date().toISOString().slice(0, 10),
   };
 }
+
+
+export function buildMiricanvasTemplateSearchUrl({
+  keyword,
+  templateTypeId,
+  page = 1,
+  pageSize = TEMPLATE_SEARCH_PAGE_SIZE,
+}) {
+  const url = new URL(MIRICANVAS_TEMPLATE_SEARCH_ENDPOINT);
+  const params = url.searchParams;
+  params.set('keyword', cleanText(keyword));
+  params.set('templateTypeIdList', cleanText(templateTypeId));
+  params.set('purpose', 'WEB');
+  params.set('strictLanguage', 'true');
+  params.append('categoryList', 'TEMPLATE');
+  params.append('categoryList', 'CREATOR');
+  params.set('status', 'ACTIVE');
+  params.set('isPageSearch', 'false');
+  params.set('includeTemplateV2', 'true');
+  params.set('language', 'ko');
+  params.set('page', String(page));
+  params.set('pageSize', String(pageSize));
+  params.set('domain', 'production');
+  return url;
+}
+
+export function buildMiricanvasTemplateDetailUrl(idx) {
+  const url = new URL(`${MIRICANVAS_TEMPLATE_DETAIL_ENDPOINT}/${encodeURIComponent(cleanText(idx))}`);
+  url.searchParams.set('language', 'ko');
+  url.searchParams.set('domain', 'production');
+  return url;
+}
+
+function collectTopTemplateKeywords(keywordLists) {
+  const frequencyByKeyword = new Map();
+  const firstAppearanceByKeyword = new Map();
+  let appearanceIndex = 0;
+
+  for (const keywordList of keywordLists) {
+    const planningKeywords = sanitizeKeywords(keywordList)
+      .filter(isPlanningKeyword);
+
+    for (const keyword of planningKeywords) {
+      if (!firstAppearanceByKeyword.has(keyword)) {
+        firstAppearanceByKeyword.set(keyword, appearanceIndex++);
+      }
+
+      frequencyByKeyword.set(
+        keyword,
+        (frequencyByKeyword.get(keyword) || 0) + 1,
+      );
+    }
+  }
+
+  return [...frequencyByKeyword.keys()]
+    .sort((left, right) => (
+      frequencyByKeyword.get(right) - frequencyByKeyword.get(left)
+      || firstAppearanceByKeyword.get(left) - firstAppearanceByKeyword.get(right)
+    ))
+    .slice(0, TEMPLATE_KEYWORD_LIMIT);
+}
+
+function formatPercentage(count, total) {
+  if (!total) return 0;
+  const percentage = (count / total) * 100;
+  return Number.isInteger(percentage) ? percentage : Number(percentage.toFixed(1));
+}
+
+export function normalizeTemplatePageCounts(templates) {
+  const templateList = Array.isArray(templates) ? templates : [];
+  const countByPage = new Map();
+
+  for (const template of templateList) {
+    const rawPageCount = template?.pageCount ?? template?.template?.pageCount ?? 0;
+    const pageCount = Number.isFinite(Number(rawPageCount)) ? Number(rawPageCount) : 0;
+    countByPage.set(pageCount, (countByPage.get(pageCount) || 0) + 1);
+  }
+
+  return [...countByPage.entries()]
+    .sort(([left], [right]) => left - right)
+    .map(([pageCount, count]) => ({
+      pageCount,
+      count,
+      percentage: formatPercentage(count, templateList.length),
+    }));
+}
+
+async function fetchPremiumTemplateSearchResults({
+  keyword,
+  templateTypeId,
+}) {
+  const premiumTemplates = [];
+  const seenTemplateIds = new Set();
+
+  for (
+    let page = 1;
+    page <= TEMPLATE_SEARCH_MAX_PAGES
+      && premiumTemplates.length < TEMPLATE_RESULT_LIMIT;
+    page += 1
+  ) {
+    const searchResponse = await fetch(
+      buildMiricanvasTemplateSearchUrl({
+        keyword,
+        templateTypeId,
+        page,
+        pageSize: TEMPLATE_SEARCH_PAGE_SIZE,
+      }),
+      { headers: { Accept: 'application/json' } },
+    );
+
+    if (!searchResponse.ok) {
+      throw new Error(
+        `미리캔버스 템플릿 검색 API 요청에 실패했습니다. (${searchResponse.status})`,
+      );
+    }
+
+    const pageTemplates = getTemplatePages(await searchResponse.json());
+
+    if (!pageTemplates.length) break;
+
+    for (let index = 0; index < pageTemplates.length; index += 1) {
+      const template = pageTemplates[index];
+
+      if (!isPremiumItem(template)) continue;
+
+      const identity = getTemplateIdentity(template, page, index);
+      if (seenTemplateIds.has(identity)) continue;
+
+      seenTemplateIds.add(identity);
+      premiumTemplates.push(template);
+
+      if (premiumTemplates.length >= TEMPLATE_RESULT_LIMIT) break;
+    }
+
+    if (pageTemplates.length < TEMPLATE_SEARCH_PAGE_SIZE) break;
+  }
+
+  return premiumTemplates;
+}
+
+export async function getMiricanvasTemplateResult({ keyword, templateTypeId }) {
+  const query = cleanText(keyword);
+  const typeId = cleanText(templateTypeId);
+  if (!query || !SUPPORTED_TEMPLATE_TYPE_IDS.has(typeId)) return null;
+
+  const templates = await fetchPremiumTemplateSearchResults({
+    keyword: query,
+    templateTypeId: typeId,
+  });
+
+  const templateDetails = await Promise.all(templates.map(async (template) => {
+    const idx = template?.idx ?? template?.templateIdx ?? template?.template?.idx;
+
+    if (!idx) return { template, keywordList: [] };
+
+    const detailResponse = await fetch(
+      buildMiricanvasTemplateDetailUrl(idx),
+      { headers: { Accept: 'application/json' } },
+    );
+
+    if (!detailResponse.ok) return { template, keywordList: [] };
+
+    return {
+      template,
+      keywordList: getTemplateKeywordList(await detailResponse.json()),
+    };
+  }));
+
+  const analysisDetails = templateDetails;
+  const analysisTemplates = analysisDetails.map(({ template }) => template);
+  const keywords = collectTopTemplateKeywords(
+    analysisDetails.map(({ keywordList }) => keywordList),
+  );
+
+  return {
+    query,
+    templateTypeId: typeId,
+    contentType: typeId,
+    keywords,
+    recommendedCount: keywords.length,
+    pageCounts: normalizeTemplatePageCounts(analysisTemplates),
+    topTemplateTitles: analysisTemplates.map((template) => cleanText(template?.title ?? template?.template?.title)).filter(Boolean),
+    templateCount: analysisTemplates.length,
+    collectedAt: new Date().toISOString().slice(0, 10),
+  };
+}
+
+export { TYPE_LIST_BY_CONTENT_TYPE };

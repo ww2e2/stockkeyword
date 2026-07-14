@@ -5,7 +5,11 @@ import { renderResponsiveStyles } from './styles/responsive.js';
 
 export function renderStyles() {
   return `
-<style>
-${renderCommonStyles()}${renderLayoutStyles()}${renderComponentStyles()}${renderResponsiveStyles()}
-</style>`;
+    <style>
+      ${renderCommonStyles()}
+      ${renderLayoutStyles()}
+      ${renderComponentStyles()}
+      ${renderResponsiveStyles()}
+    </style>
+  `;
 }

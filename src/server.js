@@ -1,29 +1,17 @@
 import http from 'http';
-import { pathToFileURL } from 'url';
-import requestHandler, { requestHandler as namedRequestHandler } from './crowdpicWrapper.js';
+import { requestHandler } from './app.js';
 
 const PORT = Number(process.env.PORT || 3000);
-const DEBUG = String(process.env.DEBUG || 'false').toLowerCase() === 'true';
 
-export { namedRequestHandler as requestHandler };
-export const server = http.createServer(namedRequestHandler);
-export default requestHandler;
+http.createServer((req, res) => {
+  requestHandler(req, res).catch((error) => {
+    console.error('Unhandled request error:', error?.message || String(error));
 
-function isMainModule() {
-  const entryPath = process.argv[1];
-  if (!entryPath) {
-    return false;
-  }
-
-  return import.meta.url === pathToFileURL(entryPath).href;
-}
-
-if (isMainModule()) {
-  server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Miricanvas tag SaaS listening on ${PORT}`);
-    if (DEBUG) {
-      console.log('MIRICANVAS_API_URL:', process.env.MIRICANVAS_API_URL);
+    if (!res.headersSent && !res.writableEnded) {
+      res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('Internal Server Error');
     }
   });
-}
-
+}).listen(PORT, '0.0.0.0', () => {
+  console.log(`miricanvas-tag-saas listening on ${PORT}`);
+});
