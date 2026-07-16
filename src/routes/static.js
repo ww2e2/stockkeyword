@@ -2,6 +2,16 @@ import fs from 'fs';
 import path from 'path';
 
 const FAVICON_DIR = path.resolve(process.cwd(), 'favicon_io');
+const ADS_TXT_PATH = path.resolve(process.cwd(), 'ads.txt');
+
+export function serveAdsTxt(res) {
+  if (!fs.existsSync(ADS_TXT_PATH)) return false;
+
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+  res.end(fs.readFileSync(ADS_TXT_PATH));
+  return true;
+}
+
 
 export function buildRobotsTxt(origin) {
   return [

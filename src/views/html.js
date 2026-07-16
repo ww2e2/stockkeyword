@@ -1403,6 +1403,11 @@ export function htmlPage(pathname, origin, opts = {}) {
           content="width=device-width, initial-scale=1"
         >
         <meta name="description" content="${escapeHtml(description)}">
+        <meta name="google-adsense-account" content="ca-pub-3386559853644133">
+        <script async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3386559853644133"
+          crossorigin="anonymous">
+        </script>
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">

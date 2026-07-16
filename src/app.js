@@ -3,6 +3,7 @@ import { getStockWorkPeriod } from './config/siteConfig.js';
 import {
   buildRobotsTxt,
   buildSitemapXml,
+  serveAdsTxt,
   serveFaviconAsset,
 } from './routes/static.js';
 import {
@@ -438,6 +439,13 @@ export async function requestHandler(req, res) {
     const protocol = cleanText(req.headers['x-forwarded-proto']) || 'http';
     const host = cleanText(req.headers.host) || 'localhost';
     const requestUrl = new URL(req.url, `${protocol}://${host}`);
+    if (req.method === 'GET' && requestUrl.pathname === '/ads.txt') {
+      if (!serveAdsTxt(res)) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('not found');
+      }
+      return;
+    }
 
     if (req.method === 'GET' && requestUrl.pathname === '/robots.txt') {
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
