@@ -124,6 +124,12 @@ export function renderLayoutStyles() {
       border-bottom: 1px solid var(--line);
     }
 
+    .calendar-overview .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 15;
+    }
+
     .topbar-inner {
       display: flex;
       align-items: center;

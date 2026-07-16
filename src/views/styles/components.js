@@ -230,7 +230,7 @@ export function renderComponentStyles() {
       transform: translateY(-1px);
     }
 
-    .calendar-month-card.is-current {
+    .calendar-month-card.is-target {
       border-color: rgba(49, 87, 213, 0.5);
       box-shadow: 0 0 0 2px rgba(49, 87, 213, 0.08);
     }
@@ -258,7 +258,22 @@ export function renderComponentStyles() {
       font-weight: 800;
     }
 
-    .calendar-month-card.is-current .calendar-month-badge {
+    .calendar-month-badge-group {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      width: 92px;
+    }
+
+    .calendar-current-month-label {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 750;
+      line-height: 1;
+    }
+
+    .calendar-month-card.is-target .calendar-month-badge {
       color: #ffffff;
       background: var(--brand);
       border-color: var(--brand);

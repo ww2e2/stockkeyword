@@ -1,4 +1,5 @@
 import { PLATFORM_CONFIGS, getCurrentMonthNumber, getMonthLabel, getMonthTopic } from './config/siteConfig.js';
+import { getStockWorkPeriod } from './config/siteConfig.js';
 import {
   buildRobotsTxt,
   buildSitemapXml,
@@ -92,7 +93,7 @@ function getPlatformConfigForPage(pathname, pageName) {
   return PLATFORM_CONFIGS[match[1]] || null;
 }
 
-function getPageMeta(pathname) {
+export function getPageMeta(pathname, date = new Date()) {
   if (pathname === '/') {
     return { title: 'StockKeyword | 홈', description: '스톡 작가를 위한 키워드와 월별 소재를 정리합니다.' };
   }
@@ -104,6 +105,14 @@ function getPageMeta(pathname) {
     };
   }
   if (pathname === '/calendar' || pathname.startsWith('/calendar/')) {
+    if (pathname === '/calendar') {
+      const { currentMonth, targetMonth } = getStockWorkPeriod(date);
+      return {
+        title: `${getMonthLabel(targetMonth)} | 월별 작업 캘린더`,
+        description: `${getMonthLabel(currentMonth)}에는 ${getMonthLabel(targetMonth)} 스톡 소재를 미리 준비해보세요.`,
+      };
+    }
+
     const month = parseMonthFromPath(pathname) || Number(getCurrentMonthNumber());
     return { title: `${getMonthLabel(month)} | 월별 작업 캘린더`, description: `${getMonthLabel(month)} 스톡 작업에 활용하기 좋은 소재를 확인하세요.` };
   }

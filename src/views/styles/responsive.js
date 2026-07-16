@@ -91,6 +91,10 @@ export function renderResponsiveStyles() {
       .calendar-month-badge {
         width: 72px;
       }
+
+      .calendar-month-badge-group {
+        width: 72px;
+      }
     }
 
     @media (max-width: 500px) {

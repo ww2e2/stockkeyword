@@ -3,6 +3,7 @@ import {
   getCurrentMonthNumber,
   getMonthLabel,
   getMonthTopic,
+  getStockWorkPeriod,
 } from '../config/siteConfig.js';
 import { renderStyles } from './styles.js';
 
@@ -314,8 +315,8 @@ export function renderMonthlyTopics({
   `;
 }
 
-export function renderHomePage() {
-  const month = Number(getCurrentMonthNumber());
+export function renderHomePage(date = new Date()) {
+  const { targetMonth } = getStockWorkPeriod(date);
 
   return `
     <div class="home-page">
@@ -342,8 +343,9 @@ export function renderHomePage() {
       </section>
 
       ${renderMonthlyTopics({
-        month,
+        month: targetMonth,
         title: '이번 달 추천 소재',
+        description: '이번 달 스톡 작업에 활용하기 좋은 소재',
       })}
 
     </div>
@@ -1101,15 +1103,21 @@ export function renderRankingsPage(config = {}, result = {}) {
 }
 
 
-function renderCalendarMonthCard(month) {
+function renderCalendarMonthCard(month, currentMonth, targetMonth) {
   const monthData = getMonthTopic(month);
-  const currentMonth = Number(getCurrentMonthNumber());
   const isCurrent = month === currentMonth;
+  const isTarget = month === targetMonth;
 
   return `
-    <article class="calendar-month-card${isCurrent ? ' is-current' : ''}">
+    <article
+      class="calendar-month-card${isTarget ? ' is-target' : ''}"
+      ${isTarget ? 'data-work-target' : ''}
+    >
       <a class="calendar-month-card-link" href="/calendar/${month}">
-        <span class="calendar-month-badge">${month}월</span>
+        <span class="calendar-month-badge-group">
+          <span class="calendar-month-badge">${month}월</span>
+          ${isCurrent ? '<span class="calendar-current-month-label">현재 월</span>' : ''}
+        </span>
 
         <div class="calendar-month-copy">
           <h2 class="calendar-month-title">${escapeHtml(monthData?.title)}</h2>
@@ -1120,7 +1128,9 @@ function renderCalendarMonthCard(month) {
   `;
 }
 
-export function renderCalendarPage() {
+export function renderCalendarPage(date = new Date()) {
+  const { currentMonth, targetMonth } = getStockWorkPeriod(date);
+
   return `
     <div class="calendar-overview-page">
       <section class="calendar-intro-card">
@@ -1130,7 +1140,11 @@ export function renderCalendarPage() {
 
       <div class="calendar-year-list">
         ${Array.from({ length: 12 }, (_, index) => index + 1)
-          .map((month) => renderCalendarMonthCard(month))
+          .map((month) => renderCalendarMonthCard(
+            month,
+            currentMonth,
+            targetMonth,
+          ))
           .join('')}
       </div>
     </div>
@@ -1145,6 +1159,21 @@ function renderClientScript() {
           root.querySelector(selector);
         const queryAll = (selector, root = document) =>
           Array.from(root.querySelectorAll(selector));
+
+        const workTargetCard = query('[data-work-target]');
+        if (workTargetCard) {
+          window.requestAnimationFrame(() => {
+            const topbarHeight =
+              query('.topbar')?.getBoundingClientRect().height || 0;
+            const targetTop =
+              workTargetCard.getBoundingClientRect().top + window.scrollY;
+
+            window.scrollTo({
+              top: Math.max(0, targetTop - topbarHeight - 24),
+              behavior: 'smooth',
+            });
+          });
+        }
 
         const sidebarToggle = query('[data-sidebar-toggle]');
         const sidebarBackdrop = query('.sidebar-backdrop');
@@ -1361,6 +1390,13 @@ export function htmlPage(pathname, origin, opts = {}) {
     <!doctype html>
     <html lang="ko">
       <head>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-THGZ9WD3');</script>
+        <!-- End Google Tag Manager -->
         <meta charset="utf-8">
         <meta
           name="viewport"
@@ -1376,7 +1412,11 @@ export function htmlPage(pathname, origin, opts = {}) {
         ${renderStyles()}
       </head>
 
-      <body>
+      <body${pathname === '/calendar' ? ' class="calendar-overview"' : ''}>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-THGZ9WD3"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
         <div class="app-shell">
           ${renderSidebar(opts?.activeMenu || 'home')}
 

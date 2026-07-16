@@ -2152,8 +2152,30 @@ export function getMonthTopic(month) {
   return MONTHLY_TOPICS[monthNumber] || MONTHLY_TOPICS[1];
 }
 
-export function getCurrentMonthNumber() {
-  return new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Seoul', month: '2-digit' }).format(new Date()).replace(/^0/, '');
+export function getStockWorkPeriod(date = new Date()) {
+  const koreaDateParts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: 'numeric',
+  }).formatToParts(date);
+  const currentYear = Number(
+    koreaDateParts.find((part) => part.type === 'year')?.value,
+  );
+  const currentMonth = Number(
+    koreaDateParts.find((part) => part.type === 'month')?.value,
+  );
+  const targetDate = new Date(Date.UTC(currentYear, currentMonth + 1, 1));
+
+  return {
+    currentYear,
+    currentMonth,
+    targetYear: targetDate.getUTCFullYear(),
+    targetMonth: targetDate.getUTCMonth() + 1,
+  };
+}
+
+export function getCurrentMonthNumber(date = new Date()) {
+  return String(getStockWorkPeriod(date).currentMonth);
 }
 
 export function getMonthLabel(month) {
