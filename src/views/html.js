@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import {
   SITE_INFO,
   getCurrentMonthNumber,
@@ -471,9 +473,11 @@ function renderSearchForm(config = {}, query = '', selected = '') {
   );
   const inputPlaceholder =
     config?.placeholder || '분석할 키워드를 입력하세요.';
+  const requestId = randomUUID();
 
   return `
     <form class="search-form" method="get">
+      <input type="hidden" name="requestId" value="${requestId}">
       <label class="sr-only" for="search-query">검색어</label>
       <input
         class="search-input"
@@ -1160,6 +1164,19 @@ function renderClientScript() {
         const queryAll = (selector, root = document) =>
           Array.from(root.querySelectorAll(selector));
 
+        queryAll('.search-form').forEach((form) => {
+          form.addEventListener('submit', (event) => {
+            if (form.dataset.searchSubmitting === 'true') {
+              event.preventDefault();
+              return;
+            }
+
+            form.dataset.searchSubmitting = 'true';
+            const submitButton = query('[type="submit"]', form);
+            if (submitButton) submitButton.disabled = true;
+          });
+        });
+
         const workTargetCard = query('[data-work-target]');
         if (workTargetCard) {
           window.requestAnimationFrame(() => {
@@ -1345,6 +1362,13 @@ function resolveTopbarContent(pathname, opts, documentTitle, description) {
     return {
       title: '작업 홈',
       description: '스톡 작가를 위한 키워드·템플릿 리서치 워크벤치',
+    };
+  }
+
+  if (opts?.topbarTitle) {
+    return {
+      title: opts.topbarTitle,
+      description,
     };
   }
 

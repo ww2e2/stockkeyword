@@ -52,7 +52,7 @@ function getContentTypeLogValue(config, value) {
   };
 }
 
-async function logSuccessfulSearch({ config, feature, result }) {
+async function logSuccessfulSearch({ config, feature, result, requestId }) {
   const query = cleanText(result?.query);
   if (!query) return;
 
@@ -67,6 +67,7 @@ async function logSuccessfulSearch({ config, feature, result }) {
       typeLabel: isTemplate
         ? getOptionLabel(config?.templateSearchOptions?.contentTypes, result?.templateTypeId)
         : contentType.label,
+      requestId,
     });
   } catch (error) {
     console.error('Failed to save search log:', error?.message || String(error));
@@ -101,7 +102,8 @@ export function getPageMeta(pathname, date = new Date()) {
   const platformConfig = getPlatformConfigFromPath(pathname);
   if (platformConfig) {
     return {
-      title: platformConfig.name,
+      title: `${platformConfig.name} | 기능 선택 | StockKeyword`,
+      topbarTitle: platformConfig.name,
       description: platformConfig.description,
     };
   }
@@ -109,13 +111,18 @@ export function getPageMeta(pathname, date = new Date()) {
     if (pathname === '/calendar') {
       const { currentMonth, targetMonth } = getStockWorkPeriod(date);
       return {
-        title: `${getMonthLabel(targetMonth)} | 월별 작업 캘린더`,
+        title: '월별 작업 캘린더 | StockKeyword',
+        topbarTitle: `${getMonthLabel(targetMonth)} | 월별 작업 캘린더`,
         description: `${getMonthLabel(currentMonth)}에는 ${getMonthLabel(targetMonth)} 스톡 소재를 미리 준비해보세요.`,
       };
     }
 
     const month = parseMonthFromPath(pathname) || Number(getCurrentMonthNumber());
-    return { title: `${getMonthLabel(month)} | 월별 작업 캘린더`, description: `${getMonthLabel(month)} 스톡 작업에 활용하기 좋은 소재를 확인하세요.` };
+    return {
+      title: `${getMonthLabel(month)} 추천 소재 | 월별 작업 캘린더 | StockKeyword`,
+      topbarTitle: `${getMonthLabel(month)} | 월별 작업 캘린더`,
+      description: `${getMonthLabel(month)} 스톡 작업에 활용하기 좋은 소재를 확인하세요.`,
+    };
   }
 
   if (pathname === '/faq') {
@@ -127,7 +134,8 @@ export function getPageMeta(pathname, date = new Date()) {
 
   if (pathname === '/about') {
     return {
-      title: '서비스 소개 | StockKeyword',
+      title: '소개 | StockKeyword',
+      topbarTitle: '서비스 소개 | StockKeyword',
       description: '스톡 작가를 위한 키워드·템플릿 리서치 도구 StockKeyword를 소개합니다.',
     };
   }
@@ -157,7 +165,8 @@ export function getPageMeta(pathname, date = new Date()) {
   const keywordPlatformConfig = getPlatformConfigForPage(pathname, 'tag');
   if (keywordPlatformConfig) {
     return {
-      title: keywordPlatformConfig.keywordPageTitle,
+      title: `${keywordPlatformConfig.name} | 키워드 분석 | StockKeyword`,
+      topbarTitle: keywordPlatformConfig.keywordPageTitle,
       description: keywordPlatformConfig.keywordPageDescription,
     };
   }
@@ -165,21 +174,24 @@ export function getPageMeta(pathname, date = new Date()) {
   const rankingPlatformConfig = getPlatformConfigForPage(pathname, 'rankings');
   if (rankingPlatformConfig) {
     return {
-      title: '\uC774\uBC88 \uB2EC \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704',
+      title: `${rankingPlatformConfig.name} | 월간 인기 검색 순위 | StockKeyword`,
+      topbarTitle: '\uC774\uBC88 \uB2EC \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704',
       description: rankingPlatformConfig.name + '\uC758 \uC774\uBC88 \uB2EC \uAC80\uC0C9 \uD750\uB984\uC744 \uD655\uC778\uD569\uB2C8\uB2E4.',
     };
   }
 
   if (pathname === '/miricanvas/template') {
     return {
-      title: '템플릿 분석',
+      title: '미리캔버스 | 템플릿 분석 | StockKeyword',
+      topbarTitle: '템플릿 분석',
       description: '미리캔버스 템플릿의 제목과 구성 패턴을 분석합니다',
     };
   }
 
   if (pathname === '/tooldi/template') {
     return {
-      title: '템플릿 분석',
+      title: '툴디 | 템플릿 분석 | StockKeyword',
+      topbarTitle: '템플릿 분석',
       description: '툴디 템플릿의 기획 키워드와 제목 패턴을 분석합니다',
     };
   }
@@ -349,6 +361,7 @@ async function renderPage(pathname, origin, requestUrl) {
       config: keywordPlatformConfig,
       feature: 'keyword',
       result,
+      requestId: requestUrl.searchParams.get('requestId'),
     });
     return htmlPage(pathname, origin, {
       activeMenu: keywordPlatformConfig.id,
@@ -385,6 +398,7 @@ async function renderPage(pathname, origin, requestUrl) {
       config,
       feature: 'template',
       result,
+      requestId: requestUrl.searchParams.get('requestId'),
     });
 
     return htmlPage(pathname, origin, {
@@ -408,6 +422,7 @@ async function renderPage(pathname, origin, requestUrl) {
       config,
       feature: 'template',
       result,
+      requestId: requestUrl.searchParams.get('requestId'),
     });
     return htmlPage(pathname, origin, {
       activeMenu: 'miricanvas',

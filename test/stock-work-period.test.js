@@ -25,7 +25,7 @@ test('7월에는 홈 문구는 이번 달로 표시하고 소재와 캘린더는
   assert.doesNotMatch(homeHtml, /9월 추천 소재/);
   assert.match(homeHtml, />가을</);
   assert.doesNotMatch(homeHtml, />장마</);
-  assert.equal(calendarMeta.title, '9월 | 월별 작업 캘린더');
+  assert.equal(calendarMeta.title, '월별 작업 캘린더 | StockKeyword');
   assert.equal(
     calendarMeta.description,
     '7월에는 9월 스톡 소재를 미리 준비해보세요.',

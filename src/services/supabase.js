@@ -3,7 +3,10 @@ import WebSocket from 'ws';
 
 const SEARCH_LOGS_TABLE = 'search_logs';
 const KOREA_TIME_ZONE = 'Asia/Seoul';
+const REQUEST_ID_DEDUP_WINDOW_MS = 10_000;
+const FALLBACK_DEDUP_WINDOW_MS = 2_000;
 let supabaseClient = null;
+const recentSearchLogAttempts = new Map();
 
 function cleanText(value) {
   return String(value ?? '').trim();
@@ -119,7 +122,26 @@ async function getMonthlyRows(platform) {
   }
 }
 
-export async function logSearchEvent({ platform, feature, query, typeValue = '', typeLabel = '' }) {
+function reserveSearchLogAttempt(key, now, windowMs) {
+  for (const [storedKey, expiresAt] of recentSearchLogAttempts) {
+    if (expiresAt <= now) recentSearchLogAttempts.delete(storedKey);
+  }
+
+  if ((recentSearchLogAttempts.get(key) || 0) > now) return null;
+
+  const expiresAt = now + windowMs;
+  recentSearchLogAttempts.set(key, expiresAt);
+  return expiresAt;
+}
+
+export async function logSearchEvent({
+  platform,
+  feature,
+  query,
+  typeValue = '',
+  typeLabel = '',
+  requestId = '',
+}, dependencies = {}) {
   const normalizedQuery = cleanText(query);
   if (!normalizedQuery) return { logged: false, reason: 'missing-query' };
 
@@ -132,11 +154,39 @@ export async function logSearchEvent({ platform, feature, query, typeValue = '',
     search_month: getSearchMonth(),
   };
 
-  const { error } = await getSupabaseClient()
-    .from(SEARCH_LOGS_TABLE)
-    .insert(row);
+  const normalizedRequestId = cleanText(requestId);
+  const deduplicationKey = normalizedRequestId
+    ? `request:${row.source_platform}:${row.search_type}:${normalizedRequestId}`
+    : `search:${JSON.stringify([
+        row.source_platform,
+        row.search_type,
+        row.keyword,
+        row.template_type_value,
+      ])}`;
+  const windowMs = normalizedRequestId
+    ? REQUEST_ID_DEDUP_WINDOW_MS
+    : FALLBACK_DEDUP_WINDOW_MS;
+  const now = Number((dependencies.now || Date.now)());
+  const reservation = reserveSearchLogAttempt(deduplicationKey, now, windowMs);
 
-  if (error) throw new Error(`Supabase search log write failed: ${error.message}`);
+  if (reservation == null) {
+    return { logged: false, reason: 'duplicate-request' };
+  }
+
+  try {
+    const client = dependencies.client || getSupabaseClient();
+    const { error } = await client.from(SEARCH_LOGS_TABLE).insert(row);
+
+    if (error) {
+      throw new Error(`Supabase search log write failed: ${error.message}`);
+    }
+  } catch (error) {
+    if (recentSearchLogAttempts.get(deduplicationKey) === reservation) {
+      recentSearchLogAttempts.delete(deduplicationKey);
+    }
+    throw error;
+  }
+
   return { logged: true };
 }
 
