@@ -8,6 +8,30 @@ export function renderComponentStyles() {
       justify-content: start;
     }
 
+    .home-platform-section .home-platform-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: min(100%, 632px);
+    }
+
+    .home-platform-section .platform-card {
+      width: 100%;
+      height: 132px;
+    }
+
+    .home-platform-section .platform-card-link {
+      padding: 26px 22px 22px;
+    }
+
+    .home-platform-section .platform-card-title {
+      font-size: 17px;
+    }
+
+    .home-platform-section .platform-card-description {
+      margin-top: 8px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
     .platform-card {
       width: 215px;
       height: 115px;

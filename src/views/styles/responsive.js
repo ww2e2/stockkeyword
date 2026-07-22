@@ -238,6 +238,18 @@ export function renderResponsiveStyles() {
         justify-items: center;
       }
 
+      .home-platform-section .home-platform-grid {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+
+      .home-platform-section .platform-card {
+        width: 100%;
+        max-width: 320px;
+        height: auto;
+        min-height: 128px;
+      }
+
       .platform-tools-grid,
       .platform-tools-grid.is-two-columns {
         justify-items: stretch;
