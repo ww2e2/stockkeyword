@@ -36,6 +36,7 @@ test('major routes render unique document titles', () => {
     ['/calendar', '\uC6D4\uBCC4 \uC791\uC5C5 \uCE98\uB9B0\uB354 | StockKeyword'],
     ['/calendar/9', '9\uC6D4 \uCD94\uCC9C \uC18C\uC7AC | \uC6D4\uBCC4 \uC791\uC5C5 \uCE98\uB9B0\uB354 | StockKeyword'],
     ['/faq', 'FAQ | StockKeyword'],
+    ['/updates', '\uC5C5\uB370\uC774\uD2B8 | StockKeyword'],
     ['/about', '\uC18C\uAC1C | StockKeyword'],
     ['/privacy', '\uAC1C\uC778\uC815\uBCF4\uCC98\uB9AC\uBC29\uCE68 | StockKeyword'],
     ['/terms', '\uC774\uC6A9\uC57D\uAD00 | StockKeyword'],
@@ -61,6 +62,7 @@ test('document title changes do not alter existing page headings', () => {
     ['/miricanvas/template', '\uD15C\uD50C\uB9BF \uBD84\uC11D'],
     ['/miricanvas/rankings', '\uC774\uBC88 \uB2EC \uC778\uAE30 \uAC80\uC0C9 \uC21C\uC704'],
     ['/calendar', '9\uC6D4 | \uC6D4\uBCC4 \uC791\uC5C5 \uCE98\uB9B0\uB354'],
+    ['/updates', '\uC5C5\uB370\uC774\uD2B8'],
     ['/about', '\uC11C\uBE44\uC2A4 \uC18C\uAC1C | StockKeyword'],
   ]);
 

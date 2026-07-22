@@ -10,7 +10,7 @@ const FAQ_SECTIONS = [
     items: [
       {
         question: 'StockKeyword는 어떤 서비스인가요?',
-        answer: 'StockKeyword는 스톡 콘텐츠 제작자가 미리캔버스, 크라우드픽, 툴디의 검색 흐름을 분석하고 작업용 키워드와 월별 소재를 찾도록 돕는 무료 리서치 도구입니다.',
+        answer: 'StockKeyword는 스톡 콘텐츠 제작자가 미리캔버스와 크라우드픽의 검색 흐름을 분석하고 작업용 키워드와 월별 소재를 찾도록 돕는 무료 리서치 도구입니다.',
       },
       {
         question: '회원가입 없이 사용할 수 있나요?',
@@ -65,25 +65,6 @@ const FAQ_SECTIONS = [
       {
         question: '크라우드픽 검색 결과가 없으면 다른 카테고리로 대체하나요?',
         answer: '아니요. 선택한 카테고리에서 결과가 없으면 0개로 표시하며 다른 카테고리의 결과를 임의로 섞지 않습니다.',
-      },
-    ],
-  },
-  {
-    id: 'tooldi',
-    title: '툴디',
-    description: '툴디 키워드와 템플릿 분석에 관한 질문입니다.',
-    items: [
-      {
-        question: '툴디에서는 어떤 콘텐츠를 분석할 수 있나요?',
-        answer: '사진, 요소와 배경의 키워드를 분석할 수 있으며, 모든 템플릿 검색 결과를 기준으로 기획 키워드, 페이지 수와 상위 제목을 확인할 수 있습니다.',
-      },
-      {
-        question: '툴디 템플릿 분석은 무료 템플릿도 포함하나요?',
-        answer: '아니요. 현재 툴디 템플릿 분석은 유료 사용 대상 템플릿만 수집합니다.',
-      },
-      {
-        question: '툴디 템플릿은 몇 개까지 분석하나요?',
-        answer: '중복을 제거한 유료 템플릿을 최대 20개까지 분석합니다. 20개에 미치지 못하면 실제 수집된 수량만 사용합니다.',
       },
     ],
   },
@@ -179,6 +160,56 @@ function renderContentIntro(title, description) {
   `;
 }
 
+export function renderUpdatesPage() {
+  return `
+    <div class="content-page updates-page">
+      ${renderContentIntro(
+        '서비스 변경 내역',
+        'StockKeyword에 새로 추가되거나 변경된 기능을 날짜별로 안내합니다.',
+      )}
+
+      <article class="content-card content-section update-entry">
+        <header class="update-entry-header">
+          <time class="update-date" datetime="2026-07-22">2026.07.22</time>
+          <h2>서비스 이용 안내 및 플랫폼 정보 개선</h2>
+          <p>처음 방문한 사용자도 분석 방법과 플랫폼별 특징을 쉽게 확인할 수 있도록 안내 영역을 보완했습니다.</p>
+        </header>
+
+        <section class="update-detail-section">
+          <h3>플랫폼 소개 추가</h3>
+          <p>미리캔버스와 크라우드픽 기능 선택 페이지에 플랫폼별 콘텐츠 등록 방식, 지원 콘텐츠 유형과 제공 중인 분석 기능을 확인할 수 있는 소개 영역을 추가했습니다.</p>
+        </section>
+
+        <section class="update-detail-section">
+          <h3>‘처음 사용하시나요?’ 이용 안내 추가</h3>
+          <p>키워드 분석 페이지에 검색어 입력, 콘텐츠 유형 선택, 추천 키워드 확인 및 복사 순서를 단계별로 안내하는 영역을 추가했습니다. 최근 인기 검색어도 함께 확인할 수 있습니다.</p>
+        </section>
+
+        <section class="update-detail-section">
+          <h3>‘한 작품으로 더 많은 플랫폼에 도전하시나요?’ 추가</h3>
+          <p>완성한 작품을 다른 플랫폼에서도 활용할 수 있도록 플랫폼별 수익 방식, 라이선스 형태와 AI 콘텐츠 등록 가능 여부를 확인하고 해당 키워드 분석 페이지로 이동할 수 있는 영역을 추가했습니다.</p>
+        </section>
+
+        <section class="update-detail-section">
+          <h3>툴디 관련 기능 비공개 전환</h3>
+          <p>툴디의 외부 서비스 연동 운영 방침에 따라 툴디 키워드 분석, 템플릿 분석과 월간 인기 검색 순위 기능을 비공개로 전환했습니다. 관련 신규 데이터 수집도 중단했습니다.</p>
+        </section>
+
+        <section class="update-detail-section update-summary-section">
+          <h3>변경사항 요약</h3>
+          <ul class="content-list">
+            <li>플랫폼별 소개 영역 추가</li>
+            <li>처음 사용자를 위한 키워드 분석 방법 안내 추가</li>
+            <li>다른 플랫폼 탐색 및 분석 페이지 이동 영역 추가</li>
+            <li>툴디 관련 기능과 공개 페이지 비공개 전환</li>
+            <li>사이드바에 업데이트 메뉴 추가</li>
+          </ul>
+        </section>
+      </article>
+    </div>
+  `;
+}
+
 export function renderAboutPage() {
   return `
     <div class="content-page">
@@ -192,7 +223,6 @@ export function renderAboutPage() {
         <ul class="content-list">
           <li><strong>미리캔버스:</strong> 요소·사진·배경 키워드, 템플릿 분석, 월간 순위</li>
           <li><strong>크라우드픽:</strong> 카테고리별 키워드 분석, 월간 순위</li>
-          <li><strong>툴디:</strong> 사진·요소·배경 키워드, 유료 템플릿 분석, 월간 순위</li>
           <li><strong>월별 작업 캘린더:</strong> 1월부터 12월까지 대표 소재와 제작 가능한 세부 주제</li>
         </ul>
       </section>

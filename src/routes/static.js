@@ -35,11 +35,6 @@ const SITEMAP_PATHS = [
   '/crowdpic/tag',
   '/crowdpic/rankings',
 
-  '/tooldi',
-  '/tooldi/tag',
-  '/tooldi/template',
-  '/tooldi/rankings',
-
   '/calendar',
   ...Array.from(
     { length: 12 },
@@ -47,6 +42,7 @@ const SITEMAP_PATHS = [
   ),
 
   '/faq',
+  '/updates',
   '/about',
   '/privacy',
   '/terms',

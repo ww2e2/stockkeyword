@@ -61,12 +61,6 @@ export function renderSidebar(activeMenu) {
             href: '/crowdpic',
             label: '크라우드픽',
           })}
-          ${renderSidebarLink({
-            activeMenu,
-            id: 'tooldi',
-            href: '/tooldi',
-            label: '툴디',
-          })}
         </div>
 
         <div class="sidebar-divider" aria-hidden="true"></div>
@@ -88,6 +82,12 @@ export function renderSidebar(activeMenu) {
             id: 'faq',
             href: '/faq',
             label: 'FAQ',
+          })}
+          ${renderSidebarLink({
+            activeMenu,
+            id: 'updates',
+            href: '/updates',
+            label: '업데이트',
           })}
         </div>
 
@@ -120,6 +120,7 @@ export function renderSidebar(activeMenu) {
           })}
         </div>
       </nav>
+
     </aside>
   `;
 }
@@ -145,6 +146,7 @@ export function renderTopbar(title, description) {
             ? `<p class="page-description">${escapeHtml(description)}</p>`
             : ''}
         </div>
+
       </div>
     </header>
   `;
@@ -179,6 +181,7 @@ export function resolveTopbarContent(pathname, opts, documentTitle, description)
     tooldi: '툴디',
     calendar: '월별 작업 캘린더',
     faq: 'FAQ',
+    updates: '업데이트',
     about: '소개',
     privacy: '개인정보처리방침',
     terms: '이용약관',

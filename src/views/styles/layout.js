@@ -14,6 +14,8 @@ export function renderLayoutStyles() {
       height: 100vh;
       padding: 28px 18px;
       overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
       overflow-y: auto;
       background: var(--surface);
       border-right: 1px solid var(--line);
@@ -61,6 +63,12 @@ export function renderLayoutStyles() {
     .sidebar-menu-group {
       display: grid;
       gap: 4px;
+    }
+
+    .sidebar-nav {
+      flex: 1 1 auto;
+      min-height: 0;
+      align-content: start;
     }
 
     .sidebar-link {
@@ -141,6 +149,7 @@ export function renderLayoutStyles() {
 
     .topbar-copy {
       min-width: 0;
+      flex: 1 1 auto;
     }
 
     .page-title {

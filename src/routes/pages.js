@@ -32,6 +32,7 @@ import {
   renderRankingsPage,
   renderTemplateAnalysisPage,
   renderTermsPage,
+  renderUpdatesPage,
 } from '../views/html.js';
 import {
   getPageMeta,
@@ -117,6 +118,27 @@ async function getKeywordResult(config, searchParams) {
   return null;
 }
 
+
+async function getPopularSearches(config, feature) {
+  try {
+    const rankingResult = await getMonthlyRankingResult(config);
+    const rows = feature === 'template'
+      ? rankingResult?.template?.topQueries
+      : rankingResult?.keyword?.topQueries;
+
+    return (Array.isArray(rows) ? rows : [])
+      .map((item) => cleanText(item?.label ?? item?.query ?? item))
+      .filter(Boolean)
+      .slice(0, 3);
+  } catch (error) {
+    console.error(
+      'Failed to load popular searches:',
+      error?.message || String(error),
+    );
+    return [];
+  }
+}
+
 function renderStaticContentPage(pathname, origin, activeMenu, renderer) {
   return htmlPage(pathname, origin, {
     activeMenu,
@@ -150,12 +172,18 @@ async function renderTemplatePage(pathname, origin, requestUrl) {
     requestId: requestUrl.searchParams.get('requestId'),
   });
 
+  const sanitizedResult = sanitizeKeywordResult(result);
+  const popularSearches = sanitizedResult
+    ? []
+    : await getPopularSearches(config, 'template');
+
   return htmlPage(pathname, origin, {
     activeMenu: config.id,
     ...getPageMeta(pathname),
     contentHtml: renderTemplateAnalysisPage(
       config,
-      sanitizeKeywordResult(result),
+      sanitizedResult,
+      { popularSearches },
     ),
   });
 }
@@ -178,6 +206,9 @@ export async function renderPage(pathname, origin, requestUrl) {
   }
   if (pathname === '/faq') {
     return renderStaticContentPage(pathname, origin, 'faq', renderFaqPage);
+  }
+  if (pathname === '/updates') {
+    return renderStaticContentPage(pathname, origin, 'updates', renderUpdatesPage);
   }
   if (pathname === '/about') {
     return renderStaticContentPage(pathname, origin, 'about', renderAboutPage);
@@ -229,10 +260,18 @@ export async function renderPage(pathname, origin, requestUrl) {
       result,
       requestId: requestUrl.searchParams.get('requestId'),
     });
+    const popularSearches = result
+      ? []
+      : await getPopularSearches(keywordPlatformConfig, 'keyword');
+
     return htmlPage(pathname, origin, {
       activeMenu: keywordPlatformConfig.id,
       ...getPageMeta(pathname),
-      contentHtml: renderKeywordAnalysisPage(keywordPlatformConfig, result),
+      contentHtml: renderKeywordAnalysisPage(
+        keywordPlatformConfig,
+        result,
+        { popularSearches },
+      ),
     });
   }
 

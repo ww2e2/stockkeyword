@@ -64,6 +64,11 @@ export function getPageMeta(pathname, date = new Date()) {
       title: 'FAQ | StockKeyword',
       description: 'StockKeyword의 키워드 추천 방식과 플랫폼별 분석 기능을 확인하세요.',
     },
+    '/updates': {
+      title: '업데이트 | StockKeyword',
+      topbarTitle: '업데이트',
+      description: 'StockKeyword의 새로운 기능과 서비스 변경 내용을 확인하세요.',
+    },
     '/about': {
       title: '소개 | StockKeyword',
       topbarTitle: '서비스 소개 | StockKeyword',

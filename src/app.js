@@ -12,11 +12,25 @@ function cleanText(value) {
   return String(value ?? '').trim();
 }
 
+function isTooldiPath(pathname) {
+  const normalizedPath = cleanText(pathname).toLowerCase();
+  return normalizedPath === '/tooldi' || normalizedPath.startsWith('/tooldi/');
+}
+
 export async function requestHandler(req, res) {
   try {
     const protocol = cleanText(req.headers['x-forwarded-proto']) || 'http';
     const host = cleanText(req.headers.host) || 'localhost';
     const requestUrl = new URL(req.url, `${protocol}://${host}`);
+
+    if (
+      (req.method === 'GET' || req.method === 'HEAD')
+      && isTooldiPath(requestUrl.pathname)
+    ) {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end(req.method === 'HEAD' ? undefined : 'not found');
+      return;
+    }
 
     if (req.method === 'GET' && requestUrl.pathname === '/ads.txt') {
       if (!serveAdsTxt(res)) {

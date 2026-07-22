@@ -129,11 +129,6 @@ export function renderHomePage(date = new Date()) {
             '키워드 분석 · 월간 순위',
             '/crowdpic',
           )}
-          ${renderPlatformCard(
-            '툴디',
-            '키워드 분석 · 템플릿 분석 · 월간 순위',
-            '/tooldi',
-          )}
         </div>
       </section>
 
@@ -182,6 +177,33 @@ function getPlatformId(config = {}) {
   return '';
 }
 
+function renderPlatformOverview(config = {}) {
+  const overview = config?.overview || {};
+  const items = toArray(overview?.items);
+
+  if (!items.length) return '';
+
+  return `
+    <section class="platform-overview-section">
+      ${renderSectionHeader(
+        overview?.title || `${config?.name || '플랫폼'} 소개`,
+        overview?.description || '',
+      )}
+
+      <div class="platform-overview-card">
+        <div class="platform-overview-grid">
+          ${items.map((item) => `
+            <div class="platform-overview-item">
+              <h3>${escapeHtml(item?.title || '')}</h3>
+              <p>${escapeHtml(item?.description || '')}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 export function renderPlatformPage(config = {}) {
   const platformId = getPlatformId(config);
 
@@ -189,46 +211,46 @@ export function renderPlatformPage(config = {}) {
     miricanvas: [
       {
         label: '키워드 분석',
-        description: '검색어에서 실시간 키워드를 추출합니다.',
+        description: '검색어를 입력하면 상위 작품의 키워드를 분석해 추천합니다.',
         href: '/miricanvas/tag',
       },
       {
         label: '템플릿 분석',
-        description: '상위 템플릿의 키워드와 구성 흐름을 분석합니다.',
+        description: '상위 템플릿의 제목과 키워드 구성을 분석합니다.',
         href: '/miricanvas/template',
       },
       {
         label: '이번 달 인기 검색 순위',
-        description: '이번 달 누적 검색어와 콘텐츠 유형 순위를 확인합니다.',
+        description: '이번 달 인기 검색어와 콘텐츠 유형 순위를 확인합니다.',
         href: '/miricanvas/rankings',
       },
     ],
     crowdpic: [
       {
         label: '키워드 분석',
-        description: '검색어에 맞는 크라우드픽 키워드를 추출합니다.',
+        description: '검색어를 입력하면 상위 작품의 키워드를 분석해 추천합니다.',
         href: '/crowdpic/tag',
       },
       {
         label: '이번 달 인기 검색 순위',
-        description: '이번 달 누적 검색어와 콘텐츠 유형 순위를 확인합니다.',
+        description: '이번 달 인기 검색어와 콘텐츠 유형 순위를 확인합니다.',
         href: '/crowdpic/rankings',
       },
     ],
     tooldi: [
       {
         label: '키워드 분석',
-        description: '검색어에서 실시간 키워드를 추출합니다.',
+        description: '검색어를 입력하면 상위 콘텐츠의 키워드를 분석해 추천합니다.',
         href: '/tooldi/tag',
       },
       {
         label: '템플릿 분석',
-        description: '툴디 템플릿의 키워드 흐름을 분석합니다.',
+        description: '상위 템플릿의 제목과 기획 키워드를 분석합니다.',
         href: '/tooldi/template',
       },
       {
         label: '이번 달 인기 검색 순위',
-        description: '이번 달 누적 검색어와 템플릿 순위를 확인합니다.',
+        description: '이번 달 인기 검색어와 템플릿 순위를 확인합니다.',
         href: '/tooldi/rankings',
       },
     ],
@@ -236,6 +258,7 @@ export function renderPlatformPage(config = {}) {
 
   const configuredTools = toArray(config?.tools);
   const tools = platformTools[platformId] || configuredTools;
+  const gridClass = tools.length === 2 ? ' is-two-columns' : '';
 
   const cards = tools
     .map((tool) => renderPlatformCard(
@@ -252,10 +275,12 @@ export function renderPlatformPage(config = {}) {
           '기능 선택',
           config?.summary || '원하는 기능을 선택하세요.',
         )}
-        <div class="home-platform-grid platform-tools-grid">
+        <div class="home-platform-grid platform-tools-grid${gridClass}">
           ${cards || '<p class="empty-state">사용 가능한 기능이 없습니다.</p>'}
         </div>
       </section>
+
+      ${renderPlatformOverview(config)}
     </div>
   `;
 }

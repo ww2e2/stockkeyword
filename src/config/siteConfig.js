@@ -4,7 +4,7 @@ export const SITE_INFO = {
   serviceName: 'StockKeyword',
   siteUrl: 'https://www.stockkeyword.com',
   contactEmail: 'contact@stockkeyword.com',
-  policyEffectiveDate: '2026-07-13',
+  policyEffectiveDate: '2026-07-17',
 };
 
 export const PLATFORM_CONFIGS = {
@@ -20,6 +20,30 @@ export const PLATFORM_CONFIGS = {
     keywordPageTitle: '키워드 분석',
     keywordPageDescription: '미리캔버스에서 실시간으로 키워드를 추출합니다',
     rankingFeatures: { keyword: true, template: true },
+    promotion: {
+      logoUrl: 'https://www.google.com/s2/favicons?sz=256&domain=miricanvas.com',
+      logoFallback: '미',
+      displayOrder: 1,
+      descriptions: {
+        keyword: '디자인 제작 과정에서 활용되는 요소·사진·배경을 등록해 작업물이 다양한 사용자에게 사용될 기회를 넓힐 수 있습니다.',
+        template: '다양한 템플릿 유형을 제공하는 디자인 도구형 플랫폼으로, 기존 디자인 작업의 활용 범위를 넓힐 수 있습니다.',
+      },
+      badges: [
+        { label: '디자인 사용형', tone: 'brand' },
+        { label: 'AI 콘텐츠 등록 가능', tone: 'positive' },
+      ],
+      sponsorship: { enabled: false, priority: 0 },
+    },
+    overview: {
+      title: '미리캔버스 소개',
+      description: '미리캔버스 기여자 활동에 필요한 핵심 특징을 확인하세요.',
+      items: [
+        { title: '디자인 사용형', description: '작품이 디자인 제작에 사용될 때 수익 기회를 만들 수 있습니다.' },
+        { title: 'AI 콘텐츠 등록 가능', description: 'AI로 생성한 콘텐츠도 정책에 맞춰 등록할 수 있습니다.' },
+        { title: '요소·사진·배경 등록', description: '다양한 콘텐츠 유형으로 작업물을 등록할 수 있습니다.' },
+        { title: '템플릿 분석 지원', description: '상위 템플릿의 제목과 키워드 흐름을 함께 확인할 수 있습니다.' },
+      ],
+    },
     features: [
       { title: '키워드 분석', href: '/miricanvas/tag', description: '검색에서 실시간 키워드를 추출합니다.' },
       { title: '템플릿 분석', href: '/miricanvas/template', description: '템플릿 흐름과 제목 패턴을 확인합니다.' },
@@ -60,6 +84,29 @@ export const PLATFORM_CONFIGS = {
     keywordPageTitle: '키워드 분석',
     keywordPageDescription: '크라우드픽에서 실시간으로 키워드를 추출합니다',
     rankingFeatures: { keyword: true, template: false },
+    promotion: {
+      logoUrl: 'https://www.google.com/s2/favicons?sz=256&domain=crowdpic.net',
+      logoFallback: '크',
+      displayOrder: 2,
+      descriptions: {
+        keyword: '완성한 사진과 일러스트를 건별 라이선스 방식으로 판매해 디자인 도구형 플랫폼과 다른 수익원을 만들 수 있습니다.',
+      },
+      badges: [
+        { label: '건별 라이선스형', tone: 'brand' },
+        { label: 'AI 업로드 불가', tone: 'negative' },
+      ],
+      sponsorship: { enabled: false, priority: 0 },
+    },
+    overview: {
+      title: '크라우드픽 소개',
+      description: '크라우드픽 기여자 활동에 필요한 핵심 특징을 확인하세요.',
+      items: [
+        { title: '건별 라이선스형', description: '완성된 작품이 판매될 때 건별 수익을 얻는 방식입니다.' },
+        { title: 'AI 업로드 불가', description: '공식 업로드 정책에 따라 AI 생성 이미지는 등록할 수 없습니다.' },
+        { title: '다양한 작품 유형', description: '사진·일러스트·캘리그라피·아이콘·목업을 등록할 수 있습니다.' },
+        { title: '키워드·월간 순위', description: '작품 키워드와 이번 달 검색 흐름을 함께 확인할 수 있습니다.' },
+      ],
+    },
     features: [
       { title: '키워드 분석', href: '/crowdpic/tag', description: '크라우드픽 결과를 분석합니다.' },
       { title: '이번 달 인기 검색 순위', href: '/crowdpic/rankings', description: '이번 달 검색 흐름을 확인합니다.' },
@@ -84,6 +131,30 @@ export const PLATFORM_CONFIGS = {
     keywordPageTitle: '키워드 분석',
     keywordPageDescription: '툴디에서 실시간으로 키워드를 추출합니다',
     rankingFeatures: { keyword: true, template: true },
+    promotion: {
+      logoUrl: 'https://www.google.com/s2/favicons?sz=256&domain=tooldi.com',
+      logoFallback: '툴',
+      displayOrder: 3,
+      descriptions: {
+        keyword: '디자인 제작에 사용되는 요소·사진·배경을 등록해 작업물이 활용될 때마다 수익 기회를 만들 수 있습니다.',
+        template: '미리캔버스와 비슷한 디자인 도구형 플랫폼으로, 템플릿과 기존 디자인 작업을 다른 사용자층까지 확장할 수 있습니다.',
+      },
+      badges: [
+        { label: '디자인 사용형', tone: 'brand' },
+        { label: 'AI 콘텐츠 등록 가능', tone: 'positive' },
+      ],
+      sponsorship: { enabled: false, priority: 0 },
+    },
+    overview: {
+      title: '툴디 소개',
+      description: '툴디 크리에이터 활동에 필요한 핵심 특징을 확인하세요.',
+      items: [
+        { title: '디자인 사용형', description: '작품이 디자인 제작에 활용될 때 수익 기회를 만들 수 있습니다.' },
+        { title: 'AI 콘텐츠 등록 가능', description: 'AI 콘텐츠를 정책에 맞는 유형으로 등록할 수 있습니다.' },
+        { title: '요소·사진·배경 등록', description: '디자인 제작에 활용되는 다양한 콘텐츠를 등록할 수 있습니다.' },
+        { title: '템플릿 분석 지원', description: '상위 템플릿의 제목과 기획 키워드를 함께 확인할 수 있습니다.' },
+      ],
+    },
     features: [
       { title: '키워드 분석', href: '/tooldi/tag', description: '툴디 추출 결과를 분석합니다.' },
       { title: '템플릿 분석', href: '/tooldi/template', description: '유료 템플릿의 기획 키워드와 제목을 분석합니다.' },
@@ -94,8 +165,8 @@ export const PLATFORM_CONFIGS = {
       buttonLabel: '\uBD84\uC11D\uD558\uAE30',
       contentTypeLabel: '\uCE74\uD14C\uACE0\uB9AC',
       contentTypes: [
-        { label: '\uC0AC\uC9C4', value: 'picture' },
         { label: '\uC694\uC18C', value: 'shape' },
+        { label: '\uC0AC\uC9C4', value: 'picture' },
         { label: '\uBC30\uACBD', value: 'background' },
       ],
     },

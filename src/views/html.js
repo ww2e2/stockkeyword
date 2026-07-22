@@ -5,7 +5,7 @@ import { escapeHtml } from './viewUtils.js';
 
 export { renderHomePage, renderMonthlyTopics, renderPlatformPage } from './pages/home.js';
 export { renderKeywordAnalysisPage, renderTemplateAnalysisPage } from './pages/analysis.js';
-export { renderFaqPage, renderAboutPage, renderPrivacyPage, renderTermsPage, renderContactPage } from './pages/content.js';
+export { renderFaqPage, renderUpdatesPage, renderAboutPage, renderPrivacyPage, renderTermsPage, renderContactPage } from './pages/content.js';
 export { renderRankingsPage } from './pages/rankings.js';
 export { renderCalendarPage } from './pages/calendar.js';
 
