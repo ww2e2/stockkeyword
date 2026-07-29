@@ -31,10 +31,6 @@ const SITEMAP_PATHS = [
   '/miricanvas/template',
   '/miricanvas/rankings',
 
-  '/crowdpic',
-  '/crowdpic/tag',
-  '/crowdpic/rankings',
-
   '/calendar',
   ...Array.from(
     { length: 12 },

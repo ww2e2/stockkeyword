@@ -73,7 +73,7 @@ test('한국 시간 기준으로 현재 월을 계산한다', () => {
   );
 });
 test('모든 공통 페이지에 GTM 컨테이너만 한 번씩 렌더링한다', () => {
-  const paths = ['/', '/calendar', '/miricanvas', '/crowdpic', '/tooldi'];
+  const paths = ['/', '/calendar', '/miricanvas', '/tooldi'];
 
   for (const pathname of paths) {
     const pageHtml = htmlPage(pathname, 'http://localhost:3000', {

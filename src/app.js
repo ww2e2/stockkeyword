@@ -12,9 +12,13 @@ function cleanText(value) {
   return String(value ?? '').trim();
 }
 
-function isTooldiPath(pathname) {
+const DISABLED_PLATFORM_PATHS = ['/crowdpic', '/tooldi'];
+
+function isDisabledPlatformPath(pathname) {
   const normalizedPath = cleanText(pathname).toLowerCase();
-  return normalizedPath === '/tooldi' || normalizedPath.startsWith('/tooldi/');
+  return DISABLED_PLATFORM_PATHS.some((basePath) => (
+    normalizedPath === basePath || normalizedPath.startsWith(`${basePath}/`)
+  ));
 }
 
 export async function requestHandler(req, res) {
@@ -25,7 +29,7 @@ export async function requestHandler(req, res) {
 
     if (
       (req.method === 'GET' || req.method === 'HEAD')
-      && isTooldiPath(requestUrl.pathname)
+      && isDisabledPlatformPath(requestUrl.pathname)
     ) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end(req.method === 'HEAD' ? undefined : 'not found');

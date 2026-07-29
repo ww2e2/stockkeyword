@@ -55,12 +55,6 @@ export function renderSidebar(activeMenu) {
             href: '/miricanvas',
             label: '미리캔버스',
           })}
-          ${renderSidebarLink({
-            activeMenu,
-            id: 'crowdpic',
-            href: '/crowdpic',
-            label: '크라우드픽',
-          })}
         </div>
 
         <div class="sidebar-divider" aria-hidden="true"></div>
@@ -177,7 +171,6 @@ export function resolveTopbarContent(pathname, opts, documentTitle, description)
   const fallbackTitles = {
     home: '작업 홈',
     miricanvas: '미리캔버스',
-    crowdpic: '크라우드픽',
     tooldi: '툴디',
     calendar: '월별 작업 캘린더',
     faq: 'FAQ',

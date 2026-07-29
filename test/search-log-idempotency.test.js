@@ -25,7 +25,6 @@ test('each supported search type inserts once for a duplicated request', async (
   const cases = [
     ['miricanvas', 'keyword'],
     ['miricanvas', 'template'],
-    ['crowdpic', 'keyword'],
     ['tooldi', 'keyword'],
     ['tooldi', 'template'],
   ];

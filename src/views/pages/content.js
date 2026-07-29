@@ -10,7 +10,7 @@ const FAQ_SECTIONS = [
     items: [
       {
         question: 'StockKeyword는 어떤 서비스인가요?',
-        answer: 'StockKeyword는 스톡 콘텐츠 제작자가 미리캔버스와 크라우드픽의 검색 흐름을 분석하고 작업용 키워드와 월별 소재를 찾도록 돕는 무료 리서치 도구입니다.',
+        answer: 'StockKeyword는 스톡 콘텐츠 제작자가 미리캔버스의 검색 흐름을 분석하고 작업용 키워드와 월별 소재를 찾도록 돕는 무료 리서치 도구입니다.',
       },
       {
         question: '회원가입 없이 사용할 수 있나요?',
@@ -46,25 +46,6 @@ const FAQ_SECTIONS = [
       {
         question: '미리캔버스 템플릿의 페이지 수는 어떻게 계산하나요?',
         answer: '분석 대상 템플릿의 실제 페이지 수를 같은 값끼리 합산하고 전체 템플릿에서 차지하는 비율을 함께 표시합니다.',
-      },
-    ],
-  },
-  {
-    id: 'crowdpic',
-    title: '크라우드픽',
-    description: '크라우드픽 키워드 분석에 관한 질문입니다.',
-    items: [
-      {
-        question: '크라우드픽에서는 어떤 카테고리를 분석할 수 있나요?',
-        answer: '전체, 사진, 일러스트, 캘리그라피, 아이콘과 목업 카테고리를 선택해 검색 결과의 키워드를 분석할 수 있습니다.',
-      },
-      {
-        question: '크라우드픽 추천 키워드가 검색마다 달라질 수 있나요?',
-        answer: '네. 크라우드픽의 실시간 검색 결과와 작품 등록 상태가 달라지면 수집되는 키워드와 추천 순서도 달라질 수 있습니다.',
-      },
-      {
-        question: '크라우드픽 검색 결과가 없으면 다른 카테고리로 대체하나요?',
-        answer: '아니요. 선택한 카테고리에서 결과가 없으면 0개로 표시하며 다른 카테고리의 결과를 임의로 섞지 않습니다.',
       },
     ],
   },
@@ -177,7 +158,7 @@ export function renderUpdatesPage() {
 
         <section class="update-detail-section">
           <h3>플랫폼 소개 추가</h3>
-          <p>미리캔버스와 크라우드픽 기능 선택 페이지에 플랫폼별 콘텐츠 등록 방식, 지원 콘텐츠 유형과 제공 중인 분석 기능을 확인할 수 있는 소개 영역을 추가했습니다.</p>
+          <p>미리캔버스 기능 선택 페이지에 콘텐츠 등록 방식, 지원 콘텐츠 유형과 제공 중인 분석 기능을 확인할 수 있는 소개 영역을 추가했습니다.</p>
         </section>
 
         <section class="update-detail-section">
@@ -222,7 +203,6 @@ export function renderAboutPage() {
         <h2>현재 지원 기능</h2>
         <ul class="content-list">
           <li><strong>미리캔버스:</strong> 요소·사진·배경 키워드, 템플릿 분석, 월간 순위</li>
-          <li><strong>크라우드픽:</strong> 카테고리별 키워드 분석, 월간 순위</li>
           <li><strong>월별 작업 캘린더:</strong> 1월부터 12월까지 대표 소재와 제작 가능한 세부 주제</li>
         </ul>
       </section>

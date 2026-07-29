@@ -5,7 +5,7 @@ import { requestHandler } from '../src/app.js';
 import { htmlPage } from '../src/views/html.js';
 
 test('all common pages render one AdSense account and script', () => {
-  const paths = ['/', '/calendar', '/miricanvas', '/crowdpic', '/tooldi'];
+  const paths = ['/', '/calendar', '/miricanvas', '/tooldi'];
 
   for (const pathname of paths) {
     const pageHtml = htmlPage(pathname, 'http://localhost:3000');

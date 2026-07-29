@@ -69,55 +69,6 @@ export const PLATFORM_CONFIGS = {
       ],
     },
   },
-  crowdpic: {
-    contentTypeOptions: [
-      { value: 'all', label: '전체', inputValue: '전체' },
-      { value: 'photo', label: '사진', inputValue: '사진' },
-      { value: 'graphic', label: '일러스트', inputValue: '일러스트' },
-      { value: 'calli', label: '캘리그라피', inputValue: '캘리그라피' },
-      { value: 'icon', label: '아이콘', inputValue: '아이콘' },
-      { value: 'mockup', label: '목업', inputValue: '목업' },
-    ],
-    id: 'crowdpic',
-    name: '크라우드픽',
-    description: '크라우드픽에 필요한 분석 기능을 빠르게 확인합니다.',
-    keywordPageTitle: '키워드 분석',
-    keywordPageDescription: '크라우드픽에서 실시간으로 키워드를 추출합니다',
-    rankingFeatures: { keyword: true, template: false },
-    promotion: {
-      logoUrl: 'https://www.google.com/s2/favicons?sz=256&domain=crowdpic.net',
-      logoFallback: '크',
-      displayOrder: 2,
-      descriptions: {
-        keyword: '완성한 사진과 일러스트를 건별 라이선스 방식으로 판매해 디자인 도구형 플랫폼과 다른 수익원을 만들 수 있습니다.',
-      },
-      badges: [
-        { label: '건별 라이선스형', tone: 'brand' },
-        { label: 'AI 업로드 불가', tone: 'negative' },
-      ],
-      sponsorship: { enabled: false, priority: 0 },
-    },
-    overview: {
-      title: '크라우드픽 소개',
-      description: '크라우드픽 기여자 활동에 필요한 핵심 특징을 확인하세요.',
-      items: [
-        { title: '건별 라이선스형', description: '완성된 작품이 판매될 때 건별 수익을 얻는 방식입니다.' },
-        { title: 'AI 업로드 불가', description: '공식 업로드 정책에 따라 AI 생성 이미지는 등록할 수 없습니다.' },
-        { title: '다양한 작품 유형', description: '사진·일러스트·캘리그라피·아이콘·목업을 등록할 수 있습니다.' },
-        { title: '키워드·월간 순위', description: '작품 키워드와 이번 달 검색 흐름을 함께 확인할 수 있습니다.' },
-      ],
-    },
-    features: [
-      { title: '키워드 분석', href: '/crowdpic/tag', description: '크라우드픽 결과를 분석합니다.' },
-      { title: '이번 달 인기 검색 순위', href: '/crowdpic/rankings', description: '이번 달 검색 흐름을 확인합니다.' },
-    ],
-    searchOptions: {
-      placeholder: '예) 여행',
-      buttonLabel: '분석하기',
-      contentTypeLabel: '카테고리',
-      contentTypes: ['전체', '사진', '일러스트', '캘리그라피', '아이콘', '목업'],
-    },
-  },
   tooldi: {
     contentTypeOptions: [
       { value: 'all', label: '전체', inputValue: '전체' },
@@ -184,7 +135,6 @@ export const PLATFORM_CONFIGS = {
 export const PLATFORM_MENU = [
   { key: 'home', label: '홈', href: '/' },
   { key: 'miricanvas', label: '미리캔버스', href: '/miricanvas' },
-  { key: 'crowdpic', label: '크라우드픽', href: '/crowdpic' },
   { key: 'tooldi', label: '툴디', href: '/tooldi' },
   { key: 'calendar', label: '월별 작업 캘린더', href: '/calendar' },
 ];

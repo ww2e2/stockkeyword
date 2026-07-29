@@ -134,7 +134,6 @@ export function getPageMeta(pathname, date = new Date()) {
 
   const platformFallbacks = [
     ['miricanvas', '미리캔버스'],
-    ['crowdpic', '크라우드픽'],
     ['tooldi', '툴디'],
   ];
   const fallback = platformFallbacks.find(([id]) => pathname.startsWith(`/${id}`));

@@ -4,7 +4,6 @@ import {
   getMonthLabel,
   getMonthTopic,
 } from '../config/siteConfig.js';
-import { getCrowdpicKeywordResult } from '../services/crowdpic.js';
 import {
   getMiricanvasKeywordResult,
   getMiricanvasTemplateResult,
@@ -113,7 +112,6 @@ async function getKeywordResult(config, searchParams) {
   };
 
   if (config.id === 'miricanvas') return getMiricanvasKeywordResult(input);
-  if (config.id === 'crowdpic') return getCrowdpicKeywordResult(input);
   if (config.id === 'tooldi') return getTooldiKeywordResult(input);
   return null;
 }

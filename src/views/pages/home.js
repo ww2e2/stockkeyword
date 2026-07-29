@@ -124,11 +124,6 @@ export function renderHomePage(date = new Date()) {
             '키워드 분석 · 템플릿 분석 · 월간 순위',
             '/miricanvas',
           )}
-          ${renderPlatformCard(
-            '크라우드픽',
-            '키워드 분석 · 월간 순위',
-            '/crowdpic',
-          )}
         </div>
       </section>
 
@@ -166,9 +161,6 @@ function getPlatformId(config = {}) {
     return 'miricanvas';
   }
 
-  if (source.includes('크라우드픽') || source.includes('crowdpic')) {
-    return 'crowdpic';
-  }
 
   if (source.includes('툴디') || source.includes('tooldi')) {
     return 'tooldi';
@@ -223,18 +215,6 @@ export function renderPlatformPage(config = {}) {
         label: '이번 달 인기 검색 순위',
         description: '이번 달 인기 검색어와 콘텐츠 유형 순위를 확인합니다.',
         href: '/miricanvas/rankings',
-      },
-    ],
-    crowdpic: [
-      {
-        label: '키워드 분석',
-        description: '검색어를 입력하면 상위 작품의 키워드를 분석해 추천합니다.',
-        href: '/crowdpic/tag',
-      },
-      {
-        label: '이번 달 인기 검색 순위',
-        description: '이번 달 인기 검색어와 콘텐츠 유형 순위를 확인합니다.',
-        href: '/crowdpic/rankings',
       },
     ],
     tooldi: [
