@@ -20,7 +20,7 @@ function createResponse() {
   };
 }
 
-test('/updates renders the sidebar menu and July 22 update details', async () => {
+test('/updates renders the Crowdpic shutdown notice and previous update details', async () => {
   const response = createResponse();
 
   await requestHandler({
@@ -32,6 +32,11 @@ test('/updates renders the sidebar menu and July 22 update details', async () =>
   assert.equal(response.statusCode, 200);
   assert.match(response.body, /href="\/updates"/);
   assert.match(response.body, /aria-current="page"/);
+  assert.match(response.body, /2026\.07\.29/);
+  assert.match(response.body, /크라우드픽 관련 서비스 종료 안내/);
+  assert.match(response.body, /크라우드픽 관련 기능 종료/);
+  assert.match(response.body, /공개 메뉴 및 페이지 비활성화/);
+  assert.match(response.body, /관련 신규 데이터 수집 중단/);
   assert.match(response.body, /2026\.07\.22/);
   assert.match(response.body, /서비스 이용 안내 및 플랫폼 정보 개선/);
   assert.match(response.body, /처음 사용하시나요/);

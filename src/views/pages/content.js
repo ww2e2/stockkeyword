@@ -151,6 +151,35 @@ export function renderUpdatesPage() {
 
       <article class="content-card content-section update-entry">
         <header class="update-entry-header">
+          <time class="update-date" datetime="2026-07-29">2026.07.29</time>
+          <h2>크라우드픽 관련 서비스 종료 안내</h2>
+          <p>크라우드픽 운영 정책 확인 결과에 따라 StockKeyword에서 제공하던 크라우드픽 관련 기능과 안내 페이지의 운영을 종료했습니다.</p>
+        </header>
+
+        <section class="update-detail-section">
+          <h3>크라우드픽 관련 기능 종료</h3>
+          <p>크라우드픽 키워드 분석과 월간 인기 검색 순위 기능을 종료했으며, 관련 신규 데이터 수집도 중단했습니다.</p>
+        </section>
+
+        <section class="update-detail-section">
+          <h3>공개 메뉴 및 페이지 비활성화</h3>
+          <p>홈페이지와 사이드바에서 크라우드픽 항목을 제거하고, 크라우드픽 관련 공개 페이지와 직접 접근 URL을 비활성화했습니다.</p>
+        </section>
+
+        <section class="update-detail-section update-summary-section">
+          <h3>변경사항 요약</h3>
+          <ul class="content-list">
+            <li>크라우드픽 키워드 분석 기능 종료</li>
+            <li>크라우드픽 월간 인기 검색 순위 기능 종료</li>
+            <li>홈페이지와 사이드바의 크라우드픽 항목 제거</li>
+            <li>크라우드픽 관련 공개 페이지 및 URL 비활성화</li>
+            <li>관련 신규 데이터 수집 중단</li>
+          </ul>
+        </section>
+      </article>
+
+      <article class="content-card content-section update-entry">
+        <header class="update-entry-header">
           <time class="update-date" datetime="2026-07-22">2026.07.22</time>
           <h2>서비스 이용 안내 및 플랫폼 정보 개선</h2>
           <p>처음 방문한 사용자도 분석 방법과 플랫폼별 특징을 쉽게 확인할 수 있도록 안내 영역을 보완했습니다.</p>
