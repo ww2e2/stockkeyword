@@ -80,8 +80,55 @@ export function renderComponentStyles() {
       line-height: 1.45;
     }
 
+    .home-service-notice {
+      width: min(100%, 760px);
+      padding: 36px;
+      background: var(--surface);
+      border: 1px solid rgba(49, 87, 213, 0.28);
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(20, 27, 45, 0.06);
+    }
+
+    .home-service-notice-label {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      color: var(--brand);
+      background: var(--brand-soft);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .home-service-notice h2 {
+      margin: 16px 0 0;
+      font-size: 24px;
+      line-height: 1.35;
+      letter-spacing: -0.035em;
+    }
+
+    .home-service-notice p {
+      margin: 10px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .home-service-notice-link {
+      display: inline-flex;
+      margin-top: 22px;
+      color: var(--brand);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .home-service-notice-link:hover {
+      color: var(--brand-strong);
+    }
+
     .home-page > .monthly-topics-section {
-      margin-top: 108px;
+      margin-top: 72px;
     }
 
     .monthly-topics-grid {

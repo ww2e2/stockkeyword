@@ -4,7 +4,7 @@ export const SITE_INFO = {
   serviceName: 'StockKeyword',
   siteUrl: 'https://www.stockkeyword.com',
   contactEmail: 'contact@stockkeyword.com',
-  policyEffectiveDate: '2026-07-17',
+  policyEffectiveDate: '2026-08-05',
 };
 
 export const PLATFORM_CONFIGS = {
@@ -134,8 +134,6 @@ export const PLATFORM_CONFIGS = {
 
 export const PLATFORM_MENU = [
   { key: 'home', label: '홈', href: '/' },
-  { key: 'miricanvas', label: '미리캔버스', href: '/miricanvas' },
-  { key: 'tooldi', label: '툴디', href: '/tooldi' },
   { key: 'calendar', label: '월별 작업 캘린더', href: '/calendar' },
 ];
 

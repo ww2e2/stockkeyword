@@ -26,8 +26,8 @@ export function getPlatformConfigForPage(pathname, pageName) {
 export function getPageMeta(pathname, date = new Date()) {
   if (pathname === '/') {
     return {
-      title: 'StockKeyword | 홈',
-      description: '스톡 작가를 위한 키워드와 월별 소재를 정리합니다.',
+      title: 'StockKeyword | 서비스 안내',
+      description: '플랫폼 기능 지원 종료와 서비스 변경 사항을 안내합니다.',
     };
   }
 
@@ -62,7 +62,7 @@ export function getPageMeta(pathname, date = new Date()) {
   const staticMeta = {
     '/faq': {
       title: 'FAQ | StockKeyword',
-      description: 'StockKeyword의 키워드 추천 방식과 플랫폼별 분석 기능을 확인하세요.',
+      description: 'StockKeyword의 현재 운영 상태와 월별 작업 캘린더 이용 방법을 확인하세요.',
     },
     '/updates': {
       title: '업데이트 | StockKeyword',
@@ -72,15 +72,15 @@ export function getPageMeta(pathname, date = new Date()) {
     '/about': {
       title: '소개 | StockKeyword',
       topbarTitle: '서비스 소개 | StockKeyword',
-      description: '스톡 작가를 위한 키워드·템플릿 리서치 도구 StockKeyword를 소개합니다.',
+      description: 'StockKeyword의 현재 운영 범위와 서비스 변경 사항을 안내합니다.',
     },
     '/privacy': {
       title: '개인정보처리방침 | StockKeyword',
-      description: 'StockKeyword의 개인정보 처리와 이용 기록 관리 기준을 안내합니다.',
+      description: 'StockKeyword의 개인정보 처리와 사이트 이용 기록 관리 기준을 안내합니다.'
     },
     '/privacy-policy': {
       title: '개인정보처리방침 | StockKeyword',
-      description: 'StockKeyword의 개인정보 처리와 이용 기록 관리 기준을 안내합니다.',
+      description: 'StockKeyword의 개인정보 처리와 사이트 이용 기록 관리 기준을 안내합니다.'
     },
     '/terms': {
       title: '이용약관 | StockKeyword',
@@ -92,7 +92,7 @@ export function getPageMeta(pathname, date = new Date()) {
     },
     '/contact': {
       title: '문의 | StockKeyword',
-      description: 'StockKeyword 오류 제보, 기능 제안과 제휴 문의 방법을 안내합니다.',
+      description: 'StockKeyword 서비스 변경과 개인정보 관련 문의 방법을 안내합니다.'
     },
   };
 

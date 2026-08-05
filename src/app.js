@@ -12,7 +12,14 @@ function cleanText(value) {
   return String(value ?? '').trim();
 }
 
-const DISABLED_PLATFORM_PATHS = ['/crowdpic', '/tooldi'];
+const DISABLED_PLATFORM_PATHS = [
+  '/crowdpic',
+  '/tooldi',
+  '/miricanvas',
+  '/tag',
+  '/result',
+  '/template',
+];
 
 function isDisabledPlatformPath(pathname) {
   const normalizedPath = cleanText(pathname).toLowerCase();

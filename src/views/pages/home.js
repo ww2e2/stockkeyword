@@ -4,7 +4,7 @@ import {
   getMonthTopic,
   getStockWorkPeriod,
 } from '../../config/siteConfig.js';
-import { renderPlatformCard, renderSectionHeader } from '../viewComponents.js';
+import { renderSectionHeader } from '../viewComponents.js';
 import { escapeHtml, toArray } from '../viewUtils.js';
 
 function renderMonthNavigation(month) {
@@ -115,16 +115,12 @@ export function renderHomePage(date = new Date()) {
 
   return `
     <div class="home-page">
-      <section class="home-platform-section">
-        ${renderSectionHeader('플랫폼 바로가기')}
-
-        <div class="home-platform-grid">
-          ${renderPlatformCard(
-            '미리캔버스',
-            '키워드 분석 · 템플릿 분석 · 월간 순위',
-            '/miricanvas',
-          )}
-        </div>
+      <section class="home-service-notice" aria-labelledby="service-notice-title">
+        <span class="home-service-notice-label">서비스 안내</span>
+        <h2 id="service-notice-title">플랫폼 관련 기능 지원 종료 안내</h2>
+        <p>플랫폼 정책상 앞으로는 관련 기능 지원이 어려울 것 같습니다.</p>
+        <p>키워드 분석, 템플릿 분석, 월간 인기 검색 순위와 관련 URL을 모두 비활성화했으며 신규 데이터 수집도 중단했습니다.</p>
+        <a class="home-service-notice-link" href="/updates">자세한 변경 내용 확인하기 →</a>
       </section>
 
       ${renderMonthlyTopics({
@@ -132,135 +128,10 @@ export function renderHomePage(date = new Date()) {
         title: '이번 달 추천 소재',
         description: '이번 달 스톡 작업에 활용하기 좋은 소재',
       })}
-
     </div>
   `;
 }
 
-function getPlatformId(config = {}) {
-  const directId =
-    config.id ||
-    config.slug ||
-    config.key ||
-    config.platform ||
-    config.code ||
-    '';
-
-  if (directId) {
-    return String(directId).toLowerCase();
-  }
-
-  const source = String(
-    config.title ||
-    config.name ||
-    config.label ||
-    '',
-  ).toLowerCase();
-
-  if (source.includes('미리캔버스') || source.includes('miricanvas')) {
-    return 'miricanvas';
-  }
-
-
-  if (source.includes('툴디') || source.includes('tooldi')) {
-    return 'tooldi';
-  }
-
+export function renderPlatformPage() {
   return '';
-}
-
-function renderPlatformOverview(config = {}) {
-  const overview = config?.overview || {};
-  const items = toArray(overview?.items);
-
-  if (!items.length) return '';
-
-  return `
-    <section class="platform-overview-section">
-      ${renderSectionHeader(
-        overview?.title || `${config?.name || '플랫폼'} 소개`,
-        overview?.description || '',
-      )}
-
-      <div class="platform-overview-card">
-        <div class="platform-overview-grid">
-          ${items.map((item) => `
-            <div class="platform-overview-item">
-              <h3>${escapeHtml(item?.title || '')}</h3>
-              <p>${escapeHtml(item?.description || '')}</p>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-export function renderPlatformPage(config = {}) {
-  const platformId = getPlatformId(config);
-
-  const platformTools = {
-    miricanvas: [
-      {
-        label: '키워드 분석',
-        description: '검색어를 입력하면 상위 작품의 키워드를 분석해 추천합니다.',
-        href: '/miricanvas/tag',
-      },
-      {
-        label: '템플릿 분석',
-        description: '상위 템플릿의 제목과 키워드 구성을 분석합니다.',
-        href: '/miricanvas/template',
-      },
-      {
-        label: '이번 달 인기 검색 순위',
-        description: '이번 달 인기 검색어와 콘텐츠 유형 순위를 확인합니다.',
-        href: '/miricanvas/rankings',
-      },
-    ],
-    tooldi: [
-      {
-        label: '키워드 분석',
-        description: '검색어를 입력하면 상위 콘텐츠의 키워드를 분석해 추천합니다.',
-        href: '/tooldi/tag',
-      },
-      {
-        label: '템플릿 분석',
-        description: '상위 템플릿의 제목과 기획 키워드를 분석합니다.',
-        href: '/tooldi/template',
-      },
-      {
-        label: '이번 달 인기 검색 순위',
-        description: '이번 달 인기 검색어와 템플릿 순위를 확인합니다.',
-        href: '/tooldi/rankings',
-      },
-    ],
-  };
-
-  const configuredTools = toArray(config?.tools);
-  const tools = platformTools[platformId] || configuredTools;
-  const gridClass = tools.length === 2 ? ' is-two-columns' : '';
-
-  const cards = tools
-    .map((tool) => renderPlatformCard(
-      tool?.label || tool?.title || '기능',
-      tool?.description || tool?.summary || '',
-      tool?.href || '#',
-    ))
-    .join('');
-
-  return `
-    <div class="section-stack platform-page">
-      <section class="platform-tools-section">
-        ${renderSectionHeader(
-          '기능 선택',
-          config?.summary || '원하는 기능을 선택하세요.',
-        )}
-        <div class="home-platform-grid platform-tools-grid${gridClass}">
-          ${cards || '<p class="empty-state">사용 가능한 기능이 없습니다.</p>'}
-        </div>
-      </section>
-
-      ${renderPlatformOverview(config)}
-    </div>
-  `;
 }

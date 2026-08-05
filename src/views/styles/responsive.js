@@ -207,6 +207,14 @@ export function renderResponsiveStyles() {
         padding: 22px 16px 36px;
       }
 
+      .home-service-notice {
+        padding: 28px 22px;
+      }
+
+      .home-service-notice h2 {
+        font-size: 21px;
+      }
+
       .analysis-guide-card {
         padding: 22px 18px;
       }

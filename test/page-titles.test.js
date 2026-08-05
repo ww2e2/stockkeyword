@@ -21,7 +21,7 @@ function extractTagText(html, tagName) {
 
 test('major routes render unique document titles', () => {
   const expectedTitles = new Map([
-    ['/', 'StockKeyword | \uD648'],
+    ['/', 'StockKeyword | 서비스 안내'],
     ['/miricanvas', '\uBBF8\uB9AC\uCE94\uBC84\uC2A4 | \uAE30\uB2A5 \uC120\uD0DD | StockKeyword'],
     ['/miricanvas/tag', '\uBBF8\uB9AC\uCE94\uBC84\uC2A4 | \uD0A4\uC6CC\uB4DC \uBD84\uC11D | StockKeyword'],
     ['/miricanvas/template', '\uBBF8\uB9AC\uCE94\uBC84\uC2A4 | \uD15C\uD50C\uB9BF \uBD84\uC11D | StockKeyword'],
@@ -53,7 +53,7 @@ test('major routes render unique document titles', () => {
 
 test('document title changes do not alter existing page headings', () => {
   const expectedHeadings = new Map([
-    ['/', '\uC791\uC5C5 \uD648'],
+    ['/', '서비스 안내'],
     ['/miricanvas', '\uBBF8\uB9AC\uCE94\uBC84\uC2A4'],
     ['/miricanvas/tag', '\uD0A4\uC6CC\uB4DC \uBD84\uC11D'],
     ['/miricanvas/template', '\uD15C\uD50C\uB9BF \uBD84\uC11D'],

@@ -20,7 +20,7 @@ function createResponse() {
   };
 }
 
-test('/updates renders the Crowdpic shutdown notice and previous update details', async () => {
+test('/updates renders the platform shutdown notice and previous update details', async () => {
   const response = createResponse();
 
   await requestHandler({
@@ -32,6 +32,10 @@ test('/updates renders the Crowdpic shutdown notice and previous update details'
   assert.equal(response.statusCode, 200);
   assert.match(response.body, /href="\/updates"/);
   assert.match(response.body, /aria-current="page"/);
+  assert.match(response.body, /2026\.08\.05/);
+  assert.match(response.body, /플랫폼 관련 기능 지원 종료 안내/);
+  assert.match(response.body, /플랫폼 정책상 앞으로는 관련 기능 지원이 어려울 것 같습니다/);
+  assert.match(response.body, /공개 메뉴 및 URL 비활성화/);
   assert.match(response.body, /2026\.07\.29/);
   assert.match(response.body, /크라우드픽 관련 서비스 종료 안내/);
   assert.match(response.body, /크라우드픽 관련 기능 종료/);
@@ -48,6 +52,7 @@ test('public sitemap includes updates and excludes hidden platform routes', () =
   const sitemap = buildSitemapXml('https://www.stockkeyword.com');
 
   assert.match(sitemap, /https:\/\/www\.stockkeyword\.com\/updates/);
+  assert.doesNotMatch(sitemap, /\/miricanvas(?:<|\/)/);
   assert.doesNotMatch(sitemap, /\/tooldi(?:<|\/)/);
   assert.doesNotMatch(sitemap, /\/crowdpic(?:<|\/)/);
 });
@@ -70,8 +75,36 @@ test('public pages no longer present hidden platforms as supported', async () =>
 });
 
 
-test('Crowdpic routes return 404 and do not render HTML', async () => {
-  for (const path of ['/crowdpic', '/crowdpic/tag', '/crowdpic/rankings']) {
+test('homepage shows the shutdown notice without platform navigation', async () => {
+  const response = createResponse();
+
+  await requestHandler({
+    method: 'GET',
+    url: '/',
+    headers: { host: 'localhost:3000' },
+  }, response);
+
+  assert.equal(response.statusCode, 200);
+  assert.match(response.body, /플랫폼 정책상 앞으로는 관련 기능 지원이 어려울 것 같습니다/);
+  assert.match(response.body, /관련 URL을 모두 비활성화/);
+  assert.doesNotMatch(response.body, /href="\/miricanvas/);
+  assert.doesNotMatch(response.body, />미리캔버스</);
+});
+
+
+test('disabled platform routes and legacy aliases return 404', async () => {
+  for (const path of [
+    '/miricanvas',
+    '/miricanvas/tag',
+    '/miricanvas/template',
+    '/miricanvas/rankings',
+    '/tag',
+    '/result',
+    '/template',
+    '/crowdpic',
+    '/crowdpic/tag',
+    '/crowdpic/rankings',
+  ]) {
     const response = createResponse();
 
     await requestHandler({

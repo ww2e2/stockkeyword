@@ -48,15 +48,6 @@ export function renderSidebar(activeMenu) {
           })}
         </div>
 
-        <div class="sidebar-menu-group sidebar-menu-group-platforms">
-          ${renderSidebarLink({
-            activeMenu,
-            id: 'miricanvas',
-            href: '/miricanvas',
-            label: '미리캔버스',
-          })}
-        </div>
-
         <div class="sidebar-divider" aria-hidden="true"></div>
 
         <div class="sidebar-menu-group">
@@ -152,8 +143,8 @@ export function resolveTopbarContent(pathname, opts, documentTitle, description)
 
   if (normalizedPath === '/') {
     return {
-      title: '작업 홈',
-      description: '스톡 작가를 위한 키워드·템플릿 리서치 워크벤치',
+      title: '서비스 안내',
+      description: '플랫폼 기능 운영 변경 사항을 안내합니다.',
     };
   }
 

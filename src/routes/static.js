@@ -26,10 +26,6 @@ export function buildRobotsTxt(origin) {
 const SITEMAP_PATHS = [
   '/',
 
-  '/miricanvas',
-  '/miricanvas/tag',
-  '/miricanvas/template',
-  '/miricanvas/rankings',
 
   '/calendar',
   ...Array.from(
